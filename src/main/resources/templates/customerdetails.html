@@ -444,7 +444,7 @@
             }
 
             .details-label {
-                color: rgba(107, 114, 128, 1);
+                color: #F76D37;
                 font: 500 14px/1 Inter, sans-serif;
                 margin-bottom: 4px;
             }
@@ -609,26 +609,35 @@
         </div>
         <script>
             // Hàm lấy dữ liệu cơ bản (id, name, email)
+            // Hàm lấy customerId từ URL
+            function getCustomerIdFromURL() {
+                const urlParts = window.location.pathname.split('/');
+                return urlParts[urlParts.length - 2]; // Lấy ID từ URL dạng "/users/customers/{customerId}/details"
+            }
+
+            // Hàm lấy dữ liệu cơ bản (id, name, email) của khách hàng
             async function fetchCustomerBasicInfo() {
+                const customerId = getCustomerIdFromURL(); // Lấy ID từ URL
+
+                if (!customerId) {
+                    console.error('Customer ID not found in URL');
+                    return;
+                }
+
                 try {
-                    const response = await fetch('/users/customers');
-                    const customers = await response.json();
+                    const response = await fetch(`/users/customers/${customerId}`);
+                    const customer = await response.json(); // Chỉ lấy 1 object thay vì danh sách
 
                     const tbody = document.getElementById('basic-info-body');
-                    tbody.innerHTML = '';
-
-                    customers.forEach((customer) => {
-                        const row = `
-                        <tr class="customer-row">
-                            <td>${customer.id}</td>
-                            <td>${customer.name}</td>
-                            <td>${customer.email}</td>
-                            <td>
-                                <button onclick="fetchCustomerFullInfo(${customer.id})">Details</button>
-                            </td>
-                        </tr>`;
-                        tbody.innerHTML += row;
-                    });
+                    tbody.innerHTML = `
+                <tr class="customer-row">
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>
+                        <button onclick="fetchCustomerFullInfo(${customer.id})">Details</button>
+                    </td>
+                </tr>`;
                 } catch (error) {
                     console.error('Error fetching basic info:', error);
                 }

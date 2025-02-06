@@ -376,6 +376,7 @@
 
             .table-body {
                 background-color: rgba(0, 0, 0, 0);
+                color: rgba(255, 255, 255, 1);
                 display: flex;
                 width: 100%;
                 flex-direction: column;
@@ -418,10 +419,11 @@
             .action-button {
                 background-color: rgba(0, 0, 0, 0);
                 display: flex;
-                width: 63px;
-                gap: 9px;
-                padding: 1px 0;
+                align-items: center; /* Căn giữa icon + text */
+                gap: 0.2vw; /* Khoảng cách co giãn theo chiều rộng màn hình */
+                padding: 0.5em 1em; /* Giữ tỷ lệ padding ổn định */
             }
+
 
             .action-frame {
                 align-self: start;
@@ -614,6 +616,8 @@
                     const tableBody = document.getElementById('table-body');
                     tableBody.innerHTML = '';  // Xóa nội dung bảng cũ
 
+                    const viewIconPath = /*[[ @{/images/view.png} ]]*/ '/images/view.png';
+
                     // Duyệt qua danh sách khách hàng và tạo các dòng dữ liệu
                     data.forEach(customer => {
                         const tableRow = document.createElement('div');
@@ -627,7 +631,7 @@
                     <div class="action-button">
                         <div class="action-frame">
                             <img loading="lazy" 
-                                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/${customer.viewIconId}?apiKey=4d372ddcf6154073b7e558cf84611b91&" 
+                                 src="${viewIconPath}" 
                                  class="action-icon" alt="View icon" />
                         </div>
                         <div class="action-text">View</div>
