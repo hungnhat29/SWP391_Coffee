@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"
+  />
+  <title>
+    My Voucher
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap"
+        rel="stylesheet" />
+  <style>
+    body { font-family: 'Roboto', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-white">
+<header class="bg-orange-500 text-white p-4 flex justify-center items-center">
+  <nav class="space-x-4 text-black">
+    <a class="hover:underline" href="profile.html">
+      Profile
+    </a>
+    <a class="hover:underline" href="point.html">
+      Point
+    </a>
+    <a class="hover:underline" href="vourcher.html">
+      Voucher
+    </a>
+    <a class="hover:underline" href="#">
+      My Voucher
+    </a>
+  </nav>
+</header>
+<main class="p-4 md:p-8 container mx-auto">
+  <h1 class="text-4xl text-orange-500  font-bold mb-4">
+    My Voucher
+  </h1>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <aside class="w-full sm:w-1/5 pr-8">
+      <ul class="space-y-3 md:space-y-7">
+        <li class="group cursor-pointer bg-[#f8d9d0] p-5 rounded-lg text-center hover:bg-orange-500 hover:text-white transition-all">
+                            <span class="block text-orange-500 font-bold group-hover:text-white">
+                                All
+                            </span>
+          <span class="block text-xs mt-1 group-hover:text-white">
+                                (2109)
+                            </span>
+        </li>
+        <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+        <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Shop
+                            </span>
+          <span class="block text-xs mt-1 group-hover:text-white">
+                                (995)
+                            </span>
+        </li>
+        <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+        <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Coffee
+                            </span>
+          <span class="block text-xs mt-1 group-hover:text-white">
+                                (114)
+                            </span>
+        </li>
+        <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+        <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Cake
+                            </span>
+          <span class="block text-xs mt-1 group-hover:text-white">
+                                (400)
+                            </span>
+        </li>
+        <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+        <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Shipping
+                            </span>
+          <span class="block text-xs mt-1 group-hover:text-white">
+                                (600)
+                            </span>
+        </li>
+      </ul>
+
+    </aside>
+    <section class="w-full sm:w-4/5">
+      <div class="flex flex-wrap">
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 mb:pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 mb-6 md:px-8 pb-8">
+          <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+            <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+              <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                  <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                    <img alt="Shipping icon" class="rounded-full p-1"
+                         src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+              </div>
+              <div>
+                <h3 class="font-bold">
+                  Shipping Fee up to 10k vnd off
+                </h3>
+                <p class="text-gray-500">
+                  Min. Spend 0 vnd
+                  <br />
+                  Valid From 21.09
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold">
+                x15
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-8 flex justify-center space-x-2 text-sm">
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          <i class="fas fa-angle-double-left"></i>
+        </button>
+        <button class="w-7 h-7 bg-[#f66d37] text-white rounded-full hover:bg-[#f66d37] hover:text-white">
+          1
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          2
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          3
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          -
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          6
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          7
+        </button>
+        <button class="w-7 h-7 bg-[#ffefe8] text-gray-700 rounded-full hover:bg-[#f66d37] hover:text-white">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+
+</html>
