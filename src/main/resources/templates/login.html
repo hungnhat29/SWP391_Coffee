@@ -21,7 +21,7 @@
         <h2 class="text-3xl font-bold text-center mb-6">
             Login
         </h2>
-        <form>
+        <form id="loginForm">
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700" for="email">
                     Email
@@ -51,7 +51,7 @@
         <div class="text-center mt-6">
             <p class="text-sm text-gray-500">
                 Create account?
-                <a class="text-black font-bold" href="register.html">
+                <a class="text-black font-bold" th:href="@{/auth/register}">
                     Register
                 </a>
             </p>
@@ -59,4 +59,47 @@
     </div>
 </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (event) {
+            event.preventDefault();
+
+            let loginData = {
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/auth/login",
+                contentType: "application/json",
+                data: JSON.stringify(loginData),
+                success: function (response) {
+                    localStorage.setItem("token", response.token);
+                    redirectHomePage(response);
+                },
+                error: function (xhr) {
+                    let errorMessage = xhr.responseJSON?.message || "Login failed!";
+                    $("#error-message").text(errorMessage);
+                }
+            });
+        });
+
+        function redirectHomePage(response){
+            $.ajax({
+                type: "GET",
+                url: "/home",
+                headers: { "Authorization": "Bearer " + response.token },
+                success: function () {
+                    window.location.href = "/home";
+                },
+                error: function () {
+                    alert("Access denied to home");
+                }
+            });
+        }
+    });
+</script>
+
 </html>
