@@ -64,6 +64,24 @@
         confirmPassword: $("#confirmPassword").val()
       };
 
+      if (!formData.fullName || !formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
+        $("#error-message").text("Please fill in all fields!");
+        return;
+      }
+
+      // Kiểm tra mật khẩu có tối thiểu 6 ký tự bao gồm cả chữ và số
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+      if (!passwordRegex.test(formData.password)) {
+        $("#error-message").text("Password must be at least 6 characters long and include both letters and numbers.");
+        return;
+      }
+
+      // Kiểm tra confirmPassword
+      if (formData.password !== formData.confirmPassword) {
+        $("#error-message").text("Passwords do not match.");
+        return;
+      }
+
       $.ajax({
         type: "POST",
         url: "/auth/register",
