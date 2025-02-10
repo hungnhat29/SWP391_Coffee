@@ -2,9 +2,9 @@ package com.SWP391.G3PCoffee.controller.Authentication;
 
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.service.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class ProfileController {
+    private static final Logger log = LoggerFactory.getLogger(ProfileController.class);
     private final UserService userService;
 
     public ProfileController(UserService userService) {

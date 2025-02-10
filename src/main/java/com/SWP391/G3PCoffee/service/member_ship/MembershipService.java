@@ -4,7 +4,6 @@ import com.SWP391.G3PCoffee.constant.MembershipRank;
 import com.SWP391.G3PCoffee.model.Membership;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.MembershipRepository;
-import com.SWP391.G3PCoffee.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,19 +11,17 @@ import java.time.LocalDate;
 @Service
 public class MembershipService {
     private final MembershipRepository membershipRepository;
-    private final UserService userService;
 
-    public MembershipService(MembershipRepository membershipRepository, UserService userService) {
+    public MembershipService(MembershipRepository membershipRepository) {
         this.membershipRepository = membershipRepository;
-        this.userService = userService;
     }
 
-    public Membership getMemberShipByEmail(String email) {
-        User user = userService.getCustomerByEmail(email);
-        if (user == null) return null;
-
-        return membershipRepository.getMembershipByUserId(user.getId());
-    }
+//    public Membership getMemberShipByEmail(String email) {
+//        User user = userService.getCustomerByEmail(email);
+//        if (user == null) return null;
+//
+//        return membershipRepository.getMembershipByUserId(user.getId());
+//    }
 
     public void initMemberShip(User user) {
         LocalDate currentDate = LocalDate.now();

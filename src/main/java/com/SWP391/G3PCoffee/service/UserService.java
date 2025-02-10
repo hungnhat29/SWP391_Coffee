@@ -13,7 +13,6 @@ package com.SWP391.G3PCoffee.service;
 import com.SWP391.G3PCoffee.DTO.user.UserLoginDto;
 import com.SWP391.G3PCoffee.DTO.user.UserRegisterDto;
 import com.SWP391.G3PCoffee.constant.Role;
-import com.SWP391.G3PCoffee.model.Membership;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
@@ -52,13 +51,13 @@ public class UserService {
 
     public List<User> getAllCustomers() {
         return userRepository.findAll().stream()
-                .filter(user -> "customer".equalsIgnoreCase(user.getName()))
+                .filter(user -> "customer".equalsIgnoreCase(user.getRole()))
                 .toList();
     }
 
     public User getCustomerById(Long id) {
         return userRepository.findById(id)
-                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getName()))
+                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getRole()))
                 .orElse(null);
     }
 

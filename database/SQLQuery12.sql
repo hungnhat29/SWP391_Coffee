@@ -118,15 +118,15 @@ GO
 
 CREATE TABLE Vouchers
 (
-    voucher_id   INT PRIMARY KEY AUTO_INCREMENT,
+    voucher_id   INT PRIMARY KEY IDENTITY(1,1),
     voucher_code VARCHAR(50)    NOT NULL UNIQUE,
     description  TEXT,
-    voucher_type ENUM('fixed', 'percent') NOT NULL,
+    voucher_type VARCHAR(20) NOT NULL,
     value        DECIMAL(10, 2) NOT NULL,
     min_points   INT            NOT NULL,
     expiry_date  DATE           NOT NULL,
     quantity     INT            NOT NULL,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at   DATETIME  DEFAULT GETDATE()
 );
 GO
 INSERT INTO Vouchers (voucher_code, description, voucher_type, value, min_points, expiry_date, quantity)
@@ -137,10 +137,10 @@ GO
 
 CREATE TABLE User_Vouchers
 (
-    id          INT PRIMARY KEY AUTO_INCREMENT,
+    id          INT PRIMARY KEY IDENTITY(1,1),
     user_id     INT NOT NULL,
     voucher_id  INT NOT NULL,
-    redeemed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    redeemed_at DATETIME  DEFAULT GETDATE(),
     FOREIGN KEY (user_id) REFERENCES Users (id) ON DELETE CASCADE,
     FOREIGN KEY (voucher_id) REFERENCES Vouchers (voucher_id) ON DELETE CASCADE,
     UNIQUE (user_id, voucher_id) -- Đảm bảo mỗi user chỉ đổi 1 lần
