@@ -12,7 +12,7 @@ GO
 USE G3P_Coffee;
 CREATE TABLE Users
 (
-    id         INT PRIMARY KEY AUTO_INCREMENT,
+    id         INT PRIMARY KEY IDENTITY(1,1),
     name       VARCHAR(255)        NOT NULL,
     email      VARCHAR(255) UNIQUE NOT NULL,
     password   VARCHAR(255)        NOT NULL,
@@ -77,7 +77,7 @@ VALUES
 
 CREATE TABLE Memberships
 (
-    id              INT PRIMARY KEY,
+    id              INT PRIMARY KEY IDENTITY(1,1),
     user_id         INT NOT NULL,
     membership_type VARCHAR(50),
     start_date      DATE,
@@ -99,7 +99,7 @@ GO
 
 CREATE TABLE Categories
 (
-    id                 INT PRIMARY KEY,
+    id                 INT PRIMARY KEY IDENTITY(1,1),
     name               VARCHAR(255) NOT NULL,
     description        TEXT,
     parent_category_id INT,
@@ -149,7 +149,7 @@ GO
 
 CREATE TABLE Products
 (
-    id           INT PRIMARY KEY,
+    id           INT PRIMARY KEY IDENTITY(1,1),
     name         VARCHAR(255)   NOT NULL,
     description  TEXT,
     price        DECIMAL(10, 2) NOT NULL,
@@ -175,7 +175,7 @@ GO
 
 CREATE TABLE Inventory
 (
-    id         INT PRIMARY KEY,
+    id         INT PRIMARY KEY IDENTITY(1,1),
     product_id INT NOT NULL,
     store_id   INT,
     quantity   INT NOT NULL,
