@@ -13,9 +13,11 @@ package com.SWP391.G3PCoffee.service;
 import com.SWP391.G3PCoffee.DTO.user.UserLoginDto;
 import com.SWP391.G3PCoffee.DTO.user.UserRegisterDto;
 import com.SWP391.G3PCoffee.constant.Role;
+import com.SWP391.G3PCoffee.model.Membership;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
+import com.SWP391.G3PCoffee.service.member_ship.MembershipService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,14 +38,16 @@ public class UserService {
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final MembershipService membershipService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
+                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager, MembershipService membershipService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
+        this.membershipService = membershipService;
     }
 
     public List<User> getAllCustomers() {
@@ -58,6 +62,7 @@ public class UserService {
                 .orElse(null);
     }
 
+    @Transactional
     public String registerUser(UserRegisterDto userDTO) {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent() || userRepository.findByPhone(userDTO.getPhone()).isPresent()) {
             throw new RuntimeException("Email is already in use!");
@@ -71,6 +76,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         userRepository.save(user);
+
+        membershipService.initMemberShip(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         return jwtUtils.generateToken(userDetails);

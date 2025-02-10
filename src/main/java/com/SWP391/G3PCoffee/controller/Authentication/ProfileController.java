@@ -3,6 +3,7 @@ package com.SWP391.G3PCoffee.controller.Authentication;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,33 +21,32 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String showProfilePage(Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails userDetails) {
-            User user = userService.getCustomerByEmail(userDetails.getUsername());
-
-            if (user != null) {
-                model.addAttribute("user", user);
-                return "profile";
-            }
+    public String showProfilePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/auth/login";
         }
 
-        return "redirect:/auth/login";
+        User user = userService.getCustomerByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
+
+        model.addAttribute("user", user);
+        return "profile";
+
     }
 
     @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute("user") User updatedUser, Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public String updateProfile(@AuthenticationPrincipal UserDetails userDetails,
+                                @ModelAttribute("user") User updatedUser, Model model) {
+        if (userDetails == null) return "redirect:/auth/login";
 
-        if (principal instanceof UserDetails userDetails) {
-            User existingUser = userService.updateUser(userDetails, updatedUser);
-            if (existingUser != null) {
-                model.addAttribute("user", existingUser);
-                model.addAttribute("successMessage", "Profile updated successfully!");
+        User existingUser = userService.updateUser(userDetails, updatedUser);
+        if (existingUser != null) {
+            model.addAttribute("user", existingUser);
+            model.addAttribute("successMessage", "Profile updated successfully!");
 
-                return "profile";
-            }
+            return "profile";
         }
 
         return "redirect:/auth/login";
