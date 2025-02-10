@@ -29,4 +29,9 @@ public class HomeController {
         request.setAttribute("customerId", customerId);
         return "customerdetails"; // Trả về trang chi tiết khách hàng
     }
+    
+    @GetMapping("/contactandabout")
+    public String contactAndAboutPage() {
+        return "contactandaboutpage"; // Tên file HTML trong thư mục templates
+    }
 }

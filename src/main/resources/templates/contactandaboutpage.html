@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+        <title>CoffeeHouse</title>
+        <style>
+            .about-section {
+                display: flex;
+                width: 100%;
+                padding-bottom: 80px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .main-header {
+                background-color: #fff;
+                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+                width: 100%;
+                padding: 0 80px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                line-height: 1;
+            }
+
+            /*        .header-container {
+                        width: 100%;
+                        padding: 0 16px;
+                    }
+            
+                    .header-content {
+                        display: flex;
+                        width: 100%;
+                        padding: 24px 0;
+                        align-items: center;
+                        gap: 20px;
+                        flex-wrap: wrap;
+                        justify-content: space-between;
+                    }
+            
+                    .brand-name {
+                        padding: 1px 0 12px;
+                        font-size: 24px;
+                        color: rgb(146, 64, 14);
+                        font-weight: 700;
+                        margin: 0;
+                    }
+            
+                    .main-nav {
+                        display: flex;
+                        margin: auto 0;
+                        padding: 5px 0;
+                        align-items: start;
+                        gap: 33px;
+                        font-size: 16px;
+                    }
+            
+                    .nav-link {
+                        color: rgb(75, 85, 99);
+                        text-decoration: none;
+                        font-weight: 400;
+                    }
+            
+                    .nav-link-active {
+                        color: rgb(146, 64, 14);
+                    }
+            
+                    .cart-icon {
+                        aspect-ratio: 2.8;
+                        object-fit: contain;
+                        width: 56px;
+                        margin: auto 0;
+                    }*/
+            .header_section {
+                width: 100%;
+                float: left;
+                background-color: #252525;
+                height: auto;
+                background-size: 100%;
+            }
+
+            .bg-light {
+                background-color: transparent !important;
+            }
+
+            .header_main {
+                width: 100%;
+                float: left;
+                background: #10e2bd;
+                height: 80px;
+            }
+
+            .navbar-light .navbar-nav .active>.nav-link,
+            .navbar-light .navbar-nav .nav-link.active,
+            .navbar-light .navbar-nav .nav-link.show,
+            .navbar-light .navbar-nav .show>.nav-link {
+                color: #f76d37;
+            }
+
+            .navbar-light .navbar-nav .nav-link:focus,
+            .navbar-light .navbar-nav .nav-link:hover {
+                color: #f76d37;
+            }
+
+            .navbar-nav .nav-item .icon {
+                width: 24px; /* Điều chỉnh kích thước icon */
+                height: 24px;
+            }
+
+            .navbar {
+                padding: 20px 1rem;
+            }
+
+            .navbar-expand-lg .navbar-nav .nav-link {
+                padding-right: .5rem;
+                padding-left: .5rem;
+                font-size: 18px;
+                color: #fff;
+            }
+
+            .logo {
+            }
+
+            .main-content {
+                margin-top: 48px;
+                width: 100%;
+                max-width: 1280px;
+                padding: 0 16px;
+                align-self: center;
+            }
+
+            .content-grid {
+                display: flex;
+                gap: 20px;
+            }
+
+            .story-content {
+                display: flex;
+                margin: auto 0;
+                padding-bottom: 20px;
+                flex-direction: column;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-size: 16px;
+                color: rgb(75, 85, 99);
+                line-height: 16px;
+                width: 50%;
+            }
+
+            .story-title {
+                color: rgb(17, 24, 39);
+                font-size: 48px;
+                font-weight: 700;
+                line-height: 1;
+                margin: -6px 0 0;
+            }
+
+            .story-text {
+                margin-top: 44px;
+                line-height: 1.5;
+            }
+
+            .image-content {
+                width: 50%;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .story-image {
+                aspect-ratio: 1.5;
+                object-fit: contain;
+                width: 100%;
+            }
+
+            .features-section {
+                background-color: rgb(255, 251, 235);
+                display: flex;
+                width: 100%;
+                padding: 80px;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: center;
+            }
+
+            .features-container {
+                width: 100%;
+                padding: 0 16px;
+            }
+
+            .features-grid {
+                background-color: transparent;
+            }
+
+            .features-row {
+                gap: 20px;
+                display: flex;
+            }
+
+            .feature-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33%;
+                padding: 29px 67px;
+                background-color: transparent;
+            }
+
+            .feature-icon {
+                display: flex;
+                min-height: 36px;
+                width: 36px;
+                align-items: center;
+                overflow: hidden;
+                justify-content: center;
+                margin: 0;
+            }
+
+            .icon {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 36px;
+                align-self: stretch;
+                margin: auto;
+            }
+
+            .icon-wide {
+                aspect-ratio: 1.25;
+                object-fit: contain;
+                object-position: center;
+                width: 45px;
+                align-self: stretch;
+                margin: auto;
+            }
+
+            .feature-title {
+                color: rgb(0, 0, 0);
+                font-size: 20px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-weight: 700;
+                line-height: 1;
+                text-align: center;
+                margin: 16px 0;
+            }
+
+            .feature-description {
+                color: rgb(75, 85, 99);
+                font-size: 16px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-weight: 400;
+                line-height: 16px;
+                text-align: center;
+                margin-top: 25px;
+            }
+
+            .contact-section {
+                background-color: rgba(0, 0, 0, 0);
+                width: 100%;
+                padding: 126px 80px 80px;
+            }
+
+            .contact-container {
+                background-color: rgba(0, 0, 0, 0);
+                display: flex;
+                width: 100%;
+                padding: 0 16px;
+                flex-direction: column;
+                align-items: center; /* Căn giữa các phần tử */
+            }
+
+            .contact-header {
+                background-color: rgba(0, 0, 0, 0);
+                align-self: center;
+                display: flex;
+                width: 100%;
+                max-width: 768px;
+                padding: 0 20px 7px; /* Điều chỉnh padding */
+                flex-direction: column;
+                align-items: center; /* Căn giữa các phần tử */
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                text-align: center;
+                line-height: 1;
+            }
+
+            .contact-title {
+                color: rgba(17, 24, 39, 1);
+                font-size: 48px;
+                font-weight: 700;
+                align-self: center;
+                z-index: 10;
+                margin-top: -4px;
+            }
+
+            .contact-description {
+                color: rgba(75, 85, 99, 1);
+                font-size: 16px;
+                font-weight: 400;
+                margin-top: 20px; /* Điều chỉnh margin */
+            }
+
+            .contact-content {
+                margin-top: 64px;
+                display: flex;
+                gap: 40px; /* Tăng khoảng cách giữa các phần tử */
+                width: 100%;
+                max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+            }
+
+            .contact-info {
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Căn trái các phần tử */
+            }
+
+            .info-container {
+                background-color: rgba(0, 0, 0, 0);
+                margin: 0 auto;
+                width: 100%;
+                padding-bottom: 40px; /* Điều chỉnh padding */
+            }
+
+            .location-info {
+                background-color: rgba(0, 0, 0, 0);
+                display: flex;
+                width: 100%;
+                padding: 3px 0; /* Điều chỉnh padding */
+                flex-direction: column;
+                align-items: flex-start; /* Căn trái các phần tử */
+            }
+
+            .info-title {
+                color: rgba(0, 0, 0, 1);
+                font-size: 20px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-weight: 700;
+                line-height: 1;
+                margin-bottom: 20px; /* Điều chỉnh margin */
+            }
+
+            .address-wrapper,
+            .phone-wrapper,
+            .email-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 14px;
+            }
+
+            .address-wrapper {
+                margin-top: 20px; /* Điều chỉnh margin */
+            }
+
+            .icon-wrapper {
+                display: flex;
+                min-height: 16px;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .location-icon,
+            .phone-icon,
+            .email-icon {
+                width: 16px;
+                height: 16px;
+                object-fit: contain;
+            }
+
+            .address-text,
+            .phone-text,
+            .email-text {
+                color: rgba(75, 85, 99, 1);
+                font-size: 16px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-weight: 400;
+                line-height: 1.5; /* Điều chỉnh line-height */
+            }
+
+            .hours-info {
+                margin-top: 32px;
+                padding: 5px 0; /* Điều chỉnh padding */
+            }
+
+            .hours-text {
+                color: rgba(75, 85, 99, 1);
+                font-size: 16px;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-weight: 400;
+                line-height: 1.5; /* Điều chỉnh line-height */
+                margin-top: 10px; /* Điều chỉnh margin */
+            }
+
+            .hours-text:first-of-type {
+                margin-top: 20px; /* Điều chỉnh margin */
+            }
+
+            .social-links {
+                display: flex;
+                margin-top: 32px;
+                padding-right: 0; /* Điều chỉnh padding */
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .social-icon {
+                width: 24px;
+                height: 24px;
+                object-fit: contain;
+            }
+
+            .contact-form {
+                width: 50%;
+                font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+                font-size: 16px;
+                color: rgba(55, 65, 81, 1);
+                font-weight: 400;
+            }
+
+            .form-group {
+                margin-top: 24px;
+            }
+
+            .form-group:first-child {
+                margin-top: 0;
+            }
+
+            .form-label {
+                display: block;
+                padding: 2px 0 10px;
+            }
+
+            .form-input,
+            .form-textarea {
+                width: 100%;
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 1);
+                border: 1px solid rgba(209, 213, 219, 1);
+                margin-top: 8px;
+                padding: 10px; /* Thêm padding cho input và textarea */
+            }
+
+            .form-input {
+                height: 50px;
+            }
+
+            .form-textarea {
+                height: 122px;
+                resize: vertical;
+            }
+
+            .submit-button {
+                width: 100%;
+                border-radius: 8px;
+                background-color: rgba(146, 64, 14, 1);
+                margin-top: 24px;
+                padding: 17px 70px;
+                color: rgba(255, 255, 255, 1);
+                text-align: center;
+                border: none;
+                cursor: pointer;
+            }
+
+            @media (max-width: 991px) {
+                .contact-section {
+                    padding: 100px 20px; /* Điều chỉnh padding cho mobile */
+                }
+
+                .contact-content {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 0;
+                    margin-top: 40px;
+                }
+
+                .contact-info,
+                .contact-form {
+                    width: 100%;
+                }
+
+                .info-container {
+                    margin-top: 40px;
+                    padding-bottom: 40px; /* Điều chỉnh padding cho mobile */
+                }
+
+                .location-info {
+                    padding-right: 0; /* Điều chỉnh padding cho mobile */
+                }
+
+                .hours-info {
+                    padding-right: 0; /* Điều chỉnh padding cho mobile */
+                }
+
+                .social-links {
+                    padding-right: 0; /* Điều chỉnh padding cho mobile */
+                }
+
+                .contact-form {
+                    margin-top: 40px;
+                }
+
+                .submit-button {
+                    padding: 17px 20px; /* Điều chỉnh padding cho mobile */
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <section class="about-section">
+            <!--header section start -->
+            <div class="header_section">
+                <div class="container-fluid">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="logo"><a href="index.html"><img src="images/logo_white.png"></a></div>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Stores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Blogs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Contact Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Need help?</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <img src="images/credit-card_9654102.png" alt="User" class="icon">
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <img src="images/add-cart_6337238.png" alt="Cart" class="icon">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!--header section end -->
+
+            <main class="main-content">
+                <div class="content-wrapper">
+                    <div class="content-grid">
+                        <article class="story-content">
+                            <h2 class="story-title">Our Story</h2>
+                            <p class="story-text">
+                                Founded in 2015, CoffeeHouse has been dedicated to bringing the finest coffee experiences to
+                                our community. We carefully select beans from sustainable farms worldwide and roast them to
+                                perfection in our local facility.
+                            </p>
+                            <p class="story-text">
+                                Our passion for coffee goes beyond just serving drinks - we're committed to creating a warm,
+                                welcoming space where people can connect, work, and enjoy exceptional coffee.
+                            </p>
+                        </article>
+                        <aside class="image-content">
+                            <img loading="lazy"
+                                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/f2077f7822cb50b6921fbf50dc3195c1524357249fb53c411c8a5772658b1459?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                 class="story-image" alt="Coffee shop interior">
+                        </aside>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <section class="features-section">
+            <div class="features-container">
+                <div class="features-grid">
+                    <div class="features-row">
+                        <article class="feature-card">
+                            <figure class="feature-icon">
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/2e88dc6739f4a7b53b511d86e49539ce6880771acdb349393c3507e7cb1ed337?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     alt="Sustainability icon" class="icon">
+                            </figure>
+                            <h2 class="feature-title">Sustainability</h2>
+                            <p class="feature-description">
+                                We partner with farms that practice sustainable agriculture and fair trade.
+                            </p>
+                        </article>
+
+                        <article class="feature-card">
+                            <figure class="feature-icon">
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/09ec7cee06d92974f07b73c3bd3f846473c57bdfb7e5d5cde00f3c312cfae727?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     alt="Quality icon" class="icon">
+                            </figure>
+                            <h2 class="feature-title">Quality</h2>
+                            <p class="feature-description">
+                                Every cup is crafted with precision and care using premium beans.
+                            </p>
+                        </article>
+
+                        <article class="feature-card">
+                            <figure class="feature-icon">
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/7da45cc6e7fa67bb26e56ad09848b0191e3c1c2674d200392dab9869847484ab?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     alt="Community icon" class="icon-wide">
+                            </figure>
+                            <h2 class="feature-title">Community</h2>
+                            <p class="feature-description">
+                                Creating spaces where people can connect and share moments.
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="contact-container">
+                <header class="contact-header">
+                    <h1 class="contact-title">Get in Touch</h1>
+                    <p class="contact-description">
+                        Have questions about our coffee, locations, or services? We'd love to
+                        hear from you.
+                    </p>
+                </header>
+
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="info-container">
+                            <div class="location-info">
+                                <h2 class="info-title">Visit Us</h2>
+                                <div class="address-wrapper">
+                                    <div class="icon-wrapper">
+                                        <img loading="lazy"
+                                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/1ada2dda61233982f38758bb0499a5d35989e3c593162a0c8d3be17b8c48b44a?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                             class="location-icon" alt="Location icon" />
+                                    </div>
+                                    <p class="address-text">123 Coffee Street, City</p>
+                                </div>
+                                <div class="phone-wrapper">
+                                    <div class="icon-wrapper">
+                                        <img loading="lazy"
+                                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/010ff55bc1b152e7cecf375db198305a81ca2cfc5e97bd9858bfa589034031c0?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                             class="phone-icon" alt="Phone icon" />
+                                    </div>
+                                    <p class="phone-text">(555) 123-4567</p>
+                                </div>
+                                <div class="email-wrapper">
+                                    <div class="icon-wrapper">
+                                        <img loading="lazy"
+                                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/edea20c30ab1de9572b855ef98ff11cd99e2a7cf02deea42cab8eedaae1a547f?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                             class="email-icon" alt="Email icon" />
+                                    </div>
+                                    <p class="email-text">hello@coffeehouse.com</p>
+                                </div>
+                            </div>
+
+                            <div class="hours-info">
+                                <h2 class="info-title">Hours</h2>
+                                <p class="hours-text">Monday - Friday: 7:00 AM - 8:00 PM</p>
+                                <p class="hours-text">Saturday - Sunday: 8:00 AM - 6:00 PM</p>
+                            </div>
+
+                            <div class="social-links">
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/28f85dd1d4c3405d83008d0157699ed1b6b52b959490bddd064a544b366a00c8?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     class="social-icon" alt="Social media icon" />
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/4a560f53fa182e0fc960c155c0fe75fd1900b6782b17fae9eaca9c737c92a7e3?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     class="social-icon" alt="Social media icon" />
+                                <img loading="lazy"
+                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/6d04ae89969760c45171cb422f77057d5ad96105b6e71ef5f672f99cd4a61f91?placeholderIfAbsent=true&apiKey=4d372ddcf6154073b7e558cf84611b91"
+                                     class="social-icon" alt="Social media icon" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" class="form-textarea" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const contactForm = document.querySelector(".contact-form");
+
+                contactForm.addEventListener("submit", async function (event) {
+                    event.preventDefault(); // Ngăn chặn form gửi mặc định
+
+                    // Lấy dữ liệu từ form
+                    const name = document.getElementById("name").value.trim();
+                    const email = document.getElementById("email").value.trim();
+                    const message = document.getElementById("message").value.trim();
+
+                    // Kiểm tra dữ liệu nhập vào
+                    if (!name || !email || !message) {
+                        alert("Please fill in the information!");
+                        return;
+                    }
+
+                    // Tạo object gửi đến API
+                    const requestData = {
+                        name: name,
+                        email: email,
+                        subject: "Customer Inquiry", // Chủ đề mặc định hoặc bạn có thể thêm trường nhập
+                        message: message,
+                    };
+
+                    try {
+                        const response = await fetch("http://localhost:8080/api/contact/send", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(requestData),
+                        });
+
+                        const result = await response.text(); // Nhận phản hồi từ server
+
+                        if (response.ok) {
+                            alert("The email has been sent successfully!");
+                            contactForm.reset(); // Reset form sau khi gửi thành công
+                        } else {
+                            alert("Error sending emails: " + result);
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("An error occurred while submitting the request. Please try again later.");
+                    }
+                });
+            });
+        </script>
+    </body>
+
+</html>
