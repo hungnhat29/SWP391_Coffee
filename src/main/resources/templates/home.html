@@ -501,33 +501,6 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        let token = localStorage.getItem("token");
-        let loginLink = $("#loginLink");
-
-        loginLink.on("click", function (event) {
-            if (token) {
-                event.preventDefault(); 
-
-                $.ajax({
-                    type: "GET",
-                    url: "/profile",
-                    headers: { "Authorization": "Bearer " + token },
-                    success: function (data) {
-                        console.log("Token hợp lệ, chuyển hướng đến /profile");
-                        $("body").html(data);
-                    },
-                    error: function (xhr) {
-                        console.error("Lỗi khi xác thực token:", xhr.status);
-                        localStorage.removeItem("token");
-                        window.location.href = "/auth/login"; 
-                    }
-                });
-            } else {
-                console.log("Không có token, chuyển hướng đến /auth/login");
-            }
-        });
-    });
 
 </script>
 </html>

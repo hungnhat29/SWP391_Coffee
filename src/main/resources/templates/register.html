@@ -77,14 +77,12 @@
         return;
       }
 
-      // Kiểm tra mật khẩu có tối thiểu 6 ký tự bao gồm cả chữ và số
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
       if (!passwordRegex.test(formData.password)) {
         $("#error-message").text("Password must be at least 6 characters long and include both letters and numbers.");
         return;
       }
 
-      // Kiểm tra confirmPassword
       if (formData.password !== formData.confirmPassword) {
         $("#error-message").text("Passwords do not match.");
         return;
@@ -95,9 +93,8 @@
         url: "/auth/register",
         contentType: "application/json",
         data: JSON.stringify(formData),
-        success: function (response) {
-          localStorage.setItem("token", response.token);
-          redirectHomePage(response);
+        success: function () {
+          window.location.href = "/home";
         },
         error: function (xhr) {
           let errorMessage = xhr.responseJSON?.message || "Registration failed!";
@@ -105,20 +102,6 @@
         }
       });
     });
-    
-    function redirectHomePage(response){
-      $.ajax({
-        type: "GET",
-        url: "/home",
-        headers: { "Authorization": "Bearer " + response.token },
-        success: function () {
-          window.location.href = "/home";
-        },
-        error: function () {
-          alert("Access denied to home");
-        }
-      });
-    }
   });
 </script>
 

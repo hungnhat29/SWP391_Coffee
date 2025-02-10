@@ -81,9 +81,8 @@
                 url: "/auth/login",
                 contentType: "application/json",
                 data: JSON.stringify(loginData),
-                success: function (response) {
-                    localStorage.setItem("token", response.token);
-                    redirectHomePage(response);
+                success: function () {
+                    window.location.href = "/home";
                 },
                 error: function (xhr) {
                     let errorMessage = xhr.responseJSON?.message || "Login failed!";
@@ -91,20 +90,6 @@
                 }
             });
         });
-
-        function redirectHomePage(response) {
-            $.ajax({
-                type: "GET",
-                url: "/home",
-                headers: {"Authorization": "Bearer " + response.token},
-                success: function () {
-                    window.location.href = "/home";
-                },
-                error: function () {
-                    alert("Access denied to home");
-                }
-            });
-        }
     });
 </script>
 <script>
