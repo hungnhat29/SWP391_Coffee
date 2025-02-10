@@ -16,12 +16,9 @@ public class MembershipService {
         this.membershipRepository = membershipRepository;
     }
 
-//    public Membership getMemberShipByEmail(String email) {
-//        User user = userService.getCustomerByEmail(email);
-//        if (user == null) return null;
-//
-//        return membershipRepository.getMembershipByUserId(user.getId());
-//    }
+    public Membership getMemberShipByEmail(Long userId) {
+        return membershipRepository.getMembershipByUserId(userId);
+    }
 
     public void initMemberShip(User user) {
         LocalDate currentDate = LocalDate.now();
