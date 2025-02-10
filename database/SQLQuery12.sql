@@ -24,7 +24,7 @@ CREATE TABLE Users
     CONSTRAINT chk_phone CHECK (PATINDEX('%[^0-9]%', phone) = 0)
 );
 GO
-INSERT INTO Users (id, name, email, password, phone, address, role, created_at, updated_at)
+INSERT INTO Users ( name, email, password, phone, address, role, created_at, updated_at)
 VALUES
 ( 'John Doe', 'john@example.com', 'hashed_pwd_1', '1234567890', '123 Main St', 'customer', GETDATE(), GETDATE()),
 ('Jane Smith', 'jane@example.com', 'hashed_pwd_2', '9876543210', '456 Elm St', 'admin', GETDATE(), GETDATE()),
@@ -60,7 +60,7 @@ GO
 --(5, 'customer', 'view_menu, place_order'),
 --(6, 'guest', 'view_only');
 --GO
-INSERT INTO Roles (id, role_name, user_id, permissions)
+INSERT INTO Roles ( role_name, user_id, permissions)
 VALUES
 ( 'admin', 2, 'all_access'),
 ('manager', 7, 'create_order, manage_inventory, manage_revenue'),
@@ -88,7 +88,7 @@ CREATE TABLE Memberships
     FOREIGN KEY (user_id) REFERENCES Users (id)
 );
 GO
-INSERT INTO Memberships (id, user_id, membership_type, start_date, expiry_date, rank, points, status)
+INSERT INTO Memberships ( user_id, membership_type, start_date, expiry_date, rank, points, status)
 VALUES
 ( 1, 'premium', '2025-01-01', '2025-12-31', 'Gold', 5000, 'active'),
 ( 3, 'basic', '2025-01-01', '2025-06-30', 'Silver', 2000, 'active'),
@@ -108,7 +108,7 @@ CREATE TABLE Categories
     FOREIGN KEY (parent_category_id) REFERENCES Categories (id)
 );
 GO
-INSERT INTO Categories (id, name, description, parent_category_id, created_at, updated_at)
+INSERT INTO Categories ( name, description, parent_category_id, created_at, updated_at)
 VALUES
 ( 'Coffee', 'Freshly brewed coffee', NULL, GETDATE(), GETDATE()),
 ('Tea', 'A variety of teas', NULL, GETDATE(), GETDATE()),
@@ -164,7 +164,7 @@ CREATE TABLE Products
     FOREIGN KEY (category_id) REFERENCES Categories (id)
 );
 GO
-INSERT INTO Products (id, name, description, price, category_id, image_url, size, topping_name, created_at, updated_at)
+INSERT INTO Products ( name, description, price, category_id, image_url, size, topping_name, created_at, updated_at)
 VALUES
 ( 'Espresso', 'Rich and bold shot of coffee', 2.50, 1, 'https://example.com/espresso.jpg', 'Small', NULL, GETDATE(), GETDATE()),
 ( 'Latte', 'Smooth and creamy coffee', 3.50, 1, 'https://example.com/latte.jpg', 'Medium', 'Vanilla', GETDATE(), GETDATE()),
@@ -185,7 +185,7 @@ CREATE TABLE Inventory
     FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
-INSERT INTO Inventory (id, product_id, store_id, quantity, status)
+INSERT INTO Inventory ( product_id, store_id, quantity, status)
 VALUES
 ( 1, 1, 50, 'normal'),
 ( 2, 1, 30, 'low'),
@@ -237,7 +237,7 @@ CREATE TABLE Orders
 );
 GO
 
-INSERT INTO Orders (id, user_id, order_date, status, total_price, payment_method, shipping_address, created_at, updated_at)
+INSERT INTO Orders ( user_id, order_date, status, total_price, payment_method, shipping_address, created_at, updated_at)
 VALUES
 ( 1, GETDATE(), 'completed', 7.50, 'credit_card', '123 Brew St', GETDATE(), GETDATE()),
 ( 4, GETDATE(), 'pending', 5.00, 'cash', '321 Mocha Ct', GETDATE(), GETDATE()),
@@ -257,7 +257,7 @@ CREATE TABLE Order_Items
     FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
-INSERT INTO Order_Items (id, order_id, product_id, size, topping_name, quantity, price)
+INSERT INTO Order_Items (order_id, product_id, size, topping_name, quantity, price)
 VALUES
 ( 1, 1, 'Small', NULL, 2, 5.00),
 ( 1, 5, NULL, NULL, 1, 2.50),
@@ -307,7 +307,7 @@ CREATE TABLE Promotions
     updated_at  DATETIME DEFAULT (CURRENT_TIMESTAMP)
 );
 GO
-INSERT INTO Promotions (id, name, description, start_date, end_date, created_at, updated_at)
+INSERT INTO Promotions ( name, description, start_date, end_date, created_at, updated_at)
 VALUES
 ( 'Winter Warmers', 'Enjoy hot coffee with discounts', '2025-01-01', '2025-01-31', GETDATE(), GETDATE()),
 ('Pastry Delights', 'Special pastry offers', '2025-02-01', '2025-02-28', GETDATE(), GETDATE());
@@ -326,7 +326,7 @@ CREATE TABLE Discounts
     FOREIGN KEY (promotion_id) REFERENCES Promotions (id)
 );
 GO
-INSERT INTO Discounts (id, code, description, discount_percentage, start_date, end_date, status, promotion_id)
+INSERT INTO Discounts ( code, description, discount_percentage, start_date, end_date, status, promotion_id)
 VALUES
 ( 'COFFEE10', '10% off on coffee', 10.00, '2025-01-01', '2025-01-31', 'active', NULL),
 ( 'PASTRY5', '5% off on pastries', 5.00, '2025-01-01', '2025-02-28', 'active', NULL);
@@ -343,7 +343,7 @@ CREATE table Store_Chain
     FOREIGN KEY (manager_id) REFERENCES Users (id)
 );
 go
-INSERT INTO Store_Chain (id, name, location, manager_id, open_time, closing_time)
+INSERT INTO Store_Chain ( name, location, manager_id, open_time, closing_time)
 VALUES
 ( 'Central Coffee', 'Downtown', 7, '2025-01-01 08:00:00', '2025-01-01 20:00:00'),
 ( 'Westside Brews', 'Westside', 11, '2025-01-01 08:00:00', '2025-01-01 20:00:00'),
