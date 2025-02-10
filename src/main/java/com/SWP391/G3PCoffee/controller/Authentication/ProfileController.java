@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class ProfileController {
@@ -32,4 +34,22 @@ public class ProfileController {
 
         return "redirect:/auth/login";
     }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute("user") User updatedUser, Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            User existingUser = userService.updateUser(userDetails, updatedUser);
+            if (existingUser != null) {
+                model.addAttribute("user", existingUser);
+                model.addAttribute("successMessage", "Profile updated successfully!");
+
+                return "profile";
+            }
+        }
+
+        return "redirect:/auth/login";
+    }
+
 }

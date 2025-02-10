@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -93,5 +94,19 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getRole()))
                 .orElse(null);
+    }
+
+    @Transactional
+    public User updateUser(UserDetails userDetails, User updatedUser) {
+        User existingUser = getCustomerByEmail(userDetails.getUsername());
+
+        if (existingUser != null) {
+            existingUser.setName(updatedUser.getName());
+            existingUser.setPhone(updatedUser.getPhone());
+            existingUser.setAddress(updatedUser.getAddress());
+            userRepository.save(existingUser);
+            return existingUser;
+        }
+        return null;
     }
 }

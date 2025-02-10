@@ -1,23 +1,27 @@
-use master
-DROP DATABASE G3P_Coffee
+use
+master
+DROP
+DATABASE G3P_Coffee
 
 DROP PROCEDURE IF EXISTS G3P_Coffee;
 GO
 
-CREATE DATABASE G3P_Coffee;
+CREATE
+DATABASE G3P_Coffee;
 GO
 USE G3P_Coffee;
-CREATE TABLE Users (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
-    address TEXT,
-    role VARCHAR(50),
+CREATE TABLE Users
+(
+    id         INT PRIMARY KEY AUTO_INCREMENT,
+    name       VARCHAR(255)        NOT NULL,
+    email      VARCHAR(255) UNIQUE NOT NULL,
+    password   VARCHAR(255)        NOT NULL,
+    phone      VARCHAR(20),
+    address    TEXT,
+    role       VARCHAR(50),
     created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
     updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-	CONSTRAINT chk_phone CHECK (PATINDEX('%[^0-9]%', phone) = 0)
+    CONSTRAINT chk_phone CHECK (PATINDEX('%[^0-9]%', phone) = 0)
 );
 GO
 INSERT INTO Users (id, name, email, password, phone, address, role, created_at, updated_at)
@@ -38,12 +42,13 @@ VALUES
 (14, 'Charlie Davis', 'charlie2@example.com', 'hashed_pwd_5', '4455667788', '654 Maple St', 'manager', GETDATE(), GETDATE()),
 (15, 'Diana Lewis', 'diana@example.com', 'hashed_pwd_6', '9988776655', '987 Cedar St', 'manager', GETDATE(), GETDATE());
 GO
-CREATE TABLE Roles (
-    id INT PRIMARY KEY,
-    role_name VARCHAR(50) NOT NULL,
+CREATE TABLE Roles
+(
+    id          INT PRIMARY KEY,
+    role_name   VARCHAR(50) NOT NULL,
     permissions TEXT,
-	user_id INT NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES Users(id)
+    user_id     INT         NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users (id)
 );
 GO
 --INSERT INTO Roles (id, role_name, permissions)
@@ -70,16 +75,17 @@ VALUES
 --(4, 'shipper', 104, 'receive_order, transport_order'),
 --(5, 'customer', 105, 'view_menu, place_order'),
 
-CREATE TABLE Memberships (
-    id INT PRIMARY KEY,
-    user_id INT NOT NULL,
+CREATE TABLE Memberships
+(
+    id              INT PRIMARY KEY,
+    user_id         INT NOT NULL,
     membership_type VARCHAR(50),
-    start_date DATE,
-    expiry_date DATE,
-    rank VARCHAR(20),
-    points INT,
-    status VARCHAR(20),
-    FOREIGN KEY (user_id) REFERENCES Users(id)
+    start_date      DATE,
+    expiry_date     DATE,
+    rank            VARCHAR(20),
+    points          INT,
+    status          VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES Users (id)
 );
 GO
 INSERT INTO Memberships (id, user_id, membership_type, start_date, expiry_date, rank, points, status)
@@ -91,14 +97,15 @@ VALUES
 (5, 8, 'basic', '2025-01-01', '2025-06-30', 'Silver', 3000, 'active');
 GO
 
-CREATE TABLE Categories (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
+CREATE TABLE Categories
+(
+    id                 INT PRIMARY KEY,
+    name               VARCHAR(255) NOT NULL,
+    description        TEXT,
     parent_category_id INT,
-    created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (parent_category_id) REFERENCES Categories(id)
+    created_at         DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at         DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (parent_category_id) REFERENCES Categories (id)
 );
 GO
 INSERT INTO Categories (id, name, description, parent_category_id, created_at, updated_at)
@@ -109,18 +116,50 @@ VALUES
 (4, 'Sandwiches', 'Savory and fresh sandwiches', NULL, GETDATE(), GETDATE());
 GO
 
-CREATE TABLE Products (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    category_id INT,
-    image_url VARCHAR(255),
-    size VARCHAR(50),
+CREATE TABLE Vouchers
+(
+    voucher_id   INT PRIMARY KEY AUTO_INCREMENT,
+    voucher_code VARCHAR(50)    NOT NULL UNIQUE,
+    description  TEXT,
+    voucher_type ENUM('fixed', 'percent') NOT NULL,
+    value        DECIMAL(10, 2) NOT NULL,
+    min_points   INT            NOT NULL,
+    expiry_date  DATE           NOT NULL,
+    quantity     INT            NOT NULL,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+GO
+INSERT INTO Vouchers (voucher_code, description, voucher_type, value, min_points, expiry_date, quantity)
+VALUES
+('DISCOUNT50K', 'Giảm 50,000 VND', 'fixed', 50000, 1000, '2025-12-31', 100),
+('DISCOUNT10%', 'Giảm 10% trên tổng đơn hàng', 'percent', 10, 1500, '2025-12-31', 50);
+GO
+
+CREATE TABLE User_Vouchers
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    user_id     INT NOT NULL,
+    voucher_id  INT NOT NULL,
+    redeemed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users (id) ON DELETE CASCADE,
+    FOREIGN KEY (voucher_id) REFERENCES Vouchers (voucher_id) ON DELETE CASCADE,
+    UNIQUE (user_id, voucher_id) -- Đảm bảo mỗi user chỉ đổi 1 lần
+);
+GO
+
+CREATE TABLE Products
+(
+    id           INT PRIMARY KEY,
+    name         VARCHAR(255)   NOT NULL,
+    description  TEXT,
+    price        DECIMAL(10, 2) NOT NULL,
+    category_id  INT,
+    image_url    VARCHAR(255),
+    size         VARCHAR(50),
     topping_name VARCHAR(255),
-    created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (category_id) REFERENCES Categories(id)
+    created_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (category_id) REFERENCES Categories (id)
 );
 GO
 INSERT INTO Products (id, name, description, price, category_id, image_url, size, topping_name, created_at, updated_at)
@@ -134,13 +173,14 @@ GO
 
 
 
-CREATE TABLE Inventory (
-    id INT PRIMARY KEY,
+CREATE TABLE Inventory
+(
+    id         INT PRIMARY KEY,
     product_id INT NOT NULL,
-    store_id INT,
-    quantity INT NOT NULL,
-    status VARCHAR(50),
-    FOREIGN KEY (product_id) REFERENCES Products(id)
+    store_id   INT,
+    quantity   INT NOT NULL,
+    status     VARCHAR(50),
+    FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
 INSERT INTO Inventory (id, product_id, store_id, quantity, status)
@@ -180,17 +220,18 @@ GO
 --GO
 
 
-CREATE TABLE Orders (
-    id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    order_date DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    status VARCHAR(50),
-    total_price DECIMAL(10, 2),
-    payment_method VARCHAR(50),
+CREATE TABLE Orders
+(
+    id               INT PRIMARY KEY,
+    user_id          INT NOT NULL,
+    order_date       DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    status           VARCHAR(50),
+    total_price      DECIMAL(10, 2),
+    payment_method   VARCHAR(50),
     shipping_address TEXT,
-    created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (user_id) REFERENCES Users(id)
+    created_at       DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at       DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (user_id) REFERENCES Users (id)
 );
 GO
 
@@ -201,16 +242,17 @@ VALUES
 (3, 5, GETDATE(), 'completed', 10.00, 'credit_card', '654 Cappuccino Rd', GETDATE(), GETDATE());
 GO
 
-CREATE TABLE Order_Items (
-    id INT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    size VARCHAR(50),
+CREATE TABLE Order_Items
+(
+    id           INT PRIMARY KEY,
+    order_id     INT NOT NULL,
+    product_id   INT NOT NULL,
+    size         VARCHAR(50),
     topping_name VARCHAR(255),
-    quantity INT NOT NULL,
-    price DECIMAL(10, 2),
-    FOREIGN KEY (order_id) REFERENCES Orders(id),
-    FOREIGN KEY (product_id) REFERENCES Products(id)
+    quantity     INT NOT NULL,
+    price        DECIMAL(10, 2),
+    FOREIGN KEY (order_id) REFERENCES Orders (id),
+    FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
 INSERT INTO Order_Items (id, order_id, product_id, size, topping_name, quantity, price)
@@ -221,43 +263,46 @@ VALUES
 (4, 2, 4, 'Large', NULL, 1, 2.00);
 GO
 
-CREATE TABLE Cart (
-    id INT PRIMARY KEY,
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL,
-    size VARCHAR(50),
+CREATE TABLE Cart
+(
+    id           INT PRIMARY KEY,
+    user_id      INT NOT NULL,
+    product_id   INT NOT NULL,
+    quantity     INT NOT NULL,
+    size         VARCHAR(50),
     topping_name VARCHAR(255),
-    created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (user_id) REFERENCES Users(id),
-    FOREIGN KEY (product_id) REFERENCES Products(id)
+    created_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (user_id) REFERENCES Users (id),
+    FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
 
-CREATE TABLE Payment (
-    id INT PRIMARY KEY,
-    order_id INT NOT NULL,
-    member_id INT NOT NULL,
-    money DECIMAL(10, 2),
-    note TEXT,
+CREATE TABLE Payment
+(
+    id                INT PRIMARY KEY,
+    order_id          INT NOT NULL,
+    member_id         INT NOT NULL,
+    money             DECIMAL(10, 2),
+    note              TEXT,
     vnp_response_code VARCHAR(50),
-    vnp_code VARCHAR(50),
-    bank_code VARCHAR(50),
-    time DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (order_id) REFERENCES Orders(id),
-    FOREIGN KEY (member_id) REFERENCES Users(id)
+    vnp_code          VARCHAR(50),
+    bank_code         VARCHAR(50),
+    time              DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (order_id) REFERENCES Orders (id),
+    FOREIGN KEY (member_id) REFERENCES Users (id)
 );
 GO
 DROP TABLE if exists Promotions;
-CREATE TABLE Promotions (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+CREATE TABLE Promotions
+(
+    id          INT PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
     description TEXT,
-    start_date DATE,
-    end_date DATE,
-    created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP)
+    start_date  DATE,
+    end_date    DATE,
+    created_at  DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at  DATETIME DEFAULT (CURRENT_TIMESTAMP)
 );
 GO
 INSERT INTO Promotions (id, name, description, start_date, end_date, created_at, updated_at)
@@ -266,16 +311,17 @@ VALUES
 (2, 'Pastry Delights', 'Special pastry offers', '2025-02-01', '2025-02-28', GETDATE(), GETDATE());
 GO
 DROP TABLE if exists Discounts;
-CREATE TABLE Discounts (
-    id INT PRIMARY KEY,
-    code VARCHAR(50) NOT NULL,
-    description TEXT,
+CREATE TABLE Discounts
+(
+    id                  INT PRIMARY KEY,
+    code                VARCHAR(50)   NOT NULL,
+    description         TEXT,
     discount_percentage DECIMAL(5, 2) NOT NULL CHECK (discount_percentage BETWEEN 0.00 AND 60.00),
-    start_date DATE,
-    end_date DATE,
-    status VARCHAR(20),
-    promotion_id INT,
-    FOREIGN KEY (promotion_id) REFERENCES Promotions(id)
+    start_date          DATE,
+    end_date            DATE,
+    status              VARCHAR(20),
+    promotion_id        INT,
+    FOREIGN KEY (promotion_id) REFERENCES Promotions (id)
 );
 GO
 INSERT INTO Discounts (id, code, description, discount_percentage, start_date, end_date, status, promotion_id)
@@ -284,14 +330,15 @@ VALUES
 (2, 'PASTRY5', '5% off on pastries', 5.00, '2025-01-01', '2025-02-28', 'active', NULL);
 GO
 
-CREATE table Store_Chain(
-	id INT PRIMARY KEY,
-	name varchar(50) NOT NULL,
-	location varchar(50) NOT NULL,
-	manager_id INT NOT NULL,
-	open_time DATETIME,
-	closing_time DATETIME,
-	FOREIGN KEY (manager_id) REFERENCES Users(id)
+CREATE table Store_Chain
+(
+    id           INT PRIMARY KEY,
+    name         varchar(50) NOT NULL,
+    location     varchar(50) NOT NULL,
+    manager_id   INT         NOT NULL,
+    open_time    DATETIME,
+    closing_time DATETIME,
+    FOREIGN KEY (manager_id) REFERENCES Users (id)
 );
 go
 INSERT INTO Store_Chain (id, name, location, manager_id, open_time, closing_time)
