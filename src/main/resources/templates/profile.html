@@ -17,10 +17,10 @@
       </i>
     </div>
     <p class="text-sm text-gray-500">
-      ID: 210804
+      ID: <span th:text="${user.id}"></span>
     </p>
     <h2 class="text-2xl font-semibold mb-2">
-      Vũ
+      <span th:text="${user.name}"></span>
     </h2>
     <p class="text-orange-500 font-semibold mb-2">
       Diamond VIP
@@ -32,20 +32,20 @@
       21/09/2004
     </p>
     <p class="text-sm text-gray-500 mb-2">
-      Address: Ha Noi
+      Address: <span th:text="${user.address}"></span>
     </p>
     <div class="flex items-center justify-center mb-2">
       <i class="fas fa-phone-alt text-black mr-2">
       </i>
       <p class="text-sm text-black">
-        Tel: 012348386
+        Tel: <span th:text="${user.phone}"></span>
       </p>
     </div>
     <div class="flex items-center justify-center">
       <i class="fas fa-envelope text-black mr-2">
       </i>
       <p class="text-sm text-black">
-        Email: user@gmail.com
+        Email: <span th:text="${user.email}"></span>
       </p>
     </div>
   </div>

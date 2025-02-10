@@ -53,7 +53,7 @@ public class UserService {
 
     public User getCustomerById(Long id) {
         return userRepository.findById(id)
-                .filter(user -> "customer".equalsIgnoreCase(user.getName()))
+                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getName()))
                 .orElse(null);
     }
 
@@ -87,5 +87,11 @@ public class UserService {
         response.put("message", "Login successful");
 
         return response;
+    }
+
+    public User getCustomerByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getName()))
+                .orElse(null);
     }
 }
