@@ -28,6 +28,38 @@
     <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}"
           media="screen">
+
+    <style>
+        .profile-item {
+    position: relative;
+}
+
+.logout-menu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Hiển thị bên dưới icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.profile-item:hover .logout-menu {
+    display: block;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+    </style>
 </head>
 <body>
 <!--header section start -->
@@ -56,10 +88,13 @@
                     <li class="nav-item">
                         <a class="nav-link">Need help?</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item profile-item">
                         <a class="nav-link" th:href="@{/profile}">
                             <img src="images/credit-card_9654102.png" alt="User" class="icon">
                         </a>
+                        <div class="logout-menu" th:if="${jwtToken != null}">
+                            <a th:href="@{/auth/logout}" class="logout-link">Đăng xuất</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">

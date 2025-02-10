@@ -19,21 +19,31 @@
 </head>
 
 <body class="bg-white">
-<header class="bg-orange-500 text-white p-4 flex justify-center items-center">
-  <nav class="space-x-4 text-black">
-    <a class="hover:underline" href="profile.html">
-      Profile
-    </a>
-    <a class="hover:underline" href="point.html">
-      Point
-    </a>
-    <a class="hover:underline" href="voucher.html">
-      Voucher
-    </a>
-    <a class="hover:underline" href="#">
-      My Voucher
-    </a>
-  </nav>
+<header class="bg-[#f66d37] w-full py-3 shadow-lg">
+    <div class="container mx-auto w-full">
+        <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium">
+                    Profile
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium">
+                    Point
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/voucher}" class="text-black font-medium">
+                    Voucher
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/my_voucher}" class="text-white font-medium">
+                    My Voucher
+                </a>
+            </li>
+        </ul>
+    </div>
 </header>
 <main class="p-4 md:p-8 container mx-auto">
   <h1 class="text-4xl text-orange-500  font-bold mb-4">
