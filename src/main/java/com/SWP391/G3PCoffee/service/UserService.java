@@ -91,7 +91,7 @@ public class UserService {
 
     public User getCustomerByEmail(String email) {
         return userRepository.findByEmail(email)
-                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getName()))
+                .filter(user -> Role.CUSTOMER.getValue().equalsIgnoreCase(user.getRole()))
                 .orElse(null);
     }
 }

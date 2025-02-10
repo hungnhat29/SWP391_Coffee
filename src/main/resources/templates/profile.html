@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <title>Profile</title>
   <script src="https://cdn.tailwindcss.com">
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -13,7 +14,7 @@
   <div class="bg-pink-50 p-6 rounded-lg shadow-md text-center">
     <div class="relative">
       <img alt="Profile picture of a person" class="w-24 h-24 rounded-full mx-auto mb-4" height="100" src="https://storage.googleapis.com/a1aa/image/XQ-KXbpdI25b6mn--SeMtAQJANdK7semR9safjeTjss.jpg" width="100"/>
-      <i class="fas fa-pen text-orange-500 absolute top-0 right-0">
+      <i id="editIcon" class="fas fa-pen text-orange-500 absolute top-0 right-0">
       </i>
     </div>
     <p class="text-sm text-gray-500">
@@ -72,5 +73,66 @@
     </ul>
   </div>
 </div>
+<div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+  <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="mt-3 text-center">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Profile</h3>
+      <div class="mt-2 px-7 py-3">
+        <input id="editName" type="text" class="mb-3 px-3 py-2 border rounded-lg w-full" placeholder="Name">
+        <input id="editEmail" type="email" class="mb-3 px-3 py-2 border rounded-lg w-full" placeholder="Email">
+        <input id="editPhone" type="text" class="mb-3 px-3 py-2 border rounded-lg w-full" placeholder="Phone">
+        <input id="editAddress" type="text" class="mb-3 px-3 py-2 border rounded-lg w-full" placeholder="Address">
+      </div>
+      <div class="items-center px-4 py-3">
+        <button id="saveBtn" class="px-4 py-2 bg-orange-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300">
+          Save
+        </button>
+        <button id="closeBtn" class="ml-3 px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Lấy các phần tử DOM cần thiết
+  const editIcon = document.getElementById('editIcon');
+  const editModal = document.getElementById('editModal');
+  const closeBtn = document.getElementById('closeBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const userName = document.getElementById('userName');
+  const userEmail = document.getElementById('userEmail');
+  const userPhone = document.getElementById('userPhone');
+  const userAddress = document.getElementById('userAddress');
+  const editName = document.getElementById('editName');
+  const editEmail = document.getElementById('editEmail');
+  const editPhone = document.getElementById('editPhone');
+  const editAddress = document.getElementById('editAddress');
+
+  // Hiển thị modal khi nhấp vào biểu tượng chỉnh sửa
+  editIcon.addEventListener('click', () => {
+    editModal.classList.remove('hidden');
+    // Điền thông tin hiện tại vào các trường input
+    editName.value = userName.innerText;
+    editEmail.value = userEmail.innerText.replace('Email: ', '');
+    editPhone.value = userPhone.innerText.replace('Tel: ', '');
+    editAddress.value = userAddress.innerText.replace('Address: ', '');
+  });
+
+  // Ẩn modal khi nhấp vào nút đóng
+  closeBtn.addEventListener('click', () => {
+    editModal.classList.add('hidden');
+  });
+
+  // Lưu thông tin và ẩn modal khi nhấp vào nút lưu
+  saveBtn.addEventListener('click', () => {
+    userName.innerText = editName.value;
+    userEmail.innerText = `Email: ${editEmail.value}`;
+    userPhone.innerText = `Tel: ${editPhone.value}`;
+    userAddress.innerText = `Address: ${editAddress.value}`;
+    editModal.classList.add('hidden');
+  });
+</script>
 </body>
 </html>
