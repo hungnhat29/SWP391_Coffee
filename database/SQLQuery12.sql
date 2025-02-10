@@ -142,6 +142,7 @@ CREATE TABLE User_Vouchers
     user_id     INT NOT NULL,
     voucher_id  INT NOT NULL,
     redeemed_at DATETIME  DEFAULT GETDATE(),
+    claimed_at  DATETIME  DEFAULT GETDATE(),
     FOREIGN KEY (user_id) REFERENCES Users (id) ON DELETE CASCADE,
     FOREIGN KEY (voucher_id) REFERENCES Vouchers (voucher_id) ON DELETE CASCADE,
     UNIQUE (user_id, voucher_id) -- Đảm bảo mỗi user chỉ đổi 1 lần

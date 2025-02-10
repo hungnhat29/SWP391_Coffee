@@ -84,7 +84,6 @@
                 data: JSON.stringify(loginData),
                 success: function (response) {
                     let role = response.role;
-                    console.log("test", role);
                     if (role.toString().includes("admin")) {
                         window.location.href = "/";
                     } else if (role.toString().includes("customer")) {

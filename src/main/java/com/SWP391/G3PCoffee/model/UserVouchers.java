@@ -27,8 +27,11 @@ public class UserVouchers {
     @Column(name = "redeemed_at", updatable = false)
     private LocalDateTime redeemedAt;
 
+    @Column(name = "claimed_at", updatable = false)
+    private LocalDateTime claimedAt;
+
     @PrePersist
-    protected void onRedeem() {
-        this.redeemedAt = LocalDateTime.now();
+    protected void onClaim() {
+        this.claimedAt = LocalDateTime.now();
     }
 }

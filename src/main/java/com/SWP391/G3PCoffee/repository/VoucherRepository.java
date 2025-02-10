@@ -15,10 +15,10 @@ import java.util.List;
 public interface VoucherRepository extends JpaRepository<Vouchers, Long> {
     Vouchers findByVoucherCode(String voucherCode);
 
-    @Query(value = "SELECT v from Vouchers v " +
-            "join UserVouchers uv on v.id = uv.voucher.id " +
-            "where uv.user.id = ?1")
-    List<Vouchers> getListVoucherByUserId(Long userId);
+    @Query("SELECT v FROM Vouchers v " +
+            "JOIN UserVouchers uv ON v.id = uv.voucher.id " +
+            "WHERE uv.user.id = ?1")
+    Page<Vouchers> getListVoucherByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT v FROM Vouchers v WHERE v.expiryDate > :currentDate")
     Page<Vouchers> getPageVoucher(@Param("currentDate") LocalDate currentDate, Pageable pageable);

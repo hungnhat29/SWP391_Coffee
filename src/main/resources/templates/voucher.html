@@ -74,7 +74,7 @@
   <div class="container mx-auto w-full">
     <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
       <li>
-        <a href="#" class="text-black font-medium">
+        <a th:href="@{/profile}" class="text-black font-medium">
           Profile
         </a>
       </li>
@@ -89,7 +89,7 @@
         </a>
       </li>
       <li>
-        <a href="#" class="text-black font-medium">
+        <a th:href="@{/my-voucher}" class="text-black font-medium">
           My Voucher
         </a>
       </li>
@@ -120,7 +120,13 @@
             </div>
           </div>
           <div class="flex justify-end gap-3 flex-row-reverse sm:block space-y-2 items-center">
-            <button class="bg-orange-500 border border-orange-500 hover:bg-white hover:text-orange-500 transition duration-300 ease-in-out text-white px-4 py-1 rounded-lg h-[fit-content]">Claim</button>
+            <button class="claim-btn bg-orange-500 border border-orange-500 hover:bg-white hover:text-orange-500 transition duration-300 ease-in-out text-white px-4 py-1 rounded-lg h-[fit-content]"
+                    th:data-voucher-id="${voucher.id}"
+                    th:if="${!listIdUse.contains(voucher.id)}"
+                    onclick="claimVoucher(this)">
+              Claim
+            </button>
+            <span th:if="${listIdUse.contains(voucher.id)}" class="text-green-500 font-bold">Claimed</span>
             <div class="text-sm">
               <p class="text-yellow-500" th:text="${voucher.minPoints} + ' Point'"></p>
               <p class="text-red-500" th:text="${voucher.quantity} + ' Voucher Left'"></p>
@@ -196,6 +202,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       var swiper = new Swiper(".mySwiper", {
@@ -224,6 +231,30 @@
       // Force the swiper to center on load
       swiper.slideTo(2, 0);
   });
+
+  $(document).ready(function () {
+    $(".claim-btn").click(function () {
+      let button = $(this);
+      let voucherId = button.data("voucher-id");
+
+      $.ajax({
+        type: "POST",
+        url: "/claim-voucher", 
+        contentType: "application/json",
+        data: JSON.stringify({ voucherId: voucherId }),
+        success: function () {
+          button.removeClass("bg-orange-500 hover:bg-white hover:text-orange-500")
+                  .addClass("bg-white text-gray-500 cursor-not-allowed border-gray-300")
+                  .text("Claimed")
+                  .prop("disabled", true);
+        },
+        error: function () {
+          alert("Failed to claim voucher. Please try again!");
+        }
+      });
+    });
+  });
+
 </script>
 </body>
 
