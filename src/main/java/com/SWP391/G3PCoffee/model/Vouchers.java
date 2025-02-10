@@ -1,5 +1,7 @@
 package com.SWP391.G3PCoffee.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +34,9 @@ public class Vouchers {
 
     @Column(name = "min_points", nullable = false)
     private Integer minPoints;
+    
+    @Column(name = "min_spending", nullable = false)
+    private Integer minSpending;
 
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
@@ -48,6 +53,16 @@ public class Vouchers {
     }
 
     public enum VoucherType {
-        FIXED, PERCENT
-    }
+        FIXED, PERCENT;
+
+        @JsonCreator
+        public static VoucherType fromString(String value) {
+            return VoucherType.valueOf(value.toUpperCase());
+        }
+
+        @JsonValue
+        public String toJson() {
+            return this.name();
+        }
+        }
 }

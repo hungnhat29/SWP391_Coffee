@@ -4,8 +4,12 @@ import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.model.Vouchers;
 import com.SWP391.G3PCoffee.repository.VoucherRepository;
 import com.SWP391.G3PCoffee.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,5 +29,10 @@ public class VoucherService {
         if (user == null) return listVoucherOfUser;
         listVoucherOfUser = voucherRepository.getListVoucherByUserId(user.getId());
         return listVoucherOfUser;
+    }
+
+    public Page<Vouchers> getPagedVouchers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return voucherRepository.getPageVoucher(LocalDate.now(), pageable);
     }
 }

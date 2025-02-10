@@ -126,6 +126,7 @@ CREATE TABLE Vouchers
     min_points   INT            NOT NULL,
     expiry_date  DATE           NOT NULL,
     quantity     INT            NOT NULL,
+    min_spending  DECIMAL(10,2) NOT NULL DEFAULT 0,
     created_at   DATETIME  DEFAULT GETDATE()
 );
 GO

@@ -17,6 +17,8 @@ import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
 import com.SWP391.G3PCoffee.service.member_ship.MembershipService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +41,7 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final MembershipService membershipService;
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
                        UserDetailsService userDetailsService, AuthenticationManager authenticationManager, MembershipService membershipService) {
@@ -82,18 +86,27 @@ public class UserService {
         return jwtUtils.generateToken(userDetails);
     }
 
-    public Map<String, Object> loginByEmailAndPassword(UserLoginDto loginDto) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(), loginDto.getPassword()));
+    public  Map<String, String> loginByEmailAndPassword(UserLoginDto loginDto) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.getEmail(), loginDto.getPassword()));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
-        String token = jwtUtils.generateToken(userDetails);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
+            String token = jwtUtils.generateToken(userDetails);
+            
+            String role = userDetails.getAuthorities().stream()
+                    .findFirst() 
+                    .map(GrantedAuthority::getAuthority)
+                    .orElse(Role.CUSTOMER.getValue()); 
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("message", "Login successful");
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", role);
 
-        return response;
+            return response;
+        } catch (Exception e) {
+            throw new RuntimeException("Sai email hoặc mật khẩu!");
+        }
     }
 
     public User getCustomerByEmail(String email) {

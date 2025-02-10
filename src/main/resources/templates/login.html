@@ -82,8 +82,16 @@
                 url: "/auth/login",
                 contentType: "application/json",
                 data: JSON.stringify(loginData),
-                success: function () {
-                    window.location.href = "/home";
+                success: function (response) {
+                    let role = response.role;
+                    console.log("test", role);
+                    if (role.toString().includes("admin")) {
+                        window.location.href = "/";
+                    } else if (role.toString().includes("customer")) {
+                        window.location.href = "/home";
+                    } else {
+                        window.location.href = "/home";
+                    }
                 },
                 error: function (xhr) {
                     let errorMessage = xhr.responseJSON?.message || "Login failed!";

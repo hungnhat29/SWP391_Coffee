@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Voucher Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    html,
+    body {
+        position: relative;
+        height: 100%;
+    }
+
+    body {
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .swiper {
+        width: 100%;
+
+        padding: 150px 0;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        transform: scale(0.75) translateY(0);
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Previous slides */
+    .swiper-slide-prev {
+        transform: scale(0.75) translateY(-100%);
+    }
+
+    /* Active slide */
+    .swiper-slide-active {
+        transform: scale(1) translateY(0);
+        z-index: 2;
+    }
+
+    /* Next slide */
+    .swiper-slide-next {
+        transform: scale(0.75) translateY(100%);
+    }
+    .swiper-pagination {
+        /* right: -1rem !important; */
+    }
+    .swiper-pagination  .swiper-pagination-bullet-active {
+        background-color: black;
+    }
+  </style>
+</head>
+
+<body class="bg-white text-gray-800">
+<header class="bg-[#f66d37] w-full py-3 shadow-lg">
+  <div class="container mx-auto w-full">
+    <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
+      <li>
+        <a href="#" class="text-black font-medium">
+          Profile
+        </a>
+      </li>
+      <li>
+        <a href="#" class="text-black font-medium">
+          Point
+        </a>
+      </li>
+      <li>
+        <a href="#" class="text-black font-medium">
+          Voucher
+        </a>
+      </li>
+      <li>
+        <a href="#" class="text-black font-medium">
+          My Voucher
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+<main class="container mx-auto p-4">
+  <h1 class="text-4xl text-orange-500 mb-8">Voucher</h1>
+  <div class="flex flex-col lg:flex-row">
+    <!-- Left Side -->
+    <div class="lg:w-1/2">
+      <div class="space-y-4 py-5 lg:p-8">
+        <!-- Duyệt qua danh sách vouchers -->
+        <div th:each="voucher : ${vouchersPage.content}"
+             class="flex flex-col lg:flex-row sm:items-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
+          <div class="flex bg-[#f66d37] p-4 w-full h-full sm:w-44 justify-center item-center rounded-lg">
+            <div class="bg-white rounded-full w-20 h-20">
+              <img alt="Shipping icon" class=" rounded-full p-1"
+                   src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+              />
+            </div>
+          </div>
+          <div class="flex-1 md:space-y-3">
+            <h2 class="text-lg font-bold" th:text="${voucher.voucherCode}">Voucher Title</h2>
+            <div>
+              <p>Min. Spend <span th:text="${voucher.minSpending}"></span> VND</p>
+              <p>Valid From <span th:text="${voucher.expiryDate}"></span></p>
+            </div>
+          </div>
+          <div class="flex justify-end gap-3 flex-row-reverse sm:block space-y-2 items-center">
+            <button class="bg-orange-500 border border-orange-500 hover:bg-white hover:text-orange-500 transition duration-300 ease-in-out text-white px-4 py-1 rounded-lg h-[fit-content]">Claim</button>
+            <div class="text-sm">
+              <p class="text-yellow-500" th:text="${voucher.minPoints} + ' Point'"></p>
+              <p class="text-red-500" th:text="${voucher.quantity} + ' Voucher Left'"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination flex justify-center space-x-2 mt-4">
+          <a th:href="@{/vouchers(page=0, size=${vouchersPage.size})}"
+             class="px-3 py-1 border rounded"
+             th:if="${!vouchersPage.isFirst()}">First</a>
+          
+          <a th:href="@{/vouchers(page=${vouchersPage.number - 1}, size=${vouchersPage.size})}"
+             class="px-3 py-1 border rounded"
+             th:if="${vouchersPage.hasPrevious()}">Prev</a>
+          
+          <span class="px-3 py-1 border rounded bg-gray-300"
+                th:text="${vouchersPage.number + 1}"></span>
+          
+          <a th:href="@{/vouchers(page=${vouchersPage.number + 1}, size=${vouchersPage.size})}"
+             class="px-3 py-1 border rounded"
+             th:if="${vouchersPage.hasNext()}">Next</a>
+          
+          <a th:href="@{/vouchers(page=${vouchersPage.totalPages - 1}, size=${vouchersPage.size})}"
+             class="px-3 py-1 border rounded"
+             th:if="${!vouchersPage.isLast()}">Last</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="lg:w-1/2 mt-4">
+      <div class="swiper mySwiper h-[70vh]">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 1" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/d2xF8LTE-2dB8u60SXy0Lo1s4lzfAe5CnLk-G5v-OXU.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 2" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ue-Z-_JEq4bQKfgzX30CUyC0BDk63pn5IAC9zebNi20.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 2" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ue-Z-_JEq4bQKfgzX30CUyC0BDk63pn5IAC9zebNi20.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 2" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ue-Z-_JEq4bQKfgzX30CUyC0BDk63pn5IAC9zebNi20.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 2" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ue-Z-_JEq4bQKfgzX30CUyC0BDk63pn5IAC9zebNi20.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 2" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ue-Z-_JEq4bQKfgzX30CUyC0BDk63pn5IAC9zebNi20.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 3" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/ZZBdjkHER6rMPr4iPTtXReHadOetF17iKOSnTGeXgPs.jpg"/>
+          </div>
+          <div class="swiper-slide sm:px-6 shadow-none">
+            <img alt="Gift Voucher 4" class="w-full"
+                 src="https://storage.googleapis.com/a1aa/image/31JqNphlm0ftnNWZO945N12-M40izlO7SbAppmY5f8A.jpg"/>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var swiper = new Swiper(".mySwiper", {
+          direction: "vertical",
+          slidesPerView: 1,
+          spaceBetween: -80,
+          centeredSlides: true,
+          initialSlide: 1,  // Start from third slide
+          loop: true,
+          mousewheel: true,
+          speed: 800,
+          effect: "coverflow",
+          coverflowEffect: {
+              rotate: 0,
+              stretch: 0,
+              depth: 150,
+              modifier: 1,
+              slideShadows: false,
+          },
+          pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+          },
+      });
+
+      // Force the swiper to center on load
+      swiper.slideTo(2, 0);
+  });
+</script>
+</body>
+
+</html>

@@ -1,7 +1,9 @@
 package com.SWP391.G3PCoffee.controller.Authentication;
 
+import com.SWP391.G3PCoffee.model.Membership;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.service.UserService;
+import com.SWP391.G3PCoffee.service.member_ship.MembershipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ProfileController {
     private static final Logger log = LoggerFactory.getLogger(ProfileController.class);
     private final UserService userService;
+    private final MembershipService membershipService;
 
-    public ProfileController(UserService userService) {
+    public ProfileController(UserService userService, MembershipService membershipService) {
         this.userService = userService;
+        this.membershipService = membershipService;
     }
 
     @GetMapping("/profile")
@@ -32,7 +36,10 @@ public class ProfileController {
             return "redirect:/auth/login";
         }
 
+        Membership membership = membershipService.getMemberShipByEmail(user.getId());
+
         model.addAttribute("user", user);
+        model.addAttribute("membership", membership);
         return "profile";
 
     }
@@ -45,6 +52,8 @@ public class ProfileController {
         User existingUser = userService.updateUser(userDetails, updatedUser);
         if (existingUser != null) {
             model.addAttribute("user", existingUser);
+            Membership membership = membershipService.getMemberShipByEmail(existingUser.getId());
+            model.addAttribute("membership", membership);
             model.addAttribute("successMessage", "Profile updated successfully!");
 
             return "profile";

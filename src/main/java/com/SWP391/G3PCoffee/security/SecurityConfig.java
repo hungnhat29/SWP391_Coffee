@@ -57,10 +57,10 @@ public class SecurityConfig {
                         .requestMatchers("/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/auth/login") 
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll()
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/auth/login");
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
