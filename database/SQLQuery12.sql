@@ -246,7 +246,7 @@ GO
 
 CREATE TABLE Order_Items
 (
-    id           INT PRIMARY KEY,
+    id           INT PRIMARY KEY IDENTITY(1,1),
     order_id     INT NOT NULL,
     product_id   INT NOT NULL,
     size         VARCHAR(50),
