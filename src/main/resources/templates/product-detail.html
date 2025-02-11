@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+</head>
+<body>
+
+<!--header section start -->
+<div class="header_section">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="logo"><a href="index.html"><img th:src="@{/images/logo_white.png}" alt="Logo"></a></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shop">Stores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Need help?</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <img th:src="@{/images/credit-card_9654102.png}" alt="User" class="icon">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <img th:src="@{/images/add-cart_6337238.png}" alt="Cart" class="icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+<!--header section end -->
+
+<!--product details start-->
+<div class="container product-detail-container">
+    <div class="row align-items-center">
+        <!-- Hình ảnh sản phẩm -->
+        <div class="col-md-6 text-center">
+            <div class="product-image-container">
+                <img th:src="${product.imageUrl}" class="img-fluid rounded shadow-sm" alt="Product Image">
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-md-6">
+            <h2 th:text="${product.name}" class="mb-3 fw-bold text-brown"></h2>
+            <p class="text-muted" th:text="${product.description}"></p>
+
+            <p class="fw-bold text-danger">
+                Giá: <span th:text="${product.price} + ' VND'"></span>
+            </p>
+
+            <p><strong>Size:</strong> <span th:text="${product.size}"></span></p>
+            <p><strong>Topping:</strong> <span th:text="${product.toppingName}"></span></p>
+
+            <div class="mt-4">
+                <a href="/shop" class="btn btn-secondary rounded-pill px-4">Quay lại</a>
+                <button class="btn btn-primary rounded-pill px-4">Thêm vào giỏ hàng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS chỉnh sửa -->
+<style>
+    /* Tăng khoảng cách từ header xuống */
+    .product-detail-container {
+        /*margin-top: 100px; !* Tăng khoảng cách *!*/
+    }
+
+    .text-brown {
+        color: #6F4E37;
+    }
+
+    .product-image-container {
+        width: 100%;
+        max-width: 400px;
+        height: 400px; /* Giữ khung ảnh cố định */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: auto;
+    }
+
+    .product-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+</style>
+
+<!--product detail end-->
+<!-- contact section start -->
+<div class="contact_section layout_padding">
+    <div class="container">
+        <h1 class="contact_text">Contact Us</h1>
+    </div>
+</div>
+<div class="contact_section_2 layout_padding">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 padding_0">
+                <div class="mail_section">
+                    <div class="email_text">
+                        <div class="form-group">
+                            <input type="text" class="email-bt" placeholder="Name" name="Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="email-bt" placeholder="Email" name="Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="email-bt" placeholder="Phone Numbar" name="Email">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="massage-bt" placeholder="Massage" rows="5" id="comment" name="Massage"></textarea>
+                        </div>
+                        <div class="send_btn">
+                            <div type="text" class="main_bt"><a href="#">SEND</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 padding_0">
+                <div class="map-responsive">
+                    <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Eiffel+Tower+Paris+France" width="600" height="508" frameborder="0" style="border:0; width: 100%;" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- contact section end -->
+<!-- footer section start -->
+<div class="footer_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <h3 class="useful_text">About</h3>
+                <p class="footer_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation u</p>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h3 class="useful_text">Menu</h3>
+                <div class="footer_menu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="useful_text">Useful Link</h1>
+                <p class="dummy_text">Adipiscing Elit, sed do Eiusmod Tempor incididunt </p>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <h1 class="useful_text">Contact Us</h1>
+                <div class="location_text">
+                    <ul>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left_10">Address : Loram Ipusm</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left_10">Call : +01 1234567890</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left_10">Email : demo@gmail.com</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- footer section end -->
+<!-- copyright section start -->
+<div class="copyright_section">
+    <div class="container">
+        <p class="copyright_text">2020 All Rights Reserved. Design by <a href="https://html.design">Free html  Templates</a></p>
+    </div>
+</div>
+<!-- copyright section end -->
+<!-- Javascript files-->
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery-3.0.0.min.js"></script>
+<script src="js/plugin.js"></script>
+<!-- sidebar -->
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="js/custom.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>

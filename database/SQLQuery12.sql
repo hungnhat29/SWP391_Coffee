@@ -98,16 +98,23 @@ CREATE TABLE Categories (
     parent_category_id INT,
     created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
     updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
+	
     FOREIGN KEY (parent_category_id) REFERENCES Categories(id)
 );
 GO
+select * from Categories
+
+
 INSERT INTO Categories (id, name, description, parent_category_id, created_at, updated_at)
 VALUES
 (1, 'Coffee', 'Freshly brewed coffee', NULL, GETDATE(), GETDATE()),
 (2, 'Tea', 'A variety of teas', NULL, GETDATE(), GETDATE()),
 (3, 'Pastries', 'Baked goods and desserts', NULL, GETDATE(), GETDATE()),
 (4, 'Sandwiches', 'Savory and fresh sandwiches', NULL, GETDATE(), GETDATE());
+
+
 GO
+
 
 CREATE TABLE Products (
     id INT PRIMARY KEY,
@@ -121,16 +128,30 @@ CREATE TABLE Products (
     created_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
     updated_at DATETIME DEFAULT (CURRENT_TIMESTAMP),
     FOREIGN KEY (category_id) REFERENCES Categories(id)
+
 );
 GO
 INSERT INTO Products (id, name, description, price, category_id, image_url, size, topping_name, created_at, updated_at)
 VALUES
 (1, 'Espresso', 'Rich and bold shot of coffee', 2.50, 1, 'https://example.com/espresso.jpg', 'Small', NULL, GETDATE(), GETDATE()),
-(2, 'Latte', 'Smooth and creamy coffee', 3.50, 1, 'https://example.com/latte.jpg', 'Medium', 'Vanilla', GETDATE(), GETDATE()),
+(2, 'Latte', 'Smooth and creamy coffee', 3.50, 1, '1nFbhy_RuyHpciUBD_RZt3vYA77JvUWQZ', 'Medium', 'Vanilla', GETDATE(), GETDATE()),
 (3, 'Cappuccino', 'Foamy and delicious', 3.00, 1, 'https://example.com/cappuccino.jpg', 'Medium', 'Caramel', GETDATE(), GETDATE()),
 (4, 'Green Tea', 'Refreshing green tea', 2.00, 2, 'https://example.com/greentea.jpg', 'Large', NULL, GETDATE(), GETDATE()),
 (5, 'Blueberry Muffin', 'Soft and sweet muffin', 1.50, 3, 'https://example.com/muffin.jpg', NULL, NULL, GETDATE(), GETDATE());
 GO
+
+UPDATE Products
+SET image_url = CASE 
+    WHEN id = 1 THEN 'https://i.imgur.com/Eg22Whm.jpeg'
+    WHEN id = 2 THEN 'https://i.imgur.com/2oDGXMw.jpeg'
+    WHEN id = 3 THEN 'https://i.imgur.com/eJjws4h.jpeg'
+    WHEN id = 4 THEN 'https://i.imgur.com/AwyIuhR.jpeg'
+	WHEN id = 5 THEN 'https://i.imgur.com/Dlw2xoP.jpeg'
+    ELSE image_url  -- Gi? nguyên ?nh c? n?u ID không kh?p
+END
+WHERE id IN (1, 2, 3, 4, 5);
+
+
 
 
 
