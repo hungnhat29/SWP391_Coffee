@@ -2,19 +2,19 @@ package com.SWP391.G3PCoffee.controller.Authentication;
 
 import com.SWP391.G3PCoffee.DTO.user.UserLoginDto;
 import com.SWP391.G3PCoffee.DTO.user.UserRegisterDto;
+import com.SWP391.G3PCoffee.security.JwtAuthenticationFilter;
 import com.SWP391.G3PCoffee.security.JwtUtils;
 import com.SWP391.G3PCoffee.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import jakarta.servlet.http.Cookie;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,10 +24,12 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final JwtUtils jwtUtil;
     private final UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public AuthController(JwtUtils jwtUtil, UserService userService) {
+    public AuthController(JwtUtils jwtUtil, UserService userService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @PostMapping("/register")
@@ -76,6 +78,15 @@ public class AuthController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
+    @GetMapping("/check-login")
+    public ResponseEntity<Boolean> checkLogin(@AuthenticationPrincipal UserDetails userDetails,
+                                              HttpServletRequest request) {
+        if (userDetails == null) return ResponseEntity.ok(false);
+        String jwtToken = jwtAuthenticationFilter.extractJwtFromCookies(request);
+        if (jwtToken == null) return ResponseEntity.ok(false);
+        return ResponseEntity.ok(true);
     }
 
 }
