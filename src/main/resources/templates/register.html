@@ -7,6 +7,8 @@
   <script src="https://cdn.tailwindcss.com">
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen" style="background-image: url('/images/img.png'); /* Đường dẫn đến ảnh nền */
   background-size: cover; /* Ảnh phủ toàn bộ màn hình */
@@ -15,6 +17,10 @@
 <div class="rounded-lg flex flex-col md:flex-row w-full max-w-12xl">
 
   <div class=" p-8 ml-auto w-[30%]">
+    <div class="flex mb-4">
+      <a th:href="@{/home}"><i class="fas fa-home text-2xl">
+      </i></a>
+    </div>
     <h2 class="text-4xl font-bold mb-6 text-center">
       Register
     </h2>
@@ -73,18 +79,55 @@
       };
 
       if (!formData.fullName || !formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
-        $("#error-message").text("Please fill in all fields!");
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Vui lòng điền đầy đủ tất cả các trường!",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
         return;
       }
 
+      // Kiểm tra định dạng số điện thoại
+      const phoneRegex = /^0\d{9}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Số điện thoại không hợp lệ.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // Kiểm tra định dạng mật khẩu
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
       if (!passwordRegex.test(formData.password)) {
-        $("#error-message").text("Password must be at least 6 characters long and include both letters and numbers.");
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Mật khẩu phải có ít nhất 6 ký tự và bao gồm cả chữ cái lẫn số.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
         return;
       }
 
+      // Kiểm tra mật khẩu trùng khớp
       if (formData.password !== formData.confirmPassword) {
-        $("#error-message").text("Passwords do not match.");
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Mật khẩu nhập lại không khớp.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
         return;
       }
 
@@ -98,7 +141,14 @@
         },
         error: function (xhr) {
           let errorMessage = xhr.responseJSON?.message || "Registration failed!";
-          $("#error-message").text(errorMessage);
+          Swal.fire({
+                        toast: true,
+                        position: 'top-end', // Hiển thị ở góc trên bên phải
+                        icon: 'error',
+                        title: errorMessage,
+                        showConfirmButton: false,
+                        timer: 5000, // Hiển thị trong 5 giây
+                    });
         }
       });
     });

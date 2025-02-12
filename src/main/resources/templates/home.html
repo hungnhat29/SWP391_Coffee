@@ -28,7 +28,7 @@
     <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}"
           media="screen">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .profile-item {
     position: relative;
@@ -93,7 +93,7 @@
                             <img src="images/credit-card_9654102.png" alt="User" class="icon">
                         </a>
                         <div class="logout-menu" th:if="${jwtToken != null}">
-                            <a th:href="@{/auth/logout}" class="logout-link">Đăng xuất</a>
+                            <a href="#" class="logout-link" onclick="logout()">Đăng xuất</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -536,6 +536,43 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
+    function logout() {
+      fetch('/auth/logout', {
+        method: 'POST', // Gọi API với phương thức POST
+        credentials: 'include' // Đảm bảo cookie được gửi kèm
+      })
+        .then(response => {
+          if (response.ok) {
+            Swal.fire({
+              title: "Thành công",
+              text: "Đăng xuất thành công!",
+              icon: "success",
+              timer: 3000,
+              showConfirmButton: false
+            });
+            // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+            setTimeout(() => {
+              window.location.href = "/login";
+            }, 3000);
+          } else {
+            Swal.fire({
+              title: "Lỗi",
+              text: "Đăng xuất không thành công!",
+              icon: "error",
+              timer: 5000,
+              showConfirmButton: false
+            });
+          }
+        })
+        .catch(error => {
+          Swal.fire({
+            title: "Lỗi",
+            text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+            icon: "error",
+            timer: 5000,
+            showConfirmButton: false
+          });
+        });
+    }
 </script>
 </html>

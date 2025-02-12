@@ -1,10 +1,24 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Profile</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
+    <!-- Responsive-->
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" th:href="@{https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css}">
+    <!-- owl stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}"
+          media="screen">
+
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #d4fc79, #96e6a1, #fbc2eb, #a18cd1);
@@ -27,7 +41,9 @@
         }
     </style>
 </head>
-<header class="bg-[#f66d37] w-full py-3 shadow-lg">
+<body>
+
+<div class="bg-[#f66d37] w-full py-3 shadow-lg">
     <div class="container mx-auto w-full">
         <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
             <li>
@@ -52,9 +68,8 @@
             </li>
         </ul>
     </div>
-</header>
-<body>
-<div class="flex justify-around p-2 bg-gray-100">
+</div>
+<div class="flex justify-center p-2 bg-gray-100">
     <div class="w-full max-w-md p-4">
         <h1 class="text-3xl font-bold text-orange-500 mb-6">
             Profile
@@ -67,9 +82,9 @@
                 <i id="editIcon" class="fas fa-pen text-orange-500 absolute top-0 right-0 cursor-pointer">
                 </i>
             </div>
-            <p class="text-sm text-gray-500">
-                ID: <span th:text="${user.id}"></span>
-            </p>
+<!--            <p class="text-sm text-gray-500">-->
+<!--                ID: <span th:text="${user.id}"></span>-->
+<!--            </p>-->
             <h2 class="text-2xl font-semibold mb-2">
                 <span th:text="${user.name}"></span>
             </h2>
@@ -115,9 +130,14 @@
                         Purchase History
                     </a>
                 </li>
-                <li>
+                <li class="mb-1">
                     <a href="#">
                         Payment History
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/change_password}">
+                        Change Password
                     </a>
                 </li>
             </ul>
@@ -126,7 +146,7 @@
 
     <div class="flex flex-col min-h-screen p-4">
         <h1 class="text-orange-500 text-3xl font-bold mb-4">Point</h1>
-        <div class="w-96 p-7 rounded-[50px] gradient-bg text-white relative">
+        <div class="w-[400px] p-7 rounded-[30px] gradient-bg text-white relative">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-lg">Point</span>
                 <i class="fas fa-credit-card text-2xl"></i>
@@ -162,27 +182,27 @@
                 </div>
             </div>
         </div>
-        <div class="w-96 flex justify-center items-center">
+        <div class="w-[400px] flex justify-center items-center">
             <div class="w-[80%] mt-4 px-4 py-3 rounded-full bg-gradient-to-r from-blue-200 via-purple-300 to-pink-300 flex flex-col justify-center items-center">
                 <img src="images/Group.png" alt="Barcode image" class="w-auto px-2 h-10 object-contain">
                 <p class="mt-2 text-black text-lg font-medium tracking-widest">12345678210904</p>
             </div>
         </div>
 
-        <div class="mt-4 text-center">
-            <div class="flex items-center justify-center mb-2">
-                <i class="fas fa-cogs text-lg mr-2"></i>
-                <a href="#" class="text-orange-500">Point Management</a>
-            </div>
-            <div class="flex items-center justify-center mb-2">
-                <i class="fas fa-gift text-lg mr-2"></i>
-                <a href="#" class="text-orange-500">Membership Privileges</a>
-            </div>
-            <div class="flex items-center justify-center">
-                <i class="fas fa-book text-lg mr-2"></i>
-                <a href="#" class="text-orange-500">Rules</a>
-            </div>
-        </div>
+<!--        <div class="mt-4 text-center">-->
+<!--            <div class="flex items-center justify-center mb-2">-->
+<!--                <i class="fas fa-cogs text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Point Management</a>-->
+<!--            </div>-->
+<!--            <div class="flex items-center justify-center mb-2">-->
+<!--                <i class="fas fa-gift text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Membership Privileges</a>-->
+<!--            </div>-->
+<!--            <div class="flex items-center justify-center">-->
+<!--                <i class="fas fa-book text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Rules</a>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 
@@ -194,16 +214,17 @@
                 <form th:action="@{/profile/update}" method="post" th:object="${user}">
                     <input type="hidden" th:field="*{id}"/>
                     <label for="name">Name:</label>
-                    <input id="name" type="text" th:field="*{name}" class="mb-3 px-3 py-2 border rounded-lg w-full">
+                    <input id="name" type="text" th:field="*{name}" class="mb-3 px-3 py-2 border rounded-lg w-full" required>
 
                     <label for="phone">Phone:</label>
-                    <input id="phone" type="text" th:field="*{phone}" class="mb-3 px-3 py-2 border rounded-lg w-full">
+                    <input id="phone" type="text" th:field="*{phone}" class="mb-3 px-3 py-2 border rounded-lg w-full" required>
+
 
                     <label for="address">Address:</label>
                     <input id="address" type="text" th:field="*{address}"
                            class="mb-3 px-3 py-2 border rounded-lg w-full">
 
-                    <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-md">Save</button>
+                    <button id="saveBtn" type="button" class="px-4 py-2 bg-orange-500 text-white rounded-md">Save</button>
                 </form>
             </div>
             <div class="items-center px-4 py-3">
@@ -213,6 +234,7 @@
                 </button>
             </div>
             <p th:if="${successMessage}" th:text="${successMessage}" class="text-green-500"></p>
+            <span id="phoneError" class="text-red-500 text-sm hidden"></span>
         </div>
     </div>
 </div>
@@ -224,13 +246,11 @@
     const closeBtn = document.getElementById('closeBtn');
     const saveBtn = document.getElementById('saveBtn');
 
-    const editName = document.getElementById('name');
-    const editPhone = document.getElementById('phone');
-    const editAddress = document.getElementById('address');
-
     const userName = document.querySelector('[th\\:text="${user.name}"]');
     const userPhone = document.querySelector('[th\\:text="${user.phone}"]');
     const userAddress = document.querySelector('[th\\:text="${user.address}"]');
+    const phoneInput = document.getElementById('phone');
+    const phoneError = document.getElementById('phoneError');
 
     // Hiển thị modal khi nhấp vào biểu tượng chỉnh sửa
     editIcon.addEventListener('click', () => {
@@ -245,9 +265,30 @@
         editModal.classList.add('hidden');
     });
 
+    // Xác minh số điện thoại
+    const validatePhone = (phone) => {
+        const phoneRegex = /^0\d{9}$/; // Bắt đầu bằng số 0 và có tổng cộng 10 số
+        return phoneRegex.test(phone);
+    };
+
     // Lưu thông tin và ẩn modal khi nhấp vào nút lưu
-    saveBtn.addEventListener('click', () => {
+    saveBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Ngăn chặn hành động mặc định
+
+        const phoneValue = phoneInput.value.trim();
+
+        console.log(phoneValue, "ádasdasda");
+
+        if (!validatePhone(phoneValue)) {
+            // Hiển thị lỗi dưới input số điện thoại
+            phoneError.textContent = "Số điện thoại không hợp lệ.";
+            phoneError.classList.remove('hidden');
+            return; // Không gửi form
+        }
+
+        // Nếu hợp lệ, gửi form
         document.querySelector('form').submit();
+        window.location.href = "/profile";
     });
 </script>
 </body>

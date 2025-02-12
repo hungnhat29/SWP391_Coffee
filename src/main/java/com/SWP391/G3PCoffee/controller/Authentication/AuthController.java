@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.Cookie;
 
@@ -48,23 +49,31 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto loginDto, HttpServletResponse response) {
-        Map<String, String> loginData = userService.loginByEmailAndPassword(loginDto);
+        try {
+            Map<String, String> loginData = userService.loginByEmailAndPassword(loginDto);
 
-        String jwtToken = loginData.get("token");
-        String role = loginData.get("role");
+            String jwtToken = loginData.get("token");
+            String role = loginData.get("role");
 
-        Cookie cookie = new Cookie("jwtToken", jwtToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        response.addCookie(cookie);
+            // Tạo cookie JWT
+            Cookie cookie = new Cookie("jwtToken", jwtToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60); // Cookie hết hạn sau 1 ngày
+            response.addCookie(cookie);
 
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "Login successful!");
-        responseBody.put("role", role);
+            // Tạo phản hồi thành công
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "Login successful!");
+            responseBody.put("role", role);
 
-        return ResponseEntity.ok(responseBody);
+            return ResponseEntity.ok(responseBody);
+
+        } catch (ResponseStatusException e) {
+            // Trả về lỗi từ loginByEmailAndPassword
+            return ResponseEntity.status(e.getStatusCode()).body(Map.of("message", e.getReason()));
+        }
     }
 
     @PostMapping("/logout")
