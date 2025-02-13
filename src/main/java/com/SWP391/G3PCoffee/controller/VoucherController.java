@@ -1,4 +1,4 @@
-package com.SWP391.G3PCoffee.controller.vouchers;
+package com.SWP391.G3PCoffee.controller;
 
 import com.SWP391.G3PCoffee.model.Vouchers;
 import com.SWP391.G3PCoffee.service.vouchers.UserVoucherService;
@@ -6,7 +6,6 @@ import com.SWP391.G3PCoffee.service.vouchers.VoucherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,19 +62,18 @@ public class VoucherController {
     }
 
     @PostMapping("/claim-voucher")
-    public ResponseEntity<?> claimVoucher(@RequestBody Map<String, Long> request,
-                                          @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Map<String, String>> claimVoucher(@RequestBody Map<String, Long> request,
+                                                            @AuthenticationPrincipal UserDetails userDetails) {
         Long voucherId = request.get("voucherId");
-        if (userDetails == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Voucher claim failed!"));
-        String email = userDetails.getUsername();
-        boolean success = voucherService.claimVoucher(voucherId, email);
-
-        if (success) {
-            return ResponseEntity.ok(Collections.singletonMap("message", "Voucher claimed successfully!"));
+        Map<String, String> response = new HashMap<>();
+        if (userDetails == null) {
+            response.put("message", "Nhận voucher thất bại!");
+            response.put("messageType", "error");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Voucher claim failed!"));
+            String email = userDetails.getUsername();
+            response = voucherService.claimVoucher(voucherId, email);
         }
+        return ResponseEntity.ok(response);
     }
 
 }

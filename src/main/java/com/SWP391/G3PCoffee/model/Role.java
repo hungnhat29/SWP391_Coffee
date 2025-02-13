@@ -1,4 +1,4 @@
-package com.SWP391.G3PCoffee.constant;
+package com.SWP391.G3PCoffee.model;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.SWP391.G3PCoffee.DTO.user;
+package com.SWP391.G3PCoffee.model;
 
 import lombok.Data;
 

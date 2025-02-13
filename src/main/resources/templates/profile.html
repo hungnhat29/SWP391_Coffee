@@ -4,20 +4,25 @@
     <script src="https://cdn.tailwindcss.com">
     </script>
 
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-    <!-- style css -->
+    <!-- Style CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
-    <!-- Responsive-->
+    <!-- Responsive CSS -->
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
-    <!-- Tweaks for older IEs-->
-    <link rel="stylesheet" th:href="@{https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css}">
-    <!-- owl stylesheets -->
+    <!-- Tweaks for older IEs (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- Owl Carousel CSS -->
     <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
     <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}"
-          media="screen">
+    <!-- Fancybox CSS (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/alert.js"></script>
 
     <style>
         .gradient-bg {
@@ -40,29 +45,60 @@
             }
         }
     </style>
+    <style>
+        .profile-item {
+    position: relative;
+}
+
+.logout-menu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Hiển thị bên dưới icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.profile-item:hover .logout-menu {
+    display: block;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+    </style>
 </head>
 <body>
-
-<div class="bg-[#f66d37] w-full py-3 shadow-lg">
-    <div class="container mx-auto w-full">
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="bg-[#f66d37] w-full py-3 shadow-lg layout_padding banner_section" style="background-image: none;">
+    <div class="mx-auto w-full">
         <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
-            <li>
+            <li class="hover:text-white">
                 <a th:href="@{/profile}" class="text-white font-medium">
                     Profile
                 </a>
             </li>
-            <li>
-                <a th:href="@{/profile}" class="text-black font-medium">
+            <li class="hover:text-white">
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
                     Point
                 </a>
             </li>
-            <li>
-                <a th:href="@{/voucher}" class="text-black font-medium">
+            <li class="hover:text-white">
+                <a th:href="@{/voucher}" class="text-black font-medium hover:text-white">
                     Voucher
                 </a>
             </li>
-            <li>
-                <a th:href="@{/my_voucher}" class="text-black font-medium">
+            <li class="hover:text-white">
+                <a th:href="@{/my_voucher}" class="text-black font-medium hover:text-white">
                     My Voucher
                 </a>
             </li>
@@ -233,7 +269,7 @@
                     Close
                 </button>
             </div>
-            <p th:if="${successMessage}" th:text="${successMessage}" class="text-green-500"></p>
+            <p id="successMessage" th:if="${successMessage}" th:text="${successMessage}" class="text-green-500 hidden"></p>
             <span id="phoneError" class="text-red-500 text-sm hidden"></span>
         </div>
     </div>
@@ -277,18 +313,21 @@
 
         const phoneValue = phoneInput.value.trim();
 
-        console.log(phoneValue, "ádasdasda");
-
         if (!validatePhone(phoneValue)) {
             // Hiển thị lỗi dưới input số điện thoại
             phoneError.textContent = "Số điện thoại không hợp lệ.";
             phoneError.classList.remove('hidden');
             return; // Không gửi form
         }
+        editModal.classList.add('hidden');
+        showMessage("Cập nhật thông tin thành công!", "success");
 
-        // Nếu hợp lệ, gửi form
-        document.querySelector('form').submit();
-        window.location.href = "/profile";
+        // Đợi 3 giây rồi chuyển hướng hoặc gửi form
+        setTimeout(() => {
+            document.querySelector('form').submit();
+            window.location.href = '/profile';
+        }, 2000);
+
     });
 </script>
 </body>

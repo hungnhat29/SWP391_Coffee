@@ -1,7 +1,8 @@
-package com.SWP391.G3PCoffee.controller.Authentication;
+package com.SWP391.G3PCoffee.controller;
 
-import com.SWP391.G3PCoffee.DTO.user.UserLoginDto;
-import com.SWP391.G3PCoffee.DTO.user.UserRegisterDto;
+
+import com.SWP391.G3PCoffee.model.UserLoginDto;
+import com.SWP391.G3PCoffee.model.UserRegisterDto;
 import com.SWP391.G3PCoffee.security.JwtAuthenticationFilter;
 import com.SWP391.G3PCoffee.security.JwtUtils;
 import com.SWP391.G3PCoffee.service.UserService;
@@ -15,17 +16,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import jakarta.servlet.http.Cookie;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final JwtUtils jwtUtil;
     private final UserService userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -99,6 +97,18 @@ public class AuthController {
         String jwtToken = jwtAuthenticationFilter.extractJwtFromCookies(request);
         if (jwtToken == null) return ResponseEntity.ok(false);
         return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(@AuthenticationPrincipal UserDetails userDetails,
+                                                              @RequestBody Map<String, String> request) {
+        String email = userDetails.getUsername();
+        String password = request.get("password");
+        String newPassword = request.get("newPassword");
+        String confirmPassword = request.get("cfPassword");
+        logger.info("Attempting to change password for user: {}", password);
+        Map<String, String> response = userService.changePassword(password, newPassword, confirmPassword, email);
+        return ResponseEntity.ok(response);
     }
 
 }

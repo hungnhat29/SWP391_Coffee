@@ -10,9 +10,9 @@ package com.SWP391.G3PCoffee.service;
  */
 //import com.SWP391.G3PCoffee.dto.UserDTO;
 
-import com.SWP391.G3PCoffee.DTO.user.UserLoginDto;
-import com.SWP391.G3PCoffee.DTO.user.UserRegisterDto;
-import com.SWP391.G3PCoffee.constant.Role;
+import com.SWP391.G3PCoffee.model.UserLoginDto;
+import com.SWP391.G3PCoffee.model.UserRegisterDto;
+import com.SWP391.G3PCoffee.model.Role;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
@@ -34,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -89,18 +90,18 @@ public class UserService {
         return jwtUtils.generateToken(userDetails);
     }
 
-    public  Map<String, String> loginByEmailAndPassword(UserLoginDto loginDto) {
+    public Map<String, String> loginByEmailAndPassword(UserLoginDto loginDto) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDto.getEmail(), loginDto.getPassword()));
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
             String token = jwtUtils.generateToken(userDetails);
-            
+
             String role = userDetails.getAuthorities().stream()
-                    .findFirst() 
+                    .findFirst()
                     .map(GrantedAuthority::getAuthority)
-                    .orElse(Role.CUSTOMER.getValue()); 
+                    .orElse(Role.CUSTOMER.getValue());
 
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
@@ -132,5 +133,42 @@ public class UserService {
             return existingUser;
         }
         return null;
+    }
+
+    public Map<String, String> changePassword(String oldPassword, String newPassword,
+                                              String confirmPassword, String email) {
+        Map<String, String> response = new HashMap<>();
+        if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
+            response.put("message", "Vui lòng điền đầy đủ tất cả các trường!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        User user = getCustomerByEmail(email);
+        if (user == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
+            response.put("message", "Mật khẩu cũ không đúng!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")) {
+            response.put("message", "Mật khẩu mới phải có ít nhất 6 ký tự và bao gồm cả chữ và số!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+
+        if (!newPassword.equals(confirmPassword)) {
+            response.put("message", "Mật khẩu mới không khớp!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        Objects.requireNonNull(user).setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        response.put("message", "Đổi mật khẩu thành công!");
+        response.put("messageType", "success");
+
+        return response;
     }
 }

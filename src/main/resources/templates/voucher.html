@@ -1,247 +1,299 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Voucher Page</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <style>
-    html,
-    body {
-        position: relative;
-        height: 100%;
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Voucher Page</title>
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
+    <!-- Tweaks for older IEs (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <!-- Fancybox CSS (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+          media="screen">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/alert.js"></script>
+
+    <style>
+        html,
+        body {
+            position: relative;
+            height: 100%;
+        }
+
+
+            .swiper {
+                width: 100%;
+
+                padding: 150px 0;
+            }
+
+            .swiper-slide {
+                text-align: center;
+                font-size: 18px;
+                background: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                transform: scale(0.75) translateY(0);
+            }
+
+            .swiper-slide img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            /* Previous slides */
+            .swiper-slide-prev {
+                transform: scale(0.75) translateY(-100%);
+            }
+
+            /* Active slide */
+            .swiper-slide-active {
+                transform: scale(1) translateY(0);
+                z-index: 2;
+            }
+
+        /* Next slide */
+        .swiper-slide-next {
+            transform: scale(0.75) translateY(100%);
+        }
+        .swiper-pagination {
+            /* right: -1rem !important; */
+        }
+        .swiper-pagination  .swiper-pagination-bullet-active {
+            background-color: black;
+        }
+    </style>
+    <style>
+        .profile-item {
+    position: relative;
     }
 
-    body {
-        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+    .logout-menu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Hiển thị bên dưới icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 10;
     }
 
-    .swiper {
-        width: 100%;
-
-        padding: 150px 0;
+    .profile-item:hover .logout-menu {
+    display: block;
     }
 
-    .swiper-slide {
-        text-align: center;
-        font-size: 18px;
-        background: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        transform: scale(0.75) translateY(0);
+    .logout-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
     }
 
-    .swiper-slide img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* Previous slides */
-    .swiper-slide-prev {
-        transform: scale(0.75) translateY(-100%);
-    }
-
-    /* Active slide */
-    .swiper-slide-active {
-        transform: scale(1) translateY(0);
-        z-index: 2;
-    }
-
-    /* Next slide */
-    .swiper-slide-next {
-        transform: scale(0.75) translateY(100%);
-    }
-    .swiper-pagination {
-        /* right: -1rem !important; */
-    }
-    .swiper-pagination  .swiper-pagination-bullet-active {
-        background-color: black;
-    }
-  </style>
+    </style>
 </head>
 
 <body class="bg-white text-gray-800">
-<header class="bg-[#f66d37] w-full py-3 shadow-lg">
-  <div class="container mx-auto w-full">
-    <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
-      <li>
-        <a th:href="@{/profile}" class="text-black font-medium">
-          Profile
-        </a>
-      </li>
-      <li>
-        <a th:href="@{/profile}" class="text-black font-medium">
-          Point
-        </a>
-      </li>
-      <li>
-        <a th:href="@{/voucher}" class="text-white font-medium">
-          Voucher
-        </a>
-      </li>
-      <li>
-        <a th:href="@{/my-voucher}" class="text-black font-medium">
-          My Voucher
-        </a>
-      </li>
-    </ul>
-  </div>
-</header>
-<main class="container mx-auto p-4">
-  <h1 class="text-4xl text-orange-500 mb-8">Voucher</h1>
-  <div class="flex flex-col lg:flex-row">
-    <!-- Left Side -->
-    <div class="lg:w-1/2">
-      <div class="space-y-4 py-5 lg:p-8">
-        <!-- Duyệt qua danh sách vouchers -->
-        <div th:each="voucher : ${vouchersPage.content}"
-             class="flex flex-col lg:flex-row sm:items-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
-          <div class="flex bg-[#f66d37] p-4 w-full h-full sm:w-44 justify-center item-center rounded-lg">
-            <div class="bg-white rounded-full w-20 h-20">
-              <img alt="Shipping icon" class=" rounded-full p-1"
-                   src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
-              />
-            </div>
-          </div>
-          <div class="flex-1 md:space-y-3">
-            <h2 class="text-lg font-bold" th:text="${voucher.voucherCode}">Voucher Title</h2>
-            <div>
-              <p>Min. Spend <span th:text="${voucher.minSpending}"></span> VND</p>
-              <p>Valid From <span th:text="${voucher.expiryDate}"></span></p>
-            </div>
-          </div>
-          <div class="flex justify-end gap-3 flex-row-reverse sm:block space-y-2 items-center">
-            <button class="claim-btn bg-orange-500 border border-orange-500 hover:bg-white hover:text-orange-500 transition duration-300 ease-in-out text-white px-4 py-1 rounded-lg h-[fit-content]"
-                    th:data-voucher-id="${voucher.id}"
-                    th:if="${!listIdUse.contains(voucher.id)}"
-                    onclick="claimVoucher(this)">
-              Claim
-            </button>
-            <span th:if="${listIdUse.contains(voucher.id)}" class="text-green-500 font-bold">Claimed</span>
-            <div class="text-sm">
-              <p class="text-yellow-500" th:text="${voucher.minPoints} + ' Point'"></p>
-              <p class="text-red-500" th:text="${voucher.quantity} + ' Voucher Left'"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Phân trang -->
-        <div class="pagination flex justify-center space-x-2 mt-4">
-          <a th:href="@{/vouchers(page=0, size=${vouchersPage.size})}"
-             class="px-3 py-1 border rounded"
-             th:if="${!vouchersPage.isFirst()}">First</a>
-          
-          <a th:href="@{/vouchers(page=${vouchersPage.number - 1}, size=${vouchersPage.size})}"
-             class="px-3 py-1 border rounded"
-             th:if="${vouchersPage.hasPrevious()}">Prev</a>
-          
-          <span class="px-3 py-1 border rounded bg-gray-300"
-                th:text="${vouchersPage.number + 1}"></span>
-          
-          <a th:href="@{/vouchers(page=${vouchersPage.number + 1}, size=${vouchersPage.size})}"
-             class="px-3 py-1 border rounded"
-             th:if="${vouchersPage.hasNext()}">Next</a>
-          
-          <a th:href="@{/vouchers(page=${vouchersPage.totalPages - 1}, size=${vouchersPage.size})}"
-             class="px-3 py-1 border rounded"
-             th:if="${!vouchersPage.isLast()}">Last</a>
-        </div>
-
-      </div>
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="bg-[#f66d37] w-full py-3 shadow-lg layout_padding banner_section" style="background-image: none;">
+    <div class="mx-auto w-full">
+        <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
+                    Profile
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
+                    Point
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/voucher}" class="text-white font-medium ">
+                    Voucher
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/my-voucher}" class="text-black font-medium hover:text-white">
+                    My Voucher
+                </a>
+            </li>
+        </ul>
     </div>
+</div>
+<div class=" mx-auto p-4 flex flex-col container justify-center">
+    <h1 class="text-4xl text-orange-500">Voucher</h1>
+    <div class="flex flex-col lg:flex-row">
+        <!-- Left Side -->
+        <div class="lg:w-1/2">
+            <div class="space-y-4 py-5 lg:p-8">
+                <!-- Duyệt qua danh sách vouchers -->
+                <div th:each="voucher : ${vouchersPage.content}"
+                     class="flex flex-col lg:flex-row sm:items-center gap-2 sm:gap-4 lg:gap-6 flex-wrap">
+                    <div class="flex bg-[#f66d37] p-4 w-full h-full sm:w-44 justify-center item-center rounded-lg">
+                        <div class="bg-white rounded-full w-20 h-20">
+                            <img alt="Shipping icon" class=" rounded-full p-1"
+                                 src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                            />
+                        </div>
+                    </div>
+                    <div class="flex-1 md:space-y-3">
+                        <h2 class="text-lg font-bold" th:text="${voucher.voucherCode}">Voucher Title</h2>
+                        <div>
+                            <p>Min. Spend <span th:text="${voucher.minSpending}"></span> VND</p>
+                            <p>Valid From <span th:text="${voucher.expiryDate}"></span></p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 flex-row-reverse sm:block space-y-2 items-center">
+                        <button class="claim-btn bg-orange-500 border border-orange-500 hover:bg-white hover:text-orange-500 transition duration-300 ease-in-out text-white px-4 py-1 rounded-lg h-[fit-content]"
+                                th:data-voucher-id="${voucher.id}"
+                                th:if="${!listIdUse.contains(voucher.id)}"
+                                onclick="claimVoucher(this)">
+                            Claim
+                        </button>
+                        <span th:if="${listIdUse.contains(voucher.id)}" class="text-green-500 font-bold">Claimed</span>
+                        <div class="text-sm">
+                            <p class="text-yellow-500" th:text="${voucher.minPoints} + ' Point'"></p>
+                            <p class="text-red-500" th:text="${voucher.quantity} + ' Voucher Left'"></p>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Right Side -->
-    <div class="lg:w-1/2 mt-4">
-      <div class="swiper mySwiper h-[70vh]">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide sm:px-6 shadow-none">
-            <img alt="Gift Voucher 1" class="w-full"
-                 src="/images/slide1.png"/>
-          </div>
-          <div class="swiper-slide sm:px-6 shadow-none">
-            <img alt="Gift Voucher 2" class="w-full"
-                 src="/images/slide2.png"/>
-          </div>
-          <div class="swiper-slide sm:px-6 shadow-none">
-            <img alt="Gift Voucher 2" class="w-full"
-                 src="/images/slide3.png"/>
-          </div>
-          <div class="swiper-slide sm:px-6 shadow-none">
-            <img alt="Gift Voucher 2" class="w-full"
-                 src="/images/slide4.png"/>
-          </div>
-          <div class="swiper-slide sm:px-6 shadow-none">
-            <img alt="Gift Voucher 2" class="w-full"
-                 src="/images/slide5.png"/>
-          </div>
+                <!-- Phân trang -->
+                <div class="pagination flex justify-center space-x-2 mt-4">
+                    <a th:href="@{/vouchers(page=0, size=${vouchersPage.size})}"
+                       class="px-3 py-1 border rounded"
+                       th:if="${!vouchersPage.isFirst()}">First</a>
+
+                    <a th:href="@{/vouchers(page=${vouchersPage.number - 1}, size=${vouchersPage.size})}"
+                       class="px-3 py-1 border rounded"
+                       th:if="${vouchersPage.hasPrevious()}">Prev</a>
+
+                    <span class="px-3 py-1 border rounded bg-gray-300"
+                          th:text="${vouchersPage.number + 1}"></span>
+
+                    <a th:href="@{/vouchers(page=${vouchersPage.number + 1}, size=${vouchersPage.size})}"
+                       class="px-3 py-1 border rounded"
+                       th:if="${vouchersPage.hasNext()}">Next</a>
+
+                    <a th:href="@{/vouchers(page=${vouchersPage.totalPages - 1}, size=${vouchersPage.size})}"
+                       class="px-3 py-1 border rounded"
+                       th:if="${!vouchersPage.isLast()}">Last</a>
+                </div>
+
+            </div>
         </div>
-        <div class="swiper-pagination"></div>
-      </div>
+
+        <!-- Right Side -->
+        <div class="lg:w-1/2 mt-4">
+            <div class="swiper mySwiper h-[70vh]">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide sm:px-6 shadow-none">
+                        <img alt="Gift Voucher 1" class="w-full"
+                             src="/images/slide1.png"/>
+                    </div>
+                    <div class="swiper-slide sm:px-6 shadow-none">
+                        <img alt="Gift Voucher 2" class="w-full"
+                             src="/images/slide2.png"/>
+                    </div>
+                    <div class="swiper-slide sm:px-6 shadow-none">
+                        <img alt="Gift Voucher 2" class="w-full"
+                             src="/images/slide3.png"/>
+                    </div>
+                    <div class="swiper-slide sm:px-6 shadow-none">
+                        <img alt="Gift Voucher 2" class="w-full"
+                             src="/images/slide4.png"/>
+                    </div>
+                    <div class="swiper-slide sm:px-6 shadow-none">
+                        <img alt="Gift Voucher 2" class="w-full"
+                             src="/images/slide5.png"/>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
     </div>
-  </div>
-</main>
+</div>
+</body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      var swiper = new Swiper(".mySwiper", {
-          direction: "vertical",
-          slidesPerView: 1,
-          spaceBetween: -80,
-          centeredSlides: true,
-          initialSlide: 1,  // Start from third slide
-          loop: true,
-          mousewheel: true,
-          speed: 800,
-          effect: "coverflow",
-          coverflowEffect: {
-              rotate: 0,
-              stretch: 0,
-              depth: 150,
-              modifier: 1,
-              slideShadows: false,
-          },
-          pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-          },
-      });
+    document.addEventListener('DOMContentLoaded', function () {
+        var swiper = new Swiper(".mySwiper", {
+            direction: "vertical",
+            slidesPerView: 1,
+            spaceBetween: -80,
+            centeredSlides: true,
+            initialSlide: 1,  // Start from third slide
+            loop: true,
+            mousewheel: true,
+            speed: 800,
+            effect: "coverflow",
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 150,
+                modifier: 1,
+                slideShadows: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+        });
 
-      // Force the swiper to center on load
-      swiper.slideTo(2, 0);
-  });
-
-  $(document).ready(function () {
-    $(".claim-btn").click(function () {
-      let button = $(this);
-      let voucherId = button.data("voucher-id");
-
-      $.ajax({
-        type: "POST",
-        url: "/claim-voucher", 
-        contentType: "application/json",
-        data: JSON.stringify({ voucherId: voucherId }),
-        success: function () {
-          button.removeClass("bg-orange-500 hover:bg-white hover:text-orange-500")
-                  .addClass("bg-white text-gray-500 cursor-not-allowed border-gray-300")
-                  .text("Claimed")
-                  .prop("disabled", true);
-        },
-        error: function () {
-          alert("Failed to claim voucher. Please try again!");
-        }
-      });
+        // Force the swiper to center on load
+        swiper.slideTo(2, 0);
     });
-  });
+
+    $(document).ready(function () {
+        $(".claim-btn").click(function () {
+            let button = $(this);
+            let voucherId = button.data("voucher-id");
+
+            $.ajax({
+                type: "POST",
+                url: "/claim-voucher",
+                contentType: "application/json",
+                data: JSON.stringify({voucherId: voucherId}),
+                success: function (response) {
+                    showMessage(response.message, response.messageType);
+                    $("#voucher-quantity-" + voucherId).text(response.quantity + " Voucher Left");
+                    button.removeClass("bg-orange-500 hover:bg-white hover:text-orange-500")
+                        .addClass("bg-white text-gray-500 cursor-not-allowed border-gray-300")
+                        .text("Claimed")
+                        .prop("disabled", true);
+                },
+                error: function () {
+                    showMessage("Failed to claim voucher. Please try again!","error");
+                }
+            });
+        });
+    });
 
 </script>
 </body>

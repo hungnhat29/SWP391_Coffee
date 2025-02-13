@@ -16,7 +16,7 @@ public class MembershipService {
         this.membershipRepository = membershipRepository;
     }
 
-    public Membership getMemberShipByEmail(Long userId) {
+    public Membership getMemberShipByUserId(Long userId) {
         return membershipRepository.getMembershipByUserId(userId);
     }
 

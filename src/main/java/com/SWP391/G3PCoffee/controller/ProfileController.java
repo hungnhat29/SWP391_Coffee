@@ -1,4 +1,4 @@
-package com.SWP391.G3PCoffee.controller.Authentication;
+package com.SWP391.G3PCoffee.controller;
 
 import com.SWP391.G3PCoffee.model.Membership;
 import com.SWP391.G3PCoffee.model.User;
@@ -36,7 +36,7 @@ public class ProfileController {
             return "redirect:/auth/login";
         }
 
-        Membership membership = membershipService.getMemberShipByEmail(user.getId());
+        Membership membership = membershipService.getMemberShipByUserId(user.getId());
 
         model.addAttribute("user", user);
         model.addAttribute("membership", membership);
@@ -52,7 +52,7 @@ public class ProfileController {
         User existingUser = userService.updateUser(userDetails, updatedUser);
         if (existingUser != null) {
             model.addAttribute("user", existingUser);
-            Membership membership = membershipService.getMemberShipByEmail(existingUser.getId());
+            Membership membership = membershipService.getMemberShipByUserId(existingUser.getId());
             model.addAttribute("membership", membership);
             model.addAttribute("successMessage", "Profile updated successfully!");
 
