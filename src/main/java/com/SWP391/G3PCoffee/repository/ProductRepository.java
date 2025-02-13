@@ -11,6 +11,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     // findAll , findByName, delete , update , ....
     List<Product> findByCategoryId(Integer categoryId);
-
+    
 }
 
