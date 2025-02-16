@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Customer Management</title>
+
+        <!-- Thêm các liên kết cần thiết -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0"
+            />
+        <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+            />
+        <script src="https://unpkg.com/akar-icons-fonts"></script>
+
+        <style>
+            /* CSS của sidebar */
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                background-color: #C0B8AB;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: 30%;
+                height: 100vh;
+                font-family: "Euclid Circular A";
+            }
+
+            button,
+            label {
+                background: transparent;
+                border: 0;
+                padding: 0;
+                cursor: pointer;
+                text-align: left;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 24px;
+                left: 24px;
+                bottom: 44px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 260px;
+                border-radius: 16px;
+                padding: 0 16px;
+                background: rgb(0 0 0 / 32%);
+                backdrop-filter: blur(30px);
+                transition: width 0.4s;
+            }
+
+            .sidebar header {
+                display: flex;
+                align-items: center;
+                height: 72px;
+                padding-top: 10px;
+                border-bottom: 1px solid rgb(255 255 255 / 8%);
+            }
+
+            .logo-text {
+                font-size: 24px;
+                font-weight: bold;
+                color: #F76D37;
+                margin: 0;
+                padding: 0;
+                font-family: "Euclid Circular A", sans-serif;
+            }
+
+            .sidebar input {
+                scale: 0;
+                position: absolute;
+            }
+
+            .sidebar input#settings:checked ~ div {
+                height: 150px;
+            }
+
+            .sidebar input#create:checked ~ div {
+                height: 200px;
+            }
+
+            .sidebar input#profile:checked ~ div {
+                height: 100px;
+            }
+
+            .sidebar :is(button, label) {
+                position: relative;
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                height: 50px;
+                width: 100%;
+                border-radius: 6px;
+                font-family: inherit;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 1;
+                padding: 0 16px;
+                color: rgb(255 255 255 / 95%);
+            }
+
+            .sidebar label p:nth-child(2) {
+                flex: 1 1 auto;
+            }
+
+            .sidebar input:checked ~ label {
+                background: #1960f3;
+            }
+
+            .sidebar label i {
+                transition: 0.3s;
+            }
+
+            .sidebar input:checked ~ label > i:nth-child(3) {
+                rotate: -180deg;
+            }
+
+            .sidebar input:not(:checked) ~ label:hover,
+            .sidebar button:hover {
+                background: rgb(0 0 0 / 15%);
+            }
+
+            .sidebar ul {
+                display: grid;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            .sub-menu {
+                position: relative;
+                overflow: hidden;
+                height: 0;
+                transition: 0.5s;
+            }
+
+            .sub-menu ul {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: grid;
+            }
+
+            .sub-menu button {
+                padding-left: 52px;
+            }
+
+            .sub-menu button::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 24px;
+                translate: 0 -50%;
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background-color: rgb(255 255 255 / 35%);
+            }
+
+            .sidebar .material-symbols-outlined {
+                font-size: 16px;
+            }
+
+            .sidebar i {
+                font-size: 20px;
+                width: 20px;
+                max-width: 20px;
+                min-width: 20px;
+            }
+
+            /* CSS của trang hiện tại */
+            .customer-management-container {
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 10);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                justify-content: start;
+                border: 2px solid rgba(206, 212, 218, 1);
+                margin-left: 300px; /* Để tránh chồng lấn với sidebar */
+            }
+
+            .main-content {
+                background-color: #C0B8AB;
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                padding-bottom: 716px;
+            }
+
+            .content-wrapper {
+                padding: 24px;
+                width: 100%;
+            }
+
+            .panel {
+                border-radius: 8px;
+                background-color: rgba(0, 0, 0, 0.1);
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 24px;
+                width: 100%;
+            }
+
+            .header {
+                display: flex;
+                width: 100%;
+                gap: 20px;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .title {
+                color: #F76D37;
+                font: 600 24px/1 Inter, sans-serif;
+                margin: auto 0;
+            }
+
+            .actions {
+                display: flex;
+                gap: 16px;
+            }
+
+            .search-form {
+                flex-grow: 1;
+                flex-basis: 0;
+            }
+
+            .search-input {
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 1);
+                display: flex;
+                width: 100%;
+                gap: 12px;
+                padding: 13px 12px;
+                border: 1px solid rgba(209, 213, 219, 1);
+            }
+
+            .search-icon {
+                display: flex;
+                min-height: 16px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .search-placeholder {
+                color: rgba(173, 174, 188, 1);
+                flex-grow: 1;
+                font: 400 16px Inter, sans-serif;
+            }
+
+            .add-button {
+                border-radius: 8px;
+                background-color: rgba(247, 109, 55, 1);
+                display: flex;
+                gap: 9px;
+                color: rgba(255, 255, 255, 1);
+                text-align: center;
+                padding: 12px 16px;
+                font: 400 16px Inter, sans-serif;
+                border: none;
+                cursor: pointer;
+            }
+
+            .customers-table {
+                margin-top: 24px;
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .table-header {
+                background-color: rgba(0, 0, 0, 0.32);
+                color: rgba(255, 255, 255, 1);
+                font: 500 12px Inter, sans-serif;
+                letter-spacing: 0.6px;
+                text-align: left;
+            }
+
+            .table-header th {
+                padding: 13px 24px;
+            }
+
+            .customer-row td {
+                padding: 16px 24px;
+                border-bottom: 1px solid rgba(229, 231, 235, 1);
+            }
+
+            .customer-info {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .customer-avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+            }
+
+            .customer-name {
+                color: rgba(0, 0, 0, 1);
+                font: 400 16px Inter, sans-serif;
+            }
+
+            .customer-email {
+                color: rgba(107, 114, 128, 1);
+                font: 400 14px Inter, sans-serif;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 16px;
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 24px;
+                font-family: Inter, sans-serif;
+            }
+
+            .entries-info {
+                color: rgba(107, 114, 128, 1);
+                font-size: 14px;
+            }
+
+            .page-buttons {
+                display: flex;
+                gap: 8px;
+            }
+
+            .page-button {
+                border-radius: 8px;
+                padding: 8px 16px;
+                border: 1px solid rgba(209, 213, 219, 1);
+                background: transparent;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .page-button.active {
+                background-color: rgba(247, 109, 55, 1);
+                color: white;
+                border: none;
+            }
+
+            .visually-hidden {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                border: 0;
+            }
+
+            @media (max-width: 991px) {
+                .main-content {
+                    max-width: 100%;
+                    padding-bottom: 100px;
+                }
+
+                .content-wrapper {
+                    padding: 0 20px;
+                }
+
+                .panel {
+                    padding: 20px;
+                }
+
+                .table-header th,
+                .customer-row td {
+                    padding: 13px 20px;
+                }
+            }
+
+            .customer-details {
+                margin-top: 24px;
+                padding: 24px;
+                border-radius: 8px;
+                background-color: rgba(0, 0, 0, 0.32);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .details-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+            }
+
+            .details-title {
+                color: rgba(255, 255, 255, 1);
+                font: 600 20px/1 Inter, sans-serif;
+            }
+
+            .action-buttons .edit-button,
+            .action-buttons .delete-button {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                font: 400 14px Inter, sans-serif;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .edit-button {
+                background-color: rgba(255, 159, 64, 1);
+                color: white;
+            }
+
+            .delete-button {
+                background-color: rgba(234, 84, 85, 1);
+                color: white;
+            }
+
+            .details-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .details-row {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .details-label {
+                color: #F76D37;
+                font: 500 14px/1 Inter, sans-serif;
+                margin-bottom: 4px;
+            }
+
+            .details-value {
+                color: rgba(255, 255, 255, 1);
+                font: 400 16px/1 Inter, sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <header>
+                <h1 class="logo-text">Admin Page</h1>
+            </header>
+
+            <ul>
+                <li>
+                    <input type="radio" id="dashboard" name="sidebar" />
+                    <label for="dashboard">
+                        <i class="ai-dashboard"></i>
+                        <p>Dashboard</p>
+                    </label>
+                </li>
+                <li>
+                    <input type="radio" id="settings" name="sidebar" />
+                    <label for="settings">
+                        <i class="ai-gear"></i>
+                        <p>Customers</p>
+                        <i class="ai-chevron-down-small"></i>
+                    </label>
+                    <div class="sub-menu">
+                        <ul>
+                            <li>
+                                <button type="button">Customers List</button>
+                            </li>
+                            <li>
+                                <button type="button">Members List</button>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" id="create" name="sidebar" />
+                    <label for="create">
+                        <i class="ai-folder-add"></i>
+                        <p>Create</p>
+                        <i class="ai-chevron-down-small"></i>
+                    </label>
+                    <div class="sub-menu">
+                        <ul>
+                            <li>
+                                <button type="button">Article</button>
+                            </li>
+                            <li>
+                                <button type="button">Document</button>
+                            </li>
+                            <li>
+                                <button type="button">Video</button>
+                            </li>
+                            <li>
+                                <button type="button">Presentation</button>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" id="profile" name="sidebar" />
+                    <label for="profile">
+                        <i class="ai-person"></i>
+                        <p>Profile</p>
+                        <i class="ai-chevron-down-small"></i>
+                    </label>
+                    <div class="sub-menu">
+                        <ul>
+                            <li>
+                                <button type="button">Avatar</button>
+                            </li>
+                            <li>
+                                <button type="button">Theme</button>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" id="notifications" name="sidebar" />
+                    <label for="notifications">
+                        <i class="ai-bell"></i>
+                        <p>Notifications</p>
+                    </label>
+                </li>
+                <li>
+                    <input type="radio" id="products" name="sidebar" />
+                    <label for="products">
+                        <i class="ai-cart"></i>
+                        <p>Products</p>
+                    </label>
+                </li>
+                <li>
+                    <input type="radio" id="account" name="sidebar" />
+                    <label for="account">
+                        <i class="ai-lock-on"></i>
+                        <p>Account</p>
+                    </label>
+                </li>
+            </ul>
+        </aside>
+
+
+        <div class="customer-management-container">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="panel">
+                        <div class="header">
+                            <h1 class="title">Customer Management</h1>
+
+                        </div>
+
+                        <table class="customers-table" role="grid">
+                            <thead class="table-header">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="basic-info-body">
+                                <!--                                <tr class="customer-row">
+                                                                    <td>#12345</td>
+                                                                    <td>
+                                                                        <div class="customer-info">
+                                                                            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/509629b8a1c38bf505a783a427256171352e419cc319cc455ba67cd0a0467f93?apiKey=4d372ddcf6154073b7e558cf84611b91&" alt="John Doe profile picture" class="customer-avatar" />
+                                                                            <span class="customer-name">John Doe</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="customer-email">john.doe@example.com</td>
+                                                                    <td>
+                                                                        <div class="action-buttons">
+                                                                            <button type="button" aria-label="Edit customer">
+                                                                                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b806d58c5318e32aa3c97f5428b02f5363dbd1753dde166c9dfe888c9c90eda?apiKey=4d372ddcf6154073b7e558cf84611b91&" alt="" width="16" height="16" />
+                                                                            </button>
+                                                                            <button type="button" aria-label="Delete customer">
+                                                                                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/35950d3490bacb4739abd2582f8207908a353dad496afea39e89f482e74469a3?apiKey=4d372ddcf6154073b7e558cf84611b91&" alt="" width="12" height="14" />
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>-->
+                            </tbody>
+                        </table>
+
+                        <div class="customer-details" id="customer-details">
+                            <div class="details-header">
+                                <h2 class="details-title">Customer Details</h2>
+                            </div>
+                            <div class="details-grid" id="full-info-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Hàm lấy dữ liệu cơ bản (id, name, email)
+            // Hàm lấy customerId từ URL
+            function getCustomerIdFromURL() {
+                const urlParts = window.location.pathname.split('/');
+                return urlParts[urlParts.length - 2]; // Lấy ID từ URL dạng "/users/customers/{customerId}/details"
+            }
+
+            // Hàm lấy dữ liệu cơ bản (id, name, email) của khách hàng
+            async function fetchCustomerBasicInfo() {
+                const customerId = getCustomerIdFromURL(); // Lấy ID từ URL
+
+                if (!customerId) {
+                    console.error('Customer ID not found in URL');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/users/customers/${customerId}`);
+                    const customer = await response.json(); // Chỉ lấy 1 object thay vì danh sách
+
+                    const tbody = document.getElementById('basic-info-body');
+                    tbody.innerHTML = `
+                <tr class="customer-row">
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>
+                        <button onclick="fetchCustomerFullInfo(${customer.id})">Details</button>
+                    </td>
+                </tr>`;
+                } catch (error) {
+                    console.error('Error fetching basic info:', error);
+                }
+            }
+
+            // Hàm lấy dữ liệu đầy đủ (id, name, email, password, phone, address, created_at)
+            async function fetchCustomerFullInfo(customerId) {
+                try {
+                    const response = await fetch(`/users/customers/${customerId}`);
+                    const customer = await response.json();
+
+                    const detailsGrid = document.getElementById('full-info-grid');
+                    detailsGrid.innerHTML = `
+                    <div class="details-row"><span class="details-label">Customer ID</span><span class="details-value">${customer.id}</span></div>
+                    <div class="details-row"><span class="details-label">Full Name</span><span class="details-value">${customer.name}</span></div>
+                    <div class="details-row"><span class="details-label">Email</span><span class="details-value">${customer.email}</span></div>
+                    <div class="details-row"><span class="details-label">Password</span><span class="details-value">${customer.password || 'N/A'}</span></div>
+                    <div class="details-row"><span class="details-label">Phone</span><span class="details-value">${customer.phone || 'N/A'}</span></div>
+                    <div class="details-row"><span class="details-label">Address</span><span class="details-value">${customer.address || 'N/A'}</span></div>
+                    <div class="details-row"><span class="details-label">Created Date</span><span class="details-value">${customer.created_at || 'N/A'}</span></div>`;
+                } catch (error) {
+                    console.error('Error fetching full info:', error);
+                }
+            }
+
+            // Gọi API để tải dữ liệu cơ bản khi trang tải
+            document.addEventListener('DOMContentLoaded', () => {
+                fetchCustomerBasicInfo();
+            });
+        </script>
+
+    </body>
+</html>

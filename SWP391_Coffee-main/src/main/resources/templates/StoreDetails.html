@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Customer List</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+            rel="stylesheet"
+            />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0"
+            />
+        <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+            />
+        <script src="https://unpkg.com/akar-icons-fonts"></script>
+        <style>
+            .product-detail-page {
+                background-color: #fff;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .header {
+                background-color: #fff;
+                border-bottom: 1px solid #d9d9d9;
+                display: flex;
+                width: 100%;
+                align-items: center;
+                gap: 24px;
+                overflow: hidden;
+                flex-wrap: wrap;
+                padding: 32px;
+            }
+
+            .logo-container {
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+                gap: 24px;
+                width: 40px;
+                margin: auto 0;
+            }
+
+            .logo {
+                align-self: stretch;
+                display: flex;
+                width: 40px;
+                align-items: center;
+                justify-content: center;
+                margin: auto 0;
+            }
+
+            .logo-image {
+                aspect-ratio: 0.69;
+                object-fit: contain;
+                object-position: center;
+                width: 24px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .nav-list {
+                align-self: stretch;
+                display: flex;
+                min-width: 240px;
+                align-items: start;
+                gap: 8px;
+                color: var(--sds-color-text-default-default);
+                white-space: nowrap;
+                justify-content: flex-end;
+                flex-wrap: wrap;
+                flex: 1;
+                flex-basis: 0%;
+                margin: auto 0;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1 var(--sds-typography-body-font-family);
+            }
+
+            .nav-item {
+                align-self: stretch;
+                border-radius: 8px;
+                padding: 8px;
+            }
+
+            .nav-item-active {
+                background-color: #f5f5f5;
+                color: var(--sds-color-text-brand-on-brand-secondary);
+            }
+
+            .auth-buttons {
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                justify-content: start;
+                width: 178px;
+                margin: auto 0;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1 var(--sds-typography-body-font-family);
+            }
+
+            .btn {
+                align-self: stretch;
+                border-radius: 8px;
+                gap: 8px;
+                overflow: hidden;
+                flex: 1;
+                margin: auto 0;
+                padding: 8px;
+            }
+
+            .btn-secondary {
+                background-color: #e3e3e3;
+                color: var(--sds-color-text-default-default);
+                border: 1px solid #767676;
+            }
+
+            .btn-primary {
+                background-color: #2c2c2c;
+                color: var(--sds-color-text-brand-on-brand);
+                border: 1px solid #2c2c2c;
+            }
+
+            .product-section {
+                background-color: #fff;
+                display: flex;
+                min-width: 240px;
+                width: 100%;
+                flex-direction: column;
+                justify-content: center;
+                padding: 64px;
+            }
+
+            .product-container {
+                position: relative;
+                display: flex;
+                width: 100%;
+                align-items: start;
+                gap: 40px 64px;
+                justify-content: start;
+            }
+
+            .product-image {
+                aspect-ratio: 1.11;
+                object-fit: contain;
+                object-position: center;
+                width: 100%;
+                align-self: stretch;
+                z-index: 0;
+                min-width: 240px;
+                flex: 1;
+                flex-basis: 24px;
+            }
+
+            .product-details {
+                z-index: 0;
+                display: flex;
+                min-width: 240px;
+                flex-direction: column;
+                justify-content: center;
+                flex: 1;
+                flex-basis: 24px;
+            }
+
+            .product-header {
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                justify-content: start;
+            }
+
+            .product-title {
+                width: 100%;
+                color: var(--sds-color-text-default-default);
+                letter-spacing: -0.48px;
+                font: var(--sds-typography-heading-font-weight) var(--sds-typography-heading-size-base) / 1.2 var(--sds-typography-heading-font-family);
+            }
+
+            .price-container {
+                display: flex;
+                margin-top: 16px;
+                width: 100%;
+                flex-direction: column;
+                align-items: start;
+                white-space: nowrap;
+                line-height: 1;
+                justify-content: center;
+            }
+
+            .price-tag {
+                align-self: stretch;
+                border-radius: 8px;
+                background-color: #cff7d3;
+                gap: 8px;
+                color: var(--sds-color-text-positive-on-positive-secondary);
+                padding: 8px;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) var(--sds-typography-body-font-family);
+            }
+
+            .price-value {
+                display: flex;
+                margin-top: 4px;
+                align-items: flex-end;
+                font-family: Inter, sans-serif;
+                color: #1e1e1e;
+                font-weight: 700;
+                justify-content: center;
+            }
+
+            .price-currency {
+                font-size: 24px;
+                letter-spacing: -0.48px;
+            }
+
+            .price-amount {
+                font-size: 48px;
+                letter-spacing: -0.96px;
+            }
+
+            .product-description {
+                flex: 1;
+                margin-top: 16px;
+                width: 100%;
+                color: var(--sds-color-text-default-secondary);
+                white-space: nowrap;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1.4 var(--sds-typography-body-font-family);
+            }
+
+            .product-options {
+                display: flex;
+                margin-top: 24px;
+                width: 100%;
+                align-items: center;
+                gap: 24px;
+                color: var(--sds-color-text-default-default);
+                white-space: nowrap;
+                justify-content: start;
+                flex-wrap: wrap;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) var(--sds-typography-body-font-family);
+            }
+
+            .select-field {
+                align-self: stretch;
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                flex: 1;
+                flex-basis: 0%;
+                margin: auto 0;
+            }
+
+            .select-label {
+                line-height: 1.4;
+            }
+
+            .select-wrapper {
+                border-radius: 8px;
+                background-color: #fff;
+                display: flex;
+                min-width: 240px;
+                margin-top: 8px;
+                min-height: 40px;
+                width: 100%;
+                align-items: center;
+                gap: 8px;
+                line-height: 1;
+                justify-content: start;
+                padding: 12px 12px 12px 16px;
+                border: 1px solid #d9d9d9;
+            }
+
+            .select-value {
+                align-self: stretch;
+                flex: 1;
+                flex-basis: 0%;
+                margin: auto 0;
+            }
+
+            .select-arrow {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 16px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .add-to-cart-btn {
+                align-self: stretch;
+                border-radius: 8px;
+                background-color: #2c2c2c;
+                margin-top: 24px;
+                width: 100%;
+                gap: 8px;
+                overflow: hidden;
+                color: var(--sds-color-text-brand-on-brand);
+                white-space: nowrap;
+                padding: 12px;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1 var(--sds-typography-body-font-family);
+                border: 1px solid #2c2c2c;
+            }
+
+            .accordion {
+                display: flex;
+                margin-top: 24px;
+                width: 100%;
+                max-width: 640px;
+                flex-direction: column;
+                color: var(--sds-color-text-default-default);
+                justify-content: start;
+                font: var(--sds-typography-body-size-medium) var(--sds-typography-body-font-family);
+            }
+
+            .accordion-item {
+                border-radius: 8px;
+                background-color: #fff;
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                justify-content: start;
+                padding: 16px;
+                border: 1px solid #d9d9d9;
+            }
+
+            .accordion-header {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                gap: 8px;
+                font-weight: var(--sds-typography-body-font-weight-strong);
+                white-space: nowrap;
+                line-height: 1.4;
+                justify-content: start;
+            }
+
+            .accordion-title {
+                align-self: stretch;
+                flex: 1;
+                flex-basis: 0%;
+                margin: auto 0;
+            }
+
+            .accordion-icon {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 20px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .accordion-content {
+                align-self: stretch;
+                flex: 1;
+                margin-top: 8px;
+                width: 100%;
+                font-weight: var(--sds-typography-body-font-weight-regular);
+                line-height: 22px;
+            }
+
+            .wishlist-btn {
+                border-radius: 32px;
+                background-color: #2c2c2c;
+                position: absolute;
+                z-index: 0;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                overflow: hidden;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                left: 10px;
+                top: 10px;
+                padding: 0 12px;
+                border: 1px solid #2c2c2c;
+            }
+
+            .wishlist-icon {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 20px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .reviews-section {
+                background-color: #fff;
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                justify-content: start;
+                padding: 64px;
+            }
+
+            .reviews-title {
+                align-self: start;
+                color: var(--sds-color-text-default-default);
+                letter-spacing: -0.48px;
+                font: var(--sds-typography-heading-font-weight) var(--sds-typography-heading-size-base) / 1.2 var(--sds-typography-heading-font-family);
+            }
+
+            .reviews-grid {
+                display: flex;
+                margin-top: 48px;
+                width: 100%;
+                align-items: start;
+                gap: 48px;
+                justify-content: start;
+                flex-wrap: wrap;
+            }
+
+            .review-card {
+                border-radius: 8px;
+                background-color: #fff;
+                display: flex;
+                min-width: 240px;
+                flex-direction: column;
+                justify-content: start;
+                flex: 1;
+                flex-basis: 0%;
+                padding: 24px;
+                border: 1px solid #d9d9d9;
+            }
+
+            .rating {
+                align-self: start;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                justify-content: start;
+            }
+
+            .star-icon {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 20px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .review-content {
+                display: flex;
+                margin-top: 24px;
+                width: 100%;
+                flex-direction: column;
+                color: var(--sds-color-text-default-default);
+                justify-content: start;
+            }
+
+            .review-title {
+                align-self: start;
+                letter-spacing: -0.48px;
+                font: var(--sds-typography-heading-font-weight) var(--sds-typography-heading-size-base) / 1.2 var(--sds-typography-heading-font-family);
+            }
+
+            .review-text {
+                flex: 1;
+                margin-top: 4px;
+                width: 100%;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1.4 var(--sds-typography-body-font-family);
+            }
+
+            .reviewer-info {
+                display: flex;
+                margin-top: 24px;
+                width: 100%;
+                align-items: start;
+                gap: 12px;
+                justify-content: start;
+                font: var(--sds-typography-body-size-medium) / 1.4 var(--sds-typography-body-font-family);
+            }
+
+            .reviewer-avatar {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 40px;
+                border-radius: 9999px;
+            }
+
+            .reviewer-details {
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                flex: 1;
+                flex-basis: 0%;
+            }
+
+            .reviewer-name {
+                color: var(--sds-color-text-default-secondary);
+                font-weight: var(--sds-typography-body-font-weight-strong);
+            }
+
+            .review-date {
+                color: var(--sds-color-text-default-tertiary);
+                font-weight: var(--sds-typography-body-font-weight-regular);
+            }
+
+            .newsletter-section {
+                background-color: #fff;
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                justify-content: start;
+                padding: 64px;
+            }
+
+            .newsletter-header {
+                display: flex;
+                width: 261px;
+                max-width: 100%;
+                flex-direction: column;
+                text-align: center;
+                line-height: 1.2;
+                justify-content: start;
+            }
+
+            .newsletter-title {
+                color: var(--sds-color-text-default-default);
+                letter-spacing: -0.48px;
+                font: var(--sds-typography-heading-font-weight) var(--sds-typography-heading-size-base) var(--sds-typography-heading-font-family);
+            }
+
+            .newsletter-subtitle {
+                color: var(--sds-color-text-default-secondary);
+                margin-top: 8px;
+                font: var(--sds-typography-subheading-font-weight) var(--sds-typography-subheading-size-medium) var(--sds-typography-subheading-font-family);
+            }
+
+            .newsletter-form {
+                display: flex;
+                margin-top: 24px;
+                width: 338px;
+                max-width: 100%;
+                align-items: start;
+                gap: 12px;
+                white-space: nowrap;
+                justify-content: start;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1 var(--sds-typography-body-font-family);
+            }
+
+            .newsletter-input-wrapper {
+                display: flex;
+                min-width: 240px;
+                flex-direction: column;
+                color: var(--sds-color-text-default-default);
+                justify-content: start;
+                flex: 1;
+                flex-basis: 24px;
+            }
+
+            .newsletter-input {
+                align-self: stretch;
+                flex: 1;
+                border-radius: 8px;
+                background-color: #fff;
+                min-width: 240px;
+                width: 100%;
+                overflow: hidden;
+                padding: 12px 16px;
+                border: 1px solid #d9d9d9;
+            }
+
+            .newsletter-submit {
+                align-self: stretch;
+                border-radius: 8px;
+                background-color: #2c2c2c;
+                gap: 8px;
+                overflow: hidden;
+                color: var(--sds-color-text-brand-on-brand);
+                padding: 12px;
+                border: 1px solid #2c2c2c;
+            }
+
+            .footer {
+                background-color: #fff;
+                border-top: 1px solid #d9d9d9;
+                display: flex;
+                width: 100%;
+                align-items: start;
+                gap: 16px;
+                overflow: hidden;
+                justify-content: start;
+                flex-wrap: wrap;
+                padding: 32px 32px 160px;
+            }
+
+            .footer-logo-section {
+                display: flex;
+                min-width: 240px;
+                flex-direction: column;
+                align-items: start;
+                justify-content: start;
+                width: 262px;
+            }
+
+            .footer-logo {
+                display: flex;
+                width: 23px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .footer-logo-image {
+                aspect-ratio: 0.66;
+                object-fit: contain;
+                object-position: center;
+                width: 23px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .social-links {
+                display: flex;
+                margin-top: 24px;
+                align-items: center;
+                gap: 16px;
+                justify-content: start;
+            }
+
+            .social-icon {
+                aspect-ratio: 1;
+                object-fit: contain;
+                object-position: center;
+                width: 24px;
+                align-self: stretch;
+                margin: auto 0;
+            }
+
+            .footer-column {
+                display: flex;
+                min-width: 240px;
+                flex-direction: column;
+                align-items: start;
+                color: var(--sds-color-text-default-default);
+                justify-content: start;
+                width: 262px;
+                font: var(--sds-typography-body-font-weight-regular) var(--sds-typography-body-size-medium) / 1.4 var(--sds-typography-body-font-family);
+            }
+
+            .footer-column-title {
+                align-self: stretch;
+                display: flex;
+                width: 100%;
+                padding-bottom: 16px;
+                flex-direction: column;
+                font-weight: var(--sds-typography-body-font-weight-strong);
+                justify-content: start;
+            }
+
+            .footer-link {
+                margin-top: 12px;
+                width: 89px;
+            }
+
+            @media (max-width: 991px) {
+                .header {
+                    max-width: 100%;
+                    padding: 0 20px;
+                }
+
+                .nav-list {
+                    max-width: 100%;
+                    white-space: initial;
+                }
+
+                .product-section {
+                    max-width: 100%;
+                    padding: 0 20px;
+                }
+
+                .product-container {
+                    max-width: 100%;
+                }
+
+                .product-image {
+                    max-width: 100%;
+                }
+
+                .product-details {
+                    max-width: 100%;
+                }
+
+                .product-title {
+                    max-width: 100%;
+                }
+
+                .price-container {
+                    max-width: 100%;
+                    white-space: initial;
+                }
+
+                .price-amount {
+                    font-size: 40px;
+                }
+
+                .product-description {
+                    max-width: 100%;
+                    white-space: initial;
+                }
+
+                .product-options {
+                    max-width: 100%;
+                    white-space: initial;
+                }
+
+                .select-wrapper {
+                    white-space: initial;
+                }
+
+                .add-to-cart-btn {
+                    max-width: 100%;
+                    white-space: initial;
+                }
+
+                .reviews-section {
+                    max-width: 100%;
+                    padding: 0 20px;
+                }
+
+                .reviews-grid {
+                    max-width: 100%;
+                    margin-top: 40px;
+                }
+
+                .review-card {
+                    padding: 0 20px;
+                }
+
+                .newsletter-section {
+                    max-width: 100%;
+                    padding: 0 20px;
+                }
+
+                .newsletter-form {
+                    white-space: initial;
+                }
+
+                .footer {
+                    max-width: 100%;
+                    padding: 0 20px 100px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="product-detail-page">
+            <header class="header">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/743cab4a95523431bdc34db7ea411abac4917b501c18ce4808ce6fa2ba3a6100?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="logo-image" alt="Company logo" />
+                    </div>
+                </div>
+                <nav class="nav-list">
+                    <a href="#" class="nav-item nav-item-active">Products</a>
+                    <a href="#" class="nav-item">Solutions</a>
+                    <a href="#" class="nav-item">Community</a>
+                    <a href="#" class="nav-item">Resources</a>
+                    <a href="#" class="nav-item">Pricing</a>
+                    <a href="#" class="nav-item">Contact</a>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-secondary">Sign in</button>
+                    <button class="btn btn-primary">Register</button>
+                </div>
+            </header>
+
+            <main class="product-section">
+                <div class="product-container">
+                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/e800394472d2c6099a2ce0ca7cfe851372bccc4708f68bcf661a14ed0f27a1b0?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="product-image" alt="Product image" />
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h1 class="product-title">Text Heading</h1>
+                            <div class="price-container">
+                                <span class="price-tag">Tag</span>
+                                <div class="price-value">
+                                    <span class="price-currency">$</span>
+                                    <span class="price-amount">50</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="product-description">Text</p>
+                        
+                        <form class="product-options">
+                            <button type="submit" class="add-to-cart-btn">See menu</button>
+                        </form>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <h3 class="accordion-title">Title</h3>
+                                    <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/6ffb2334b4dbafb272ea85f80e0e12471b28d8ae5c407de55e8e32b3c103e83d?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="accordion-icon" alt="Expand accordion" />
+                                </div>
+                                <div class="accordion-content">
+                                    Answer the frequently asked question in a simple sentence, a
+                                    longish paragraph, or even in a list.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="wishlist-btn" aria-label="Add to wishlist">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/5e75dd20ac62338ad8714aa563ec55696104c3bbf1c628d20dd4074078ee1e4c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="wishlist-icon" alt="Wishlist icon" />
+                    </button>
+                </div>
+            </main>
+
+            <section class="reviews-section">
+                <h2 class="reviews-title">Latest reviews</h2>
+                <div class="reviews-grid">
+                    <div class="review-card">
+                        <div class="rating">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/8f5a09a05300e2b7f939ecc79438e9ae4a58c1f5aa1da207795d22ad72ded6eb?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ecb65dcc184507e8b84af256613f7f8a52c5f08415afa15329433d1eec4c37?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Empty star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ecb65dcc184507e8b84af256613f7f8a52c5f08415afa15329433d1eec4c37?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Empty star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ecb65dcc184507e8b84af256613f7f8a52c5f08415afa15329433d1eec4c37?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Empty star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/28ecb65dcc184507e8b84af256613f7f8a52c5f08415afa15329433d1eec4c37?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Empty star" />
+                        </div>
+                        <div class="review-content">
+                            <h3 class="review-title">Review title</h3>
+                            <p class="review-text">Review body</p>
+                        </div>
+                        <div class="reviewer-info">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/775d3c55fd6b8c462d8f57c84403267215f36e31ca5682779ef26d9572d14d82?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="reviewer-avatar" alt="Reviewer avatar" />
+                            <div class="reviewer-details">
+                                <span class="reviewer-name">Reviewer name</span>
+                                <span class="review-date">Date</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="rating">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/45a37834d80ff2152ba1bcfafdb907120a2da5879ecd232c872a241a3daf9be8?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/45a37834d80ff2152ba1bcfafdb907120a2da5879ecd232c872a241a3daf9be8?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/45a37834d80ff2152ba1bcfafdb907120a2da5879ecd232c872a241a3daf9be8?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/45a37834d80ff2152ba1bcfafdb907120a2da5879ecd232c872a241a3daf9be8?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/45a37834d80ff2152ba1bcfafdb907120a2da5879ecd232c872a241a3daf9be8?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                        </div>
+                        <div class="review-content">
+                            <h3 class="review-title">Review title</h3>
+                            <p class="review-text">Review body</p>
+                        </div>
+                        <div class="reviewer-info">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f1a1817a51224704dfbad0956842b59ad0fe268ca5590ada1e1a3185cb4f44e2?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="reviewer-avatar" alt="Reviewer avatar" />
+                            <div class="reviewer-details">
+                                <span class="reviewer-name">Reviewer name</span>
+                                <span class="review-date">Date</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="rating">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f07768b046f207543179973436321684814fd1c33f49c44aab7ceabf72dcab9c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f07768b046f207543179973436321684814fd1c33f49c44aab7ceabf72dcab9c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f07768b046f207543179973436321684814fd1c33f49c44aab7ceabf72dcab9c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f07768b046f207543179973436321684814fd1c33f49c44aab7ceabf72dcab9c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/f07768b046f207543179973436321684814fd1c33f49c44aab7ceabf72dcab9c?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="star-icon" alt="Filled star" />
+                        </div>
+                        <div class="review-content">
+                            <h3 class="review-title">Review title</h3>
+                            <p class="review-text">Review body</p>
+                        </div>
+                        <div class="reviewer-info">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/ddd8e0f28da7c00d3a71e9e8653565e4b45eb7ca29100918eca6c61d6973a4e3?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="reviewer-avatar" alt="Reviewer avatar" />
+                            <div class="reviewer-details">
+                                <span class="reviewer-name">Reviewer name</span>
+                                <span class="review-date">Date</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="newsletter-section">
+                <div class="newsletter-header">
+                    <h2 class="newsletter-title">Follow the latest trends</h2>
+                    <p class="newsletter-subtitle">With our daily newsletter</p>
+                </div>
+                <form class="newsletter-form">
+                    <div class="newsletter-input-wrapper">
+                        <label for="newsletter-email" class="visually-hidden">Enter your email</label>
+                        <input type="email" id="newsletter-email" class="newsletter-input" placeholder="you@example.com" required />
+                    </div>
+                    <button type="submit" class="newsletter-submit">Submit</button>
+                </form>
+            </section>
+
+            <footer class="footer">
+                <div class="footer-logo-section">
+                    <div class="footer-logo">
+                        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/092ab438b8bf74b8c1890a59c9396edb86c8bfa724e26378bdd4f3e386b7094b?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="footer-logo-image" alt="Company logo" />
+                    </div>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/b742f3f6e1cba31a89a8e6720d9b537141ad17b582c67349ffda3d14027d6bb4?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="social-icon" alt="Facebook icon" />
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/48a3e44e91ee057a264fae1b3ca2516c4e063f8f33ac245ae95406405c0cc3ad?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="social-icon" alt="Twitter icon" />
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/86536dd1cf61dccee51bd6c8c4bc8d30ccf745795f6f23514135f49a499874e1?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="social-icon" alt="Instagram icon" />
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/ba144993e74ffd1359c461aafb9c60d684b5b3291e4e781a4f8a40ea7833b75b?placeholderIfAbsent=true&apiKey=bdeb1758cfa84d23b8a066fbbdda1559" class="social-icon" alt="LinkedIn icon" />
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <div class="footer-column-title">
+                        <h3>Use cases</h3>
+                    </div>
+                    <a href="#" class="footer-link">UI design</a>
+                    <a href="#" class="footer-link">UX design</a>
+                    <a href="#" class="footer-link">Wireframing</a>
+                    <a href="#" class="footer-link">Diagramming</a>
+                    <a href="#" class="footer-link">Brainstorming</a>
+                    <a href="#" class="footer-link">Online whiteboard</a>
+                    <a href="#" class="footer-link">Team collaboration</a>
+                </div>
+                <div class="footer-column">
+                    <div class="footer-column-title">
+                        <h3>Explore</h3>
+                    </div>
+                    <a href="#" class="footer-link">Design</a>
+                    <a href="#" class="footer-link">Prototyping</a>
+                    <a href="#" class="footer-link">Development features</a>
+                    <a href="#" class="footer-link">Design systems</a>
+                    <a href="#" class="footer-link">Collaboration features</a>
+                    <a href="#" class="footer-link">Design process</a>
+                    <a href="#" class="footer-link">FigJam</a>
+                </div>
+                <div class="footer-column">
+                    <div class="footer-column-title">
+                        <h3>Resources</h3>
+                    </div>
+                    <a href="#" class="footer-link">Blog</a>
+                    <a href="#" class="footer-link">Best practices</a>
+                    <a href="#" class="footer-link">Colors</a>
+                    <a href="#" class="footer-link">Color wheel</a>
+                    <a href="#" class="footer-link">Support</a>
+                    <a href="#" class="footer-link">Developers</a>
+                    <a href="#" class="footer-link">Resource library</a>
+                </div>
+            </footer>
+        </div>
+        <script>
+        // Function to get store ID from URL
+        function getStoreIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get("id"); // Get 'id' parameter from URL
+        }
+
+        // Function to fetch and display store details
+        async function fetchStoreDetails() {
+            const storeId = getStoreIdFromURL();
+
+            if (!storeId) {
+                console.error("Store ID not found in URL");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/stores/${storeId}`);
+                const store = await response.json();
+
+                document.getElementById("store-name").textContent = store.name;
+                document.getElementById("store-location").textContent = store.location;
+                document.getElementById("store-description").textContent = store.description;
+                document.getElementById("store-contact").textContent = store.contact;
+
+            } catch (error) {
+                console.error("Error fetching store details:", error);
+            }
+        }
+
+        // Fetch store details when page loads
+        document.addEventListener("DOMContentLoaded", fetchStoreDetails);
+    </script>
+    </body>
+</html>
