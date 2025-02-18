@@ -44,10 +44,14 @@ public class Category {
     public Category() {
     }
 
-    public Category(String name, String description, Category parentCategory) {
+    public Category(Long id, String name, String description, Category parentCategory, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.parentCategory = parentCategory;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
+
 }
 

@@ -18,10 +18,10 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/get-list-category")
-    public String getAllCategories(Model model) {
+    public ResponseEntity<List<Category>> getAllCategories(Model model) {
         List<Category> categories = categoryService.findAllCategories();
         model.addAttribute("categories", categories);
-        return "categories"; // chuổi xđường dẫn file html
+        return ResponseEntity.ok(categories); // chuổi xđường dẫn file html
     }
 
     @GetMapping("/{categoryId}")
@@ -31,16 +31,24 @@ public class CategoryController {
     }
 
     @PostMapping("/update-category")
-    public ResponseEntity<?> updateCategory(@RequestBody Category category) {
+    public ResponseEntity<String> updateCategory(@RequestBody Category category) {
         try {
+            Long categoryID = category.getId();
             boolean saveSuccess = categoryService.updateCategory(category);
-            return saveSuccess
-                    ? ResponseEntity.ok("Cập nhật danh mục thành công!")
-                    : ResponseEntity.badRequest().body("Không tìm thấy danh mục để cập nhật.");
+            if (saveSuccess) {
+                if (categoryID == null) {
+                    return ResponseEntity.ok("Thêm danh mục thành công");
+                } else {
+                    return ResponseEntity.ok("Cập nhật danh mục thành công");
+                }
+            } else {
+                return ResponseEntity.badRequest().body("Không tìm thấy danh mục để cập nhật");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi hệ thống: " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/delete-category")
     public ResponseEntity<?> deleteCategory(@RequestParam Long categoryId) {

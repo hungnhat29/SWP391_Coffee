@@ -1,6 +1,7 @@
 package com.SWP391.G3PCoffee.service;
 
 import com.SWP391.G3PCoffee.model.Category;
+import com.SWP391.G3PCoffee.model.Product;
 import com.SWP391.G3PCoffee.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.Optional;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
-
+    private ProductService productService;
 
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
@@ -48,6 +49,10 @@ public class CategoryService {
     public boolean deleteCategory(Long categoryId) {
         Category categoryInDb = getCategoryById(categoryId);
         if (categoryInDb == null) return false;
+//        List<Product> listProduct =  productService.getProductByCateId(categoryId);
+//        if(!listProduct.isEmpty()){
+//            return false;
+//        }
         categoryRepository.delete(categoryInDb);
         return true;
     }

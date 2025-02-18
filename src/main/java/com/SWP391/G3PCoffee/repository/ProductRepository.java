@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     // findAll , findByName, delete , update , ....
-    List<Product> findByCategoryId(Integer categoryId);
+    List<Product> findByCategoryId(Long categoryId);
 
 }
 
