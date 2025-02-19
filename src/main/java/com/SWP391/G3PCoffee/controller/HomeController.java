@@ -34,4 +34,10 @@ public class HomeController {
     public String contactAndAboutPage() {
         return "contactandaboutpage"; // Tên file HTML trong thư mục templates
     }
+    
+//    @GetMapping("/shopp")
+//    public String showShop() {
+////        model.addAttribute("products", productService.getAllProducts());
+//        return "test";
+//    }
 }

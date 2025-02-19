@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Shop</title>
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+        <!-- style css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    </head>
+    <body>
+
+        <!--header section start -->
+        <div class="header_section">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-lg navbar-dark">
+                    <div class="logo"><a href="index.html"><img th:src="@{/images/logo_white.png}" alt="Logo"></a></div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/home">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/shop">Stores</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Blogs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Need help?</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <img th:src="@{/images/credit-card_9654102.png}" alt="User" class="icon">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/cart">
+                                    <img th:src="@{/images/add-cart_6337238.png}" alt="Cart" class="icon">
+                                    <span class="cart-counter">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--header section end -->
+
+        <!--product details start-->
+        <div class="container product-detail-container">
+            <div class="row align-items-center">
+                <!-- Hình ảnh sản phẩm -->
+                <div class="col-md-6 text-center">
+                    <div class="product-image-container">
+                        <img th:src="${product.imageUrl}" class="img-fluid rounded shadow-sm" alt="Product Image">
+                    </div>
+                </div>
+
+                <!-- Thông tin sản phẩm -->
+                <div class="col-md-6">
+                    <h2 th:text="${product.name}" class="mb-3 fw-bold text-brown"></h2>
+                    <p class="text-muted" th:text="${product.description}"></p>
+
+                    <p class="fw-bold text-danger">
+                        Giá: <span th:text="${product.price} + ' VND'"></span>
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Size:</label>
+                        <select name="size" class="form-select">
+                            <option value="SMALL">Small</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="LARGE">Large</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Topping:</label>
+                        <select name="topping" class="form-select">
+                            <option value="">No Topping</option>
+                            <option value="CHOCOLATE">Chocolate</option>
+                            <option value="CARAMEL">Caramel</option>
+                            <option value="WHIPPED_CREAM">Whipped Cream</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quantity:</label>
+                        <input type="number" name="quantity" class="form-control" value="1" min="1">
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="/shop" class="btn btn-secondary rounded-pill px-4">Quay lại</a>
+                        <button class="btn btn-primary rounded-pill px-4" onclick="addToCart()">Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--product detail end-->
+
+        <!-- Javascript files-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/jquery-3.0.0.min.js"></script>
+        <script src="js/plugin.js"></script>
+        <!-- sidebar -->
+        <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+        <script src="js/custom.js"></script>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script th:inline="javascript">
+                            // Get userId from session or generate for guest
+                            let userId = /*[[${session.userId}]]*/ null;
+                            if (!userId) {
+                                userId = sessionStorage.getItem('guestId') || ('-' + Date.now());
+                                sessionStorage.setItem('guestId', userId);
+                            }
+
+                            // Add to cart function
+                            function addToCart() {
+                                const cartItem = {
+                                    productId: /*[[${product.id}]]*/ null,
+                                    quantity: parseInt(document.querySelector('input[name="quantity"]').value) || 1,
+                                    size: document.querySelector('select[name="size"]').value,
+                                    toppingName: document.querySelector('select[name="topping"]').value
+                                };
+
+                                fetch('/api/cart/add', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(cartItem)
+                                })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            alert('Product added to cart successfully!');
+                                            window.location.href = '/cart';
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            alert('Failed to add product to cart');
+                                        });
+                            }
+
+// Update cart counter
+                            function updateCartCounter() {
+                                fetch('/api/cart/count')
+                                        .then(response => response.json())
+                                        .then(count => {
+                                            const counter = document.querySelector('.cart-counter');
+                                            if (counter) {
+                                                counter.textContent = count;
+                                            }
+                                        })
+                                        .catch(error => console.error('Error updating cart counter:', error));
+                            }
+
+                            // Update cart counter in header
+                            function updateCartCounter() {
+                                fetch(`/api/cart/user/${userId}`)
+                                        .then(response => response.json())
+                                        .then(items => {
+                                            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+                                            // Assuming you have a span for cart counter in header
+                                            const counter = document.querySelector('.cart-counter');
+                                            if (counter) {
+                                                counter.textContent = totalItems;
+                                            }
+                                        });
+                            }
+
+                            // Update cart counter when page loads
+                            document.addEventListener('DOMContentLoaded', updateCartCounter);
+        </script>
+    </body>
+</html>
