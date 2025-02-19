@@ -14,7 +14,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public List<Product> getProductByCateId(Long categoryId) {
-        List<Product> listProduct = productRepository.findByCategoryId(categoryId);
+        List<Product> listProduct = productRepository.getListProductByCategoryId(categoryId);
         return listProduct != null ? listProduct : Collections.emptyList();
     }
 

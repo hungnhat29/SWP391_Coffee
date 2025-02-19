@@ -49,10 +49,10 @@ public class CategoryService {
     public boolean deleteCategory(Long categoryId) {
         Category categoryInDb = getCategoryById(categoryId);
         if (categoryInDb == null) return false;
-//        List<Product> listProduct =  productService.getProductByCateId(categoryId);
-//        if(!listProduct.isEmpty()){
-//            return false;
-//        }
+        List<Product> listProduct =  productService.getProductByCateId(categoryId);
+        if(!listProduct.isEmpty()){
+            return false;
+        }
         categoryRepository.delete(categoryInDb);
         return true;
     }
