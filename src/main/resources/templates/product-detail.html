@@ -121,19 +121,21 @@
         <script th:inline="javascript">
                             // Get userId from session or generate for guest
                             let userId = /*[[${session.userId}]]*/ null;
-                            if (!userId) {
-                                userId = sessionStorage.getItem('guestId') || ('-' + Date.now());
-                                sessionStorage.setItem('guestId', userId);
-                            }
 
                             // Add to cart function
                             function addToCart() {
+                                // Create cart item with proper structure
                                 const cartItem = {
-                                    productId: /*[[${product.id}]]*/ null,
+                                    product: {
+                                        id: /*[[${product.id}]]*/ null
+                                    },
                                     quantity: parseInt(document.querySelector('input[name="quantity"]').value) || 1,
                                     size: document.querySelector('select[name="size"]').value,
                                     toppingName: document.querySelector('select[name="topping"]').value
                                 };
+
+                                // Log the cart item for debugging
+                                console.log('Adding to cart:', cartItem);
 
                                 fetch('/api/cart/add', {
                                     method: 'POST',
@@ -142,9 +144,16 @@
                                     },
                                     body: JSON.stringify(cartItem)
                                 })
-                                        .then(response => response.json())
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error('Network response was not ok');
+                                            }
+                                            return response.json();
+                                        })
                                         .then(data => {
+                                            console.log('Cart updated:', data);
                                             alert('Product added to cart successfully!');
+                                            updateCartCounter();
                                             window.location.href = '/cart';
                                         })
                                         .catch(error => {
@@ -153,35 +162,45 @@
                                         });
                             }
 
-// Update cart counter
-                            function updateCartCounter() {
-                                fetch('/api/cart/count')
-                                        .then(response => response.json())
-                                        .then(count => {
-                                            const counter = document.querySelector('.cart-counter');
-                                            if (counter) {
-                                                counter.textContent = count;
-                                            }
-                                        })
-                                        .catch(error => console.error('Error updating cart counter:', error));
-                            }
-
                             // Update cart counter in header
                             function updateCartCounter() {
-                                fetch(`/api/cart/user/${userId}`)
-                                        .then(response => response.json())
-                                        .then(items => {
-                                            const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-                                            // Assuming you have a span for cart counter in header
-                                            const counter = document.querySelector('.cart-counter');
-                                            if (counter) {
-                                                counter.textContent = totalItems;
+                                fetch('/api/cart/items')
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error('Failed to fetch cart items');
                                             }
+                                            return response.json();
+                                        })
+                                        .then(items => {
+                                            if (Array.isArray(items)) {
+                                                const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+                                                const counter = document.querySelector('.cart-counter');
+                                                if (counter) {
+                                                    counter.textContent = totalItems;
+                                                }
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error updating cart counter:', error);
                                         });
                             }
 
-                            // Update cart counter when page loads
-                            document.addEventListener('DOMContentLoaded', updateCartCounter);
+                            // Initialize
+                            document.addEventListener('DOMContentLoaded', () => {
+                                // Initial cart counter update
+                                updateCartCounter();
+
+                                // Add quantity validation
+                                const quantityInput = document.querySelector('input[name="quantity"]');
+                                if (quantityInput) {
+                                    quantityInput.addEventListener('change', (e) => {
+                                        const value = parseInt(e.target.value);
+                                        if (value < 1) {
+                                            e.target.value = 1;
+                                        }
+                                    });
+                                }
+                            });
         </script>
     </body>
 </html>

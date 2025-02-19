@@ -1,9 +1,12 @@
 package com.SWP391.G3PCoffee.service;
 
 import com.SWP391.G3PCoffee.model.Cart;
+import com.SWP391.G3PCoffee.model.Product;
 import com.SWP391.G3PCoffee.repository.CartRepository;
+import com.SWP391.G3PCoffee.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
 public class CartService {
     @Autowired
     private CartRepository cartRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
     
     public List<Cart> getCartByUserId(Integer userId) {
         return cartRepository.findByUserId(userId);
@@ -22,12 +28,22 @@ public class CartService {
     }
     
     public Cart addToCart(Cart cartItem) {
-        if (cartItem.getUserId() == null) {
-            cartItem.setSessionId(cartItem.getSessionId());
-        }
+        // Fetch the product first
+        Product product = productRepository.findById(cartItem.getProduct().getId())
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+        
+        // Set the product
+        cartItem.setProduct(product);
+        
+        // Check for user or session based cart
         if (cartItem.getUserId() != null) {
+            // User is logged in
             Cart existingItem = cartRepository.findByUserIdAndProductIdAndSizeAndToppingName(
-                cartItem.getUserId(), cartItem.getProductId(), cartItem.getSize(), cartItem.getToppingName());
+                cartItem.getUserId(), 
+                product.getId(), 
+                cartItem.getSize(), 
+                cartItem.getToppingName()
+            );
             
             if (existingItem != null) {
                 existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
@@ -35,8 +51,13 @@ public class CartService {
                 return cartRepository.save(existingItem);
             }
         } else if (cartItem.getSessionId() != null) {
+            // Anonymous user
             Cart existingItem = cartRepository.findBySessionIdAndProductIdAndSizeAndToppingName(
-                cartItem.getSessionId(), cartItem.getProductId(), cartItem.getSize(), cartItem.getToppingName());
+                cartItem.getSessionId(), 
+                product.getId(), 
+                cartItem.getSize(), 
+                cartItem.getToppingName()
+            );
             
             if (existingItem != null) {
                 existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
@@ -45,6 +66,7 @@ public class CartService {
             }
         }
         
+        // If no existing item found, save new cart item
         cartItem.setCreatedAt(LocalDateTime.now());
         cartItem.setUpdatedAt(LocalDateTime.now());
         return cartRepository.save(cartItem);
@@ -53,6 +75,12 @@ public class CartService {
     public Cart updateCartItem(int cartId, int quantity) {
         Cart cart = cartRepository.findById(cartId)
             .orElseThrow(() -> new RuntimeException("Cart item not found"));
+        
+        // Make sure the Product is loaded
+        Product product = productRepository.findById(cart.getProduct().getId())
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+        cart.setProduct(product);
+        
         cart.setQuantity(quantity);
         cart.setUpdatedAt(LocalDateTime.now());
         return cartRepository.save(cart);
