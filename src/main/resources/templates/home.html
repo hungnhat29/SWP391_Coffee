@@ -16,59 +16,54 @@
         <!-- bootstrap css -->
         <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
         <!-- style css -->
-        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
         <!-- Responsive-->
         <link rel="stylesheet" th:href="@{/css/responsive.css}">
         <!-- Scrollbar Custom CSS -->
         <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
         <!-- Tweaks for older IEs-->
         <link rel="stylesheet" th:href="@{https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css}">
-        <!-- owl stylesheets --> 
+        <!-- owl stylesheets -->
         <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
         <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
-        <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}" media="screen">
+        <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css}"
+              media="screen">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            .profile-item {
+                position: relative;
+            }
+
+            .logout-menu {
+                display: none;
+                position: absolute;
+                top: 100%; /* Hiển thị bên dưới icon */
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #fff;
+                color: #000;
+                padding: 8px 12px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                white-space: nowrap;
+                z-index: 10;
+            }
+
+            .profile-item:hover .logout-menu {
+                display: block;
+            }
+
+            .logout-link {
+                text-decoration: none;
+                color: #000;
+                font-weight: bold;
+            }
+
+        </style>
     </head>
     <body>
         <!--header section start -->
-        <div class="header_section">
-            <div class="container-fluid">
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <div class="logo"><a href="index.html"><img src="images/logo_white.png"></a></div>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="home">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="shop">Stores</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link">Blogs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link">Contact Us</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link">Need help?</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <img src="images/credit-card_9654102.png" alt="User" class="icon">
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <img src="images/add-cart_6337238.png" alt="Cart" class="icon">
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
+        <div th:replace="~{/header_template :: header_template}"></div>
         <!--header section end -->
         <!-- banner section start -->
         <div class="banner_section layout_padding">
@@ -81,7 +76,8 @@
                                     <div class="banner_taital">
                                         <h1 class="outstanding_text">Outstanding</h1>
                                         <h1 class="coffee_text">Coffee Shop</h1>
-                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, </p>
+                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available,
+                                            but the majority have suffered alteration in some form, by injected humour, </p>
                                         <div class="learnmore_bt"><a href="#">Learn More</a></div>
                                     </div>
                                 </div>
@@ -93,7 +89,8 @@
                                     <div class="banner_taital">
                                         <h1 class="outstanding_text">Outstanding </h1>
                                         <h1 class="coffee_text">Coffee Shop</h1>
-                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, </p>
+                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available,
+                                            but the majority have suffered alteration in some form, by injected humour, </p>
                                         <div class="learnmore_bt"><a href="#">Learn More</a></div>
                                     </div>
                                 </div>
@@ -105,7 +102,8 @@
                                     <div class="banner_taital">
                                         <h1 class="outstanding_text">Outstanding </h1>
                                         <h1 class="coffee_text">Coffee Shop</h1>
-                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, </p>
+                                        <p class="there_text">There are many variations of passages of Lorem Ipsum available,
+                                            but the majority have suffered alteration in some form, by injected humour, </p>
                                         <div class="learnmore_bt"><a href="#">Learn More</a></div>
                                     </div>
                                 </div>
@@ -129,9 +127,11 @@
                     <div class="col-md-6">
                         <div class="about_taital_main">
                             <div class="about_taital">About Us</div>
-                            <p class="about_text">Full cleaning and housekeeping services for companies and households.</p>
-                            <p class="about_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.Lorem Ipsum is simply</p>
-                            <div class="read_bt"><a href="#">Read More</a></div>
+                            <p class="about_text">Founded in 2015, CoffeeHouse has been dedicated to bringing the finest coffee experiences to
+                                our community. We carefully select beans from sustainable farms worldwide and roast them to
+                                perfection in our local facility.</p>
+                            <!--                            <p class="about_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.Lorem Ipsum is simply</p>-->
+                            <div class="read_bt"><a href="/contactandabout">Read More</a></div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -146,8 +146,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h1 class="gallery_taital">Our Gallery</h1>
-                        <p class="gallery_text">Lorem Ipsum is simply dummy text of printing typesetting ststry lorem Ipsum the industry'ndard dummy text ever since of the 1500s, when an unknown printer took a galley of type and scra make a type specimen book. It has</p>
+                        <h1 class="gallery_taital">Our Menu</h1>
+                        <p class="gallery_text">"Discover the unique menu of G3PCoffee – where rich coffee, flavorful drinks, and delicious dishes come together to awaken your senses!"</p>
                     </div>
                 </div>
                 <div class="">
@@ -194,7 +194,8 @@
                                     <img src="images/img-5.png" alt="Avatar" class="image">
                                     <div class="overlay">
                                         <div class="overlay">
-                                            <div class="text"><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></div>
+                                            <div class="text"><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -204,7 +205,8 @@
                                     <img src="images/img-6.png" alt="Avatar" class="image">
                                     <div class="overlay">
                                         <div class="overlay">
-                                            <div class="text"><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></div>
+                                            <div class="text"><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -240,7 +242,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="seemore_bt"><a href="#">See More</a></div>
+                <div class="seemore_bt"><a href="/shop">See More</a></div>
             </div>
         </div>
         <!-- gallery section end -->
@@ -299,7 +301,8 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <h1 class="client_taital">Testimonial</h1>
-                        <p class="client_text">Eeven slightly believable. If you are going to use a passage of Lorem Ipsum, you need to</p>
+                        <p class="client_text">Eeven slightly believable. If you are going to use a passage of Lorem Ipsum, you
+                            need to</p>
                     </div>
                 </div>
             </div>
@@ -316,8 +319,15 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="testimonial_section_2">
-                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img src="images/quick-icon.png"></span></h4>
-                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All themany variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some embarrassing hidden in the middle of text. All the</p>
+                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img
+                                                        src="images/quick-icon.png"></span></h4>
+                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but
+                                                the majority have suffered alteration in some form, by injected humour, or
+                                                randomised words which don't look even slightly believable. If you are going to
+                                                use a passage of Lorem Ipsum, you need to be sure there isn't anything
+                                                embarrassing hidden in the middle of text. All themany variations of passages of
+                                                Lorem Ipsum available, but the majority have suffered alteration in some
+                                                embarrassing hidden in the middle of text. All the</p>
                                         </div>
                                     </div>
                                 </div>
@@ -330,8 +340,15 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="testimonial_section_2">
-                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img src="images/quick-icon.png"></span></h4>
-                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All themany variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some embarrassing hidden in the middle of text. All the</p>
+                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img
+                                                        src="images/quick-icon.png"></span></h4>
+                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but
+                                                the majority have suffered alteration in some form, by injected humour, or
+                                                randomised words which don't look even slightly believable. If you are going to
+                                                use a passage of Lorem Ipsum, you need to be sure there isn't anything
+                                                embarrassing hidden in the middle of text. All themany variations of passages of
+                                                Lorem Ipsum available, but the majority have suffered alteration in some
+                                                embarrassing hidden in the middle of text. All the</p>
                                         </div>
                                     </div>
                                 </div>
@@ -344,8 +361,15 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="testimonial_section_2">
-                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img src="images/quick-icon.png"></span></h4>
-                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All themany variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some embarrassing hidden in the middle of text. All the</p>
+                                            <h4 class="client_name_text">Monila <span class="quick_icon"><img
+                                                        src="images/quick-icon.png"></span></h4>
+                                            <p class="customer_text">many variations of passages of Lorem Ipsum available, but
+                                                the majority have suffered alteration in some form, by injected humour, or
+                                                randomised words which don't look even slightly believable. If you are going to
+                                                use a passage of Lorem Ipsum, you need to be sure there isn't anything
+                                                embarrassing hidden in the middle of text. All themany variations of passages of
+                                                Lorem Ipsum available, but the majority have suffered alteration in some
+                                                embarrassing hidden in the middle of text. All the</p>
                                         </div>
                                     </div>
                                 </div>
@@ -360,37 +384,9 @@
         <div class="contact_section layout_padding">
             <div class="container">
                 <h1 class="contact_text">Contact Us</h1>
-            </div>
-        </div>
-        <div class="contact_section_2 layout_padding">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6 padding_0">
-                        <div class="mail_section">
-                            <div class="email_text">
-                                <div class="form-group">
-                                    <input type="text" class="email-bt" placeholder="Name" name="Email">
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="email-bt" placeholder="Email" name="Email">
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="email-bt" placeholder="Phone Numbar" name="Email">
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="massage-bt" placeholder="Massage" rows="5" id="comment" name="Massage"></textarea>
-                                </div>
-                                <div class="send_btn">
-                                    <div type="text" class="main_bt"><a href="#">SEND</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 padding_0">
-                        <div class="map-responsive">
-                            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&q=Eiffel+Tower+Paris+France" width="600" height="508" frameborder="0" style="border:0; width: 100%;" allowfullscreen></iframe>
-                        </div>
-                    </div>
+                <p class="contact_message">If you would like to get in touch with us, share your feedback, or explore collaboration opportunities, please leave us a message here. We are always ready to listen and assist you!</p>
+                <div class="send_btn">
+                    <a href="/contactandabout" class="contactp_bt">Get it touch</a>
                 </div>
             </div>
         </div>
@@ -401,7 +397,8 @@
                 <div class="row">
                     <div class="col-lg-3 col-sm-6">
                         <h3 class="useful_text">About</h3>
-                        <p class="footer_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation u</p>
+                        <p class="footer_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation u</p>
                     </div>
                     <div class="col-lg-3 col-sm-6">
                         <h3 class="useful_text">Menu</h3>
@@ -448,7 +445,8 @@
         <!-- copyright section start -->
         <div class="copyright_section">
             <div class="container">
-                <p class="copyright_text">2020 All Rights Reserved. Design by <a href="https://html.design">Free html  Templates</a></p>
+                <p class="copyright_text">2020 All Rights Reserved. Design by <a href="https://html.design">Free html
+                        Templates</a></p>
             </div>
         </div>
         <!-- copyright section end -->
@@ -460,6 +458,47 @@
         <script src="js/plugin.js"></script>
         <!-- sidebar -->
         <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-        <script src="js/custom.js"></script>     
+        <script src="js/custom.js"></script>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function logout() {
+            fetch('/auth/logout', {
+                method: 'POST', // Gọi API với phương thức POST
+                credentials: 'include' // Đảm bảo cookie được gửi kèm
+            })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Thành công",
+                                text: "Đăng xuất thành công!",
+                                icon: "success",
+                                timer: 3000,
+                                showConfirmButton: false
+                            });
+                            // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                            setTimeout(() => {
+                                window.location.href = "/login";
+                            }, 3000);
+                        } else {
+                            Swal.fire({
+                                title: "Lỗi",
+                                text: "Đăng xuất không thành công!",
+                                icon: "error",
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: "Lỗi",
+                            text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                            icon: "error",
+                            timer: 5000,
+                            showConfirmButton: false
+                        });
+                    });
+        }
+    </script>
 </html>

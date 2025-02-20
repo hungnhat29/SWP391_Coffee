@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>
+        Login
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100"
+      style="background-image: url('/images/img.png'); /* Đường dẫn đến ảnh nền */
+  background-size: cover; /* Ảnh phủ toàn bộ màn hình */
+  background-position: center; /* Ảnh nằm ở giữa */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */"
+>
+<div class=" rounded-lg flex flex-col md:flex-row w-full max-w-12xl"
+>
+    <div class=" p-5 flex flex-col w-[30%] justify-center ml-auto">
+        <div class="flex mb-4">
+            <a th:href="@{/home}"><i class="fas fa-home text-2xl">
+            </i></a>
+        </div>
+        <h2 class="text-4xl font-bold text-center mb-6">
+            Login
+        </h2>
+        <form id="loginForm">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="email">
+                    Email
+                </label>
+                <input class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                       id="email" placeholder="Email" type="email"/>
+            </div>
+            <div class="mb-4 relative">
+                <label class="block text-sm font-medium text-gray-700" for="password">
+                    Password
+                </label>
+                <input class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                       id="password" placeholder="Password" type="password"/>
+                <i class="fas fa-eye absolute right-3 top-9 text-gray-500" id="togglePassword">
+                </i>
+            </div>
+            <div class="flex justify-between items-center mb-6">
+                <a class="text-sm text-gray-500" href="#">
+                    Forgot password?
+                </a>
+                <a class="text-sm text-blue-500" href="#">
+                    Click here
+                </a>
+            </div>
+            <button class="w-full py-2 px-4 bg-orange-500 text-white font-bold rounded-md shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                    type="submit">
+                LOGIN
+            </button>
+        </form>
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-500">
+                Create account?
+                <a class="text-black font-bold" th:href="@{/auth/register}">
+                    Register
+                </a>
+            </p>
+        </div>
+        <p id="error-message" class="text-red-500 text-sm text-center"></p>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (event) {
+            event.preventDefault();
+
+            let loginData = {
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/auth/login",
+                contentType: "application/json",
+                data: JSON.stringify(loginData),
+                success: function (response) {
+                    let role = response.role;
+                    if (role.toString().includes("admin")) {
+                        window.location.href = "/";
+                    } else if (role.toString().includes("customer")) {
+                        window.location.href = "/home";
+                    } else {
+                        window.location.href = "/home";
+                    }
+                },
+                error: function (xhr) {
+                    let errorMessage = xhr.responseJSON?.message || "Đăng nhập thất bại!";
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end', // Hiển thị ở góc trên bên phải
+                        icon: 'error',
+                        title: errorMessage,
+                        showConfirmButton: false,
+                        timer: 5000, // Hiển thị trong 5 giây
+                    });
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const passwordInput = document.getElementById("password");
+        const isPasswordHidden = passwordInput.type === "password";
+
+        // Chuyển đổi trạng thái input password
+        passwordInput.type = isPasswordHidden ? "text" : "password";
+
+        // Đổi icon giữa fa-eye và fa-eye-slash
+        this.classList.toggle("fa-eye-slash");
+    });
+</script>
+
+</html>

@@ -4,8 +4,15 @@
         <meta charset="UTF-8">
         <title>Shop</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+        <!-- style css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
+        
         <style>
-            .text-brown { color: #6F4E37; }
+            .text-brown {
+                color: #6F4E37;
+            }
             .btn-brown {
                 background-color: #6F4E37;
                 color: white;
@@ -52,38 +59,41 @@
                 color: white;
                 padding: 95px 0;
             }
+
+            .profile-item {
+                position: relative;
+            }
+
+            .logout-menu {
+                display: none;
+                position: absolute;
+                top: 100%; /* Hiển thị bên dưới icon */
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #fff;
+                color: #000;
+                padding: 8px 12px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                white-space: nowrap;
+                z-index: 10;
+            }
+
+            .profile-item:hover .logout-menu {
+                display: block;
+            }
+
+            .logout-link {
+                text-decoration: none;
+                color: #000;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
-        <!-- Header section -->
-        <div class="header_section">
-            <div class="container">
-                <nav class="navbar navbar-expand-lg">
-                    <a class="navbar-brand" th:href="@{/}">
-                        <img th:src="@{/images/logo_white.png}" alt="Logo">
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/home}">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/shop}">Stores</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/blogs}">Blogs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/contact}">Contact Us</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
+        <!--header section start -->
+        <div th:replace="~{/header_template :: header_template}"></div>
+        <!--header section end -->
 
         <!-- Main content -->
         <div class="container mt-5">
@@ -149,5 +159,46 @@
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function logout() {
+                fetch('/auth/logout', {
+                    method: 'POST', // Gọi API với phương thức POST
+                    credentials: 'include' // Đảm bảo cookie được gửi kèm
+                })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire({
+                                    title: "Thành công",
+                                    text: "Đăng xuất thành công!",
+                                    icon: "success",
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                });
+                                // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                                setTimeout(() => {
+                                    window.location.href = "/login";
+                                }, 3000);
+                            } else {
+                                Swal.fire({
+                                    title: "Lỗi",
+                                    text: "Đăng xuất không thành công!",
+                                    icon: "error",
+                                    timer: 5000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: "Lỗi",
+                                text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                                icon: "error",
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+                        });
+            }
+        </script>
     </body>
 </html>

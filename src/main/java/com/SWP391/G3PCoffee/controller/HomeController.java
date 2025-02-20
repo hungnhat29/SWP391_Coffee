@@ -1,5 +1,7 @@
 package com.SWP391.G3PCoffee.controller;
 
+import org.springframework.ui.Model;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest; // Import HttpServletRequest
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class HomeController {
     
     @GetMapping("/home")
-    public String home() {
+    public String home(HttpServletRequest request, Model model) {
+        String jwtToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    jwtToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        model.addAttribute("jwtToken", jwtToken);
         return "home"; // Tên file HTML trong thư mục templates
     }
     
