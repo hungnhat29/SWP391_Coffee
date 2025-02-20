@@ -2,185 +2,204 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Shop</title>
-    <!-- bootstrap css -->
-    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-    <!-- style css -->
-    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}" />
+    <title>Product Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=SF+Pro+Display:wght@400;500&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
+    <style>
+        .text-brown { color: #6F4E37; }
+        .product-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-title {
+            font-family: "SF Pro Display", sans-serif;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-family: "SF Pro Display", sans-serif;
+            font-size: 24px;
+            color: #F76D37;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .size-option, .topping-option {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            background: white;
+            min-width: 120px;
+            text-align: center;
+        }
+        .size-option.selected, .topping-option.selected {
+            border-color: #F76D37;
+            background-color: #FFF5F2;
+        }
+        .option-section {
+            margin-bottom: 20px;
+        }
+        .option-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .btn-order {
+            background-color: #F76D37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn-order:hover {
+            background-color: #E55D2B;
+            color: white;
+        }
+        .btn-store {
+            border: 1px solid #ddd;
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn-store:hover {
+            background-color: #f8f9fa;
+        }
+        .product-description {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .buttons-container button {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
+    <!-- Keep your existing header section -->
+<!--    <div th:replace="~{fragments/header :: header}"></div>-->
 
-<!--header section start -->
-<div class="header_section">
-    <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="logo"><a href="index.html"><img th:src="@{/images/logo_white.png}" alt="Logo"></a></div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/shop">Stores</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Blogs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Need help?</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <img th:src="@{/images/credit-card_9654102.png}" alt="User" class="icon">
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <img th:src="@{/images/add-cart_6337238.png}" alt="Cart" class="icon">
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</div>
-<!--header section end -->
-
-<!--product details start-->
-<div class="container product-detail-container">
-    <div class="row align-items-center">
-        <!-- Hình ảnh sản phẩm -->
-        <div class="col-md-6 text-center">
-            <div class="product-image-container">
-                <img th:src="${product.imageUrl}" class="img-fluid rounded shadow-sm" alt="Product Image">
-            </div>
-        </div>
-
-        <!-- Thông tin sản phẩm -->
-        <div class="col-md-6">
-            <h2 th:text="${product.name}" class="mb-3 fw-bold text-brown"></h2>
-            <p class="text-muted" th:text="${product.description}"></p>
-
-            <p class="fw-bold text-danger">
-                Giá: <span th:text="${product.price} + ' VND'"></span>
-            </p>
-
-            <p><strong>Size:</strong> <span th:text="${product.size}"></span></p>
-            <p><strong>Topping:</strong> <span th:text="${product.toppingName}"></span></p>
-
-            <div class="mt-4">
-                <a href="/shop" class="btn btn-secondary rounded-pill px-4">Quay lại</a>
-                <button class="btn btn-primary rounded-pill px-4">Thêm vào giỏ hàng</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- CSS chỉnh sửa -->
-<style>
-    /* Tăng khoảng cách từ header xuống */
-    .product-detail-container {
-        /*margin-top: 100px; !* Tăng khoảng cách *!*/
-    }
-
-    .text-brown {
-        color: #6F4E37;
-    }
-
-    .product-image-container {
-        width: 100%;
-        max-width: 400px;
-        height: 400px; /* Giữ khung ảnh cố định */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin: auto;
-    }
-
-    .product-image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-</style>
-
-<!--product detail end-->
-
-<!-- footer section start -->
-<div class="footer_section layout_padding">
-    <div class="container">
+    <div class="product-container">
         <div class="row">
-            <div class="col-lg-3 col-sm-6">
-                <h3 class="useful_text">About</h3>
-                <p class="footer_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation u</p>
+            <!-- Product Image -->
+            <div class="col-md-6 mb-4">
+                <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/default-product.jpg'}"
+                     th:alt="${product.name}"
+                     class="product-image">
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <h3 class="useful_text">Menu</h3>
-                <div class="footer_menu">
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="gallery.html">Gallery</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                    </ul>
+
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <h1 class="product-title" th:text="${product.name}">Product Name</h1>
+                <p class="product-price">
+                    <span th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', 0, 'POINT')}">0</span>đ
+                </p>
+
+                <!-- Size Selection -->
+                <div class="option-section" th:if="${product.sizes != null and not #lists.isEmpty(product.sizes)}">
+                    <div class="option-title">Select size (required)</div>
+                    <div class="options-grid">
+                        <div th:each="size : ${product.sizes}" 
+                             class="size-option"
+                             th:data-price="${size.price}"
+                             onclick="selectSize(this)">
+                            <div th:text="${size.name}">Size name</div>
+                            <div th:text="${'+' + #numbers.formatDecimal(size.price, 0, 'COMMA', 0, 'POINT') + 'đ'}">Price</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <h1 class="useful_text">Useful Link</h1>
-                <p class="dummy_text">Adipiscing Elit, sed do Eiusmod Tempor incididunt </p>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <h1 class="useful_text">Contact Us</h1>
-                <div class="location_text">
-                    <ul>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left_10">Address : Loram Ipusm</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left_10">Call : +01 1234567890</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left_10">Email : demo@gmail.com</span>
-                            </a>
-                        </li>
-                    </ul>
+
+                <!-- Toppings Selection -->
+                <div class="option-section" th:if="${product.toppings != null and not #lists.isEmpty(product.toppings)}">
+                    <div class="option-title">Topping</div>
+                    <div class="options-grid">
+                        <div th:each="topping : ${product.toppings}" 
+                             class="topping-option"
+                             th:data-price="${topping.price}"
+                             onclick="toggleTopping(this)">
+                            <div th:text="${topping.name}">Topping name</div>
+                            <div th:text="${'+' + #numbers.formatDecimal(topping.price, 0, 'COMMA', 0, 'POINT') + 'đ'}">Price</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons-container">
+                    <button class="btn btn-order">
+                        Đặt giao tận nơi
+                    </button>
+                    <button class="btn btn-store">
+                        Dùng tại quán
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Product Description -->
+        <div class="product-description">
+            <h4>Product description</h4>
+            <p th:text="${product.description}">Product description</p>
+        </div>
     </div>
-</div>
-<!-- footer section end -->
 
-<!-- Javascript files-->
-<script src="js/jquery.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/jquery-3.0.0.min.js"></script>
-<script src="js/plugin.js"></script>
-<!-- sidebar -->
-<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-<script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let basePrice = parseFloat(document.querySelector('.product-price span').textContent.replace(/,/g, ''));
+        let selectedSize = null;
+        let selectedToppings = new Set();
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        function selectSize(element) {
+            document.querySelectorAll('.size-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedSize = {
+                price: parseFloat(element.getAttribute('data-price'))
+            };
+            updateTotalPrice();
+        }
 
+        function toggleTopping(element) {
+            element.classList.toggle('selected');
+            const price = parseFloat(element.getAttribute('data-price'));
+            
+            if (element.classList.contains('selected')) {
+                selectedToppings.add(price);
+            } else {
+                selectedToppings.delete(price);
+            }
+            updateTotalPrice();
+        }
 
+        function updateTotalPrice() {
+            let total = basePrice;
+            if (selectedSize) {
+                total += selectedSize.price;
+            }
+            selectedToppings.forEach(price => {
+                total += price;
+            });
+            
+            document.querySelector('.product-price span').textContent = total.toLocaleString();
+        }
+    </script>
 </body>
 </html>

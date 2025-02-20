@@ -1,29 +1,26 @@
-package com.SWP391.G3PCoffee.controller;
+import com.SWP391.G3PCoffee.model.ProductDTO;
+import com.SWP391.G3PCoffee.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.SWP391.G3PCoffee.model.Product;
-import com.SWP391.G3PCoffee.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
+    private final ProductService productService;
 
-    @Autowired
-    private ProductRepository productRepository;
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts().stream().map(productService::convertToDTO).toList());
+    }
 
-    @GetMapping("/product/detail")
-    public String showProductDetail(@RequestParam("productId") Integer productId, Model model) {
-        Optional<Product> product = productRepository.findById(productId);
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
-            return "product-detail";
-        } else {
-            return "redirect:/shop"; // Nếu không tìm thấy sản phẩm, quay lại trang shop
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
+        Optional<ProductDTO> productDTO = productService.getProductById(id);
+        return productDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
