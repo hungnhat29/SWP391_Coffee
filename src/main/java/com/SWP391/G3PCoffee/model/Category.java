@@ -25,9 +25,8 @@ public class Category {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_category_id")
-    private Category parentCategory;
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -44,11 +43,11 @@ public class Category {
     public Category() {
     }
 
-    public Category(Long id, String name, String description, Category parentCategory, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Category(Long id, String name, String description, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.parentCategory = parentCategory;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

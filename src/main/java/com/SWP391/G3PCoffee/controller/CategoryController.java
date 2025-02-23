@@ -3,10 +3,13 @@ package com.SWP391.G3PCoffee.controller;
 import com.SWP391.G3PCoffee.model.Category;
 import com.SWP391.G3PCoffee.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,22 +33,26 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
 
-    @PostMapping("/update-category")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category) {
+    @PostMapping(value = "/update-category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateCategory(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         try {
-            Long categoryID = category.getId();
-            boolean saveSuccess = categoryService.updateCategory(category);
-            if (saveSuccess) {
-                if (categoryID == null) {
-                    return ResponseEntity.ok("Thêm danh mục thành công");
-                } else {
-                    return ResponseEntity.ok("Cập nhật danh mục thành công");
-                }
-            } else {
-                return ResponseEntity.badRequest().body("Không tìm thấy danh mục để cập nhật");
-            }
+            // Tạo đối tượng category từ các field nhận được
+            Category category = new Category();
+            category.setId(id);
+            category.setName(name);
+            category.setDescription(description);
+
+            boolean saveSuccess = categoryService.updateCategory(category, imageFile);
+
+            return saveSuccess
+                    ? ResponseEntity.ok(id == null ? "Thêm danh mục thành công" : "Cập nhật danh mục thành công")
+                    : ResponseEntity.badRequest().body("Không tìm thấy danh mục để cập nhật");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Lỗi hệ thống: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống: " + e.getMessage());
         }
     }
 

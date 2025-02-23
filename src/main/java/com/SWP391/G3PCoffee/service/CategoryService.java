@@ -6,15 +6,22 @@ import com.SWP391.G3PCoffee.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
     private ProductService productService;
+    private static final String IMAGE_FOLDER = "src/main/resources/static/images/";
 
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
@@ -26,21 +33,34 @@ public class CategoryService {
     }
 
     @Transactional
-    public boolean updateCategory(Category categoryUpdate) {
+    public boolean updateCategory(Category categoryUpdate, MultipartFile imageFile) {
         Long categoryUpdateId = categoryUpdate.getId();
+
         if (categoryUpdateId == null) {
+            // Tạo mới danh mục
+            if (imageFile != null && !imageFile.isEmpty()) {
+                categoryUpdate.setImageUrl(saveImage(imageFile));
+            }
             categoryRepository.save(categoryUpdate);
         } else {
+            // Cập nhật danh mục
             Category categoryInDb = getCategoryById(categoryUpdateId);
             if (categoryInDb == null) {
                 return false;
             }
+
+            String imageUrl = categoryInDb.getImageUrl(); // Giữ ảnh cũ nếu không có ảnh mới
+            if (imageFile != null && !imageFile.isEmpty()) {
+                imageUrl = saveImage(imageFile); // Cập nhật ảnh mới
+            }
+
             Category categoryPrepareUpdate = Category.builder()
                     .id(categoryUpdateId)
                     .name(categoryUpdate.getName())
                     .description(categoryUpdate.getDescription())
-                    .parentCategory(categoryUpdate.getParentCategory())
+                    .imageUrl(imageUrl)
                     .build();
+
             categoryRepository.save(categoryPrepareUpdate);
         }
         return true;
@@ -55,5 +75,20 @@ public class CategoryService {
         }
         categoryRepository.delete(categoryInDb);
         return true;
+    }
+
+    private String saveImage(MultipartFile imageFile) {
+        try {
+            String originalFilename = imageFile.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+            String fileName = UUID.randomUUID().toString() + extension;
+            Path imagePath = Paths.get(IMAGE_FOLDER + fileName);
+            Files.copy(imageFile.getInputStream(), imagePath);
+            return fileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

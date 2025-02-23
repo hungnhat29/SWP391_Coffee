@@ -13,6 +13,7 @@
         <thead>
         <tr>
             <th>ID</th>
+            <th>Image</th>
             <th>Name</th>
             <th>Description</th>
             <th>Actions</th>
@@ -64,6 +65,10 @@
                         <textarea class="form-control" id="addCategoryDescription"
                                   placeholder="Enter category description"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="addCategoryImage" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="addCategoryImage" accept="image/*">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -94,6 +99,11 @@
                         <textarea class="form-control" id="editCategoryDescription"
                                   placeholder="Enter category description"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="editCategoryImage" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="editCategoryImage" accept="image/*">
+                        <img id="editCategoryImagePreview" src="" alt="Category Image" style="max-width: 100px; display: none;">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -121,6 +131,16 @@
             },
             "columns": [
                 { "data": "id" },
+                {
+                    "data": "imageUrl",
+                    "render": function(data, type, row) {
+                        if (data) {
+                            return `<img src="/images/${data}?t=${new Date().getTime()}" alt="Category Image" class="img-thumbnail" width="100">`;
+                        } else {
+                            return `<span class="text-muted">No Image</span>`;
+                        }
+                    }
+                },
                 { "data": "name" },
                 { "data": "description" },
                 {
@@ -153,6 +173,11 @@
                 // Điền dữ liệu vào form Edit
                 $('#editCategoryName').val(data.name);
                 $('#editCategoryDescription').val(data.description);
+                if (data.imageUrl) {
+                    $('#editCategoryImagePreview').attr('src', `/images/${data.imageUrl}`).show();
+                } else {
+                    $('#editCategoryImagePreview').hide();
+                }
 
                 // Lưu id để sử dụng khi cập nhật
                 $('#editCategoryModal').data('id', categoryId);
@@ -164,47 +189,50 @@
     });
 
     $(document).ready(function() {
-    // Khi bấm nút Update trong modal
-    $('#updateCategoryBtn').on('click', function() {
+       $('#updateCategoryBtn').on('click', function() {
         // Lấy dữ liệu từ form
-        var categoryId = $('#editCategoryModal').data('id'); // Lấy id đã lưu trước đó
-        var categoryName = $('#editCategoryName').val();
-        var categoryDescription = $('#editCategoryDescription').val();
+            var categoryId = $('#editCategoryModal').data('id'); // Lấy id đã lưu trước đó
+            var categoryName = $('#editCategoryName').val();
+            var categoryDescription = $('#editCategoryDescription').val();
+            var categoryImage = $('#editCategoryImage')[0].files[0]; // Lấy file ảnh
 
-        if (!categoryName || !categoryDescription) {
-            showMessage('Các trường không được để trống', "error");
-            return;
-        }
-
-        // Tạo object gửi đi
-        var updatedCategory = {
-            id: categoryId,
-            name: categoryName,
-            description: categoryDescription
-        };
-
-        // Gửi request POST để cập nhật danh mục
-        $.ajax({
-            url: '/category/update-category',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedCategory),
-            success: function(response) {
-                showMessage(response, "success");
-                $('#editCategoryModal').modal('hide'); // Đóng modal
-                $('#editCategoryModal').on('hidden.bs.modal', function () {
-                    // Reset the modal's content to avoid data persisting
-                    $('#editCategoryName').val('');
-                    $('#editCategoryDescription').val('');
-                    $('.modal-backdrop').css('display', 'none');
-                });
-                $('#categoryTable').DataTable().ajax.reload(); // Reload lại bảng
-            },
-            error: function(xhr) {
-                showMessage('Cập nhật thất bại: ' + xhr.responseText, "error");
+            if (!categoryName || !categoryDescription) {
+                showMessage('Các trường không được để trống', "error");
+                return;
             }
+
+            // Tạo FormData để gửi dữ liệu dạng multipart/form-data
+            var formData = new FormData();
+            formData.append("id", categoryId);
+            formData.append("name", categoryName);
+            formData.append("description", categoryDescription);
+            if (categoryImage) {
+                formData.append("image", categoryImage);
+            }
+
+            // Gửi request POST để cập nhật danh mục
+            $.ajax({
+                url: '/category/update-category',
+                type: 'POST',
+                data: formData,
+                processData: false, // Không xử lý dữ liệu thành chuỗi
+                contentType: false, // Để FormData tự thiết lập content type
+                success: function(response) {
+                    showMessage(response, "success");
+                    $('#editCategoryModal').modal('hide'); // Đóng modal
+                    $('#editCategoryModal').on('hidden.bs.modal', function () {
+                        $('#editCategoryName').val('');
+                        $('#editCategoryDescription').val('');
+                        $('#editCategoryImage').val('');
+                        $('.modal-backdrop').css('display', 'none');
+                    });
+                    $('#categoryTable').DataTable().ajax.reload(); // Reload lại bảng
+                },
+                error: function(xhr) {
+                    showMessage('Cập nhật thất bại: ' + xhr.responseText, "error");
+                }
+            });
         });
-    });
 
     // Handle delete button click
     $(document).on('click', '.btn-danger', function () {
@@ -241,6 +269,7 @@
     // Lấy dữ liệu từ form
     var categoryName = $('#addCategoryName').val();
     var categoryDescription = $('#addCategoryDescription').val();
+    var categoryImage = $('#addCategoryImage')[0].files[0]; // Lấy file ảnh
 
     if (!categoryName || !categoryDescription) {
         showMessage('Các trường không được để trống', "error");
@@ -248,17 +277,20 @@
     }
 
     // Tạo object gửi đi mà không truyền id
-    var newCategory = {
-        name: categoryName,
-        description: categoryDescription
-    };
+    var formData = new FormData();
+    formData.append("name", categoryName);
+    formData.append("description", categoryDescription);
+    if (categoryImage) {
+        formData.append("image", categoryImage);
+    }
 
     // Gửi request POST để thêm mới danh mục
     $.ajax({
-        url: '/category/update-category',  // Phương thức này sẽ xử lý cả việc thêm và cập nhật
+        url: '/category/update-category',
         type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(newCategory),  // Không cần id, chỉ cần name và description
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function(response) {
             showMessage(response, "success");
             $('#addCategoryModal').modal('hide');  // Đóng modal
