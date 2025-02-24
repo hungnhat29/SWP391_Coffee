@@ -6,20 +6,23 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "categories")
+@Table(name = "Categories")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, length = 255)
     private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     @Column(name = "image_url", length = 255)
     private String imageUrl;
 
@@ -33,7 +36,5 @@ public class Category {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    
 }
 

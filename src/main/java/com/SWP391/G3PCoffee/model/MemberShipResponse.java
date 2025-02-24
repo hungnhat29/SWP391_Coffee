@@ -1,11 +1,10 @@
 package com.SWP391.G3PCoffee.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MemberShipResponse {
     private String name;
