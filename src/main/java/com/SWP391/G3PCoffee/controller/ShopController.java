@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ShopController {
     @Autowired
     private CategoryRepository categoryRepository;
-    
+
     @Autowired
     private ProductService productService;
 
@@ -30,15 +30,15 @@ public class ShopController {
 
         // Lấy danh sách sản phẩm dưới dạng DTO
         List<ProductDTO> products = productService.getAllProducts()
-            .stream()
-            .map(productService::convertToDTO)
-            .collect(Collectors.toList());
+                .stream()
+                .map(productService::convertToDTO)
+                .collect(Collectors.toList());
 
         // Lọc sản phẩm theo categoryId nếu được chọn
         if (categoryId != null) {
             products = products.stream()
-                .filter(product -> categoryId.equals(product.getCategoryId())) // Thay đổi cách so sánh
-                .collect(Collectors.toList());
+                    .filter(product -> categoryId.equals(product.getCategoryId())) // Thay đổi cách so sánh
+                    .collect(Collectors.toList());
             model.addAttribute("selectedCategoryId", categoryId);
         } else {
             model.addAttribute("selectedCategoryId", null);
@@ -49,10 +49,14 @@ public class ShopController {
     }
 
     @GetMapping("/detail")
-    public String showProductDetail(@RequestParam("productId") Integer productId, Model model) {
+    public String showProductDetail(@RequestParam("productId") Integer productId,
+                                    Model model) {
         Optional<ProductDTO> productDTO = productService.getProductById(productId);
         if (productDTO.isPresent()) {
+            Integer categoryId = productDTO.get().getCategoryId();
             model.addAttribute("product", productDTO.get());
+            List<ProductDTO> listProductRecommend = productService.getListProductRecommend(categoryId);
+            model.addAttribute("listProductRecommend", listProductRecommend);
             return "product-detail";
         } else {
             return "redirect:/shop";

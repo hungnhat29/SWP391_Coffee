@@ -84,8 +84,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        membershipService.initMemberShip(user);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         return jwtUtils.generateToken(userDetails);
     }
@@ -170,5 +168,11 @@ public class UserService {
         response.put("messageType", "success");
 
         return response;
+    }
+
+    public List<User> getAllCustomerByListUserId(List<Long> listUserId) {
+        return userRepository.getListUserByListUserId(listUserId).stream()
+                .filter(user -> "customer".equalsIgnoreCase(user.getRole()))
+                .toList();
     }
 }
