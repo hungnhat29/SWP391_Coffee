@@ -53,7 +53,7 @@ public class MembershipService {
         }
         List<Membership> listMemberShip = membershipRepository.getListMemberShipByRank(rank);
 
-        return convertDataMemberShip(listCustomer, listMemberShip);
+        return convertDataMemberShip(listCustomer, listMemberShip, rank);
     }
 
     public List<MemberShipResponse> getAllDataMemberShip() {
@@ -63,16 +63,18 @@ public class MembershipService {
         }
         List<Membership> listMemberShip = membershipRepository.findAll();
 
-        return convertDataMemberShip(listCustomer, listMemberShip);
+        return convertDataMemberShip(listCustomer, listMemberShip, null);
     }
 
-    private List<MemberShipResponse> convertDataMemberShip(List<User> listCustomer, List<Membership> listMemberShip) {
+    private List<MemberShipResponse> convertDataMemberShip(List<User> listCustomer, List<Membership> listMemberShip, String rank) {
         Map<Long, Membership> mapMemberShipByUserId = listMemberShip.stream()
                 .collect(Collectors.toMap(membership -> membership.getUser().getId(), membership -> membership));
 
-        List<MemberShipResponse> listMembershipResponse = new ArrayList<>();
+        List<MemberShipResponse> listAllMembershipResponse = new ArrayList<>();
+        List<MemberShipResponse> listMembershipByRankResponse = new ArrayList<>();
         listCustomer.forEach(item -> {
             Membership membership = mapMemberShipByUserId.get(item.getId());
+
             MemberShipResponse memberShipResponse = MemberShipResponse.builder()
                     .userId(item.getId())
                     .name(item.getName())
@@ -81,10 +83,12 @@ public class MembershipService {
                     .point(membership != null ? membership.getPoints() : 0)
                     .rank(membership != null ? membership.getRank() : "")
                     .build();
-
-            listMembershipResponse.add(memberShipResponse);
+            if (membership != null && rank != null) {
+                listMembershipByRankResponse.add(memberShipResponse);
+            }
+            listAllMembershipResponse.add(memberShipResponse);
         });
-        return listMembershipResponse;
+        return rank != null ? listMembershipByRankResponse : listAllMembershipResponse;
     }
 
     @Transactional

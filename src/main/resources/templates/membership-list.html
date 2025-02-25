@@ -42,7 +42,7 @@
             <td th:text="${membership.name}"></td>
             <td th:text="${membership.email}"></td>
             <td th:text="${membership.rank}"></td>
-            <td th:text="${membership.type}"></td>
+            <td th:text="${membership.phone}"></td>
 <!--            <td>-->
 <!--                <button class="btn btn-sm btn-primary openUpdateModal">Update</button>-->
 <!--            </td>-->
@@ -82,13 +82,18 @@
                 <th>ID</th>
                 <th>Customer</th>
                 <th>Email</th>
+                <th>Rank</th>
+                <th>Type</th>
+                <th>ExpiryDate</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>Long</td>
-                <td>longhoang@gmail.com</td>
+            <tr th:each="membership : ${listAllCustomer}">
+                <td th:text="${membership.id}"></td>
+                <td th:text="${membership.name}"></td>
+                <td th:text="${membership.email}"></td>
+                <td th:text="${membership.rank}"></td>
+                <td th:text="${membership.phone}"></td>
             </tr>
             </tbody>
         </table>
