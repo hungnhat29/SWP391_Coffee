@@ -45,16 +45,18 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final MembershipService membershipService;
+    private final EmailContactService emailContactService;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager, MembershipService membershipService) {
+                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager, MembershipService membershipService, EmailContactService emailContactService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
         this.membershipService = membershipService;
+        this.emailContactService = emailContactService;
     }
 
     public List<User> getAllCustomers() {
@@ -75,6 +77,11 @@ public class UserService {
             throw new RuntimeException("Email is already in use!");
         }
 
+        boolean verifyOtp = emailContactService.verifyOtp(userDTO.getEmail(), userDTO.getOtp());
+        if(!verifyOtp){
+            throw new RuntimeException("Invalid OTP!");
+        }
+
         User user = new User();
         user.setName(userDTO.getFullName());
         user.setPhone(userDTO.getPhone());
@@ -84,7 +91,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        membershipService.initMemberShip(user);
+//        membershipService.initMemberShip(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         return jwtUtils.generateToken(userDetails);

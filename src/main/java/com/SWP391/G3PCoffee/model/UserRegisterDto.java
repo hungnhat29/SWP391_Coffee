@@ -7,6 +7,7 @@ public class UserRegisterDto {
     private String fullName;
     private String phone;
     private String email;
+    private String otp;
     private String password;
     private String confirmPassword;
 }

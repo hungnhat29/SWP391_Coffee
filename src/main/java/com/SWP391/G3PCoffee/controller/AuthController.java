@@ -36,19 +36,26 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegisterDto userDTO, HttpServletResponse response) {
-        String jwtToken = userService.registerUser(userDTO);
+        try {
+            String jwtToken = userService.registerUser(userDTO);
 
-        Cookie cookie = new Cookie("jwtToken", jwtToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        response.addCookie(cookie);
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "Registration successful!");
+            Cookie cookie = new Cookie("jwtToken", jwtToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60); // 1 ngày
+            response.addCookie(cookie);
 
-        return ResponseEntity.ok(responseBody);
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "Registration successful!");
+            return ResponseEntity.ok(responseBody);
+        } catch (RuntimeException ex) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", ex.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto loginDto, HttpServletResponse response) {
