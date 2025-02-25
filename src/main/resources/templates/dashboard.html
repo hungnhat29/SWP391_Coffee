@@ -25,6 +25,63 @@
     </head>
 
     <body>
+    <style>
+        body {
+        background-color: #b8a890;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        background-color: #a89c86;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    h2 {
+        color: white;
+    }
+
+    table {
+        background-color: #a89c86;
+        border-collapse: collapse;
+        width: 100%;
+        color: white;
+    }
+
+    thead {
+        background-color: #80725f;
+        color: white;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #9c8c72;
+    }
+
+    tr:nth-child(even) {
+        background-color: #9c8c72;
+    }
+
+    .btn-primary {
+        background-color: #5a4a3f;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #3e322a;
+    }
+
+    .btn-danger {
+        background-color: #d66a4d;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #b8543e;
+    }
+
+    </style>
         <style>
             * {
                 box-sizing: border-box;
@@ -185,6 +242,12 @@
                 min-width: 20px;
             }
 
+            .content {
+                margin-left: 280px;
+                padding: 20px;
+                width: calc(100% - 280px);
+             }
+
         </style>
 
         <aside class="sidebar">
@@ -284,6 +347,9 @@
             </ul>
         </aside>
 
+        <div class="content">
+            <div th:replace="~{/membership-list :: membershipTable}"></div>
+        </div>
 
     </body>
 </html>

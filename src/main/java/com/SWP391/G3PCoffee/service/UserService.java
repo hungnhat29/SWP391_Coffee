@@ -16,7 +16,6 @@ import com.SWP391.G3PCoffee.model.Role;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
-import com.SWP391.G3PCoffee.service.member_ship.MembershipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,17 +43,15 @@ public class UserService {
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
-    private final MembershipService membershipService;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager, MembershipService membershipService) {
+                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
-        this.membershipService = membershipService;
     }
 
     public List<User> getAllCustomers() {

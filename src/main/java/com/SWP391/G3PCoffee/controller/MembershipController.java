@@ -34,7 +34,7 @@ public class MembershipController {
         model.addAttribute("listMembershipByRank", listMembership);
         model.addAttribute("listAllCustomer", listAllCustomer);
         model.addAttribute("listRank", listRank);
-        return "membership";
+        return "membership-list";
     }
 
     @PostMapping("/save-data-membership")

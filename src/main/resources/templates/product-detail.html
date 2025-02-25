@@ -267,7 +267,7 @@
                 <h4 class="recommended-title">Gợi ý sản phẩm tương tự</h4>
                 <div class="recommended-list">
                     <div th:each="recommended : ${listProductRecommend}" class="recommended-item">
-                        <a th:href="@{/products/{id}(id=${recommended.id})}" class="recommended-link">
+                        <a th:href="@{/detail(productId=${recommended.id})}" class="recommended-link">
                             <img th:src="${recommended.imageUrl != null ? recommended.imageUrl : '/images/default-product.jpg'}"
                                  th:alt="${recommended.name}" class="recommended-image">
                             <div class="recommended-info">
