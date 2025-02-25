@@ -22,6 +22,8 @@ public class ProductService {
     public List<Product> getProductByCateId(Long categoryId) {
         List<Product> listProduct = productRepository.getListProductByCategoryId(categoryId);
         return listProduct != null ? listProduct : Collections.emptyList();
+    }
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
