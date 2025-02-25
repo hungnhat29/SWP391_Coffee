@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script defer src="/custom/js/auth.js"></script>
-</head>
-<body>
-<div th:fragment="header_template">
-    <div class="header_section">
-        <div class="container-fluid">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="logo"><a th:href="@{/home}"><img src="images/logo_white.png"></a></div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">Stores</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">Blogs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">Contact Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">Need help?</a>
-                        </li>
-                        <li class="nav-item profile-item">
-                            <a class="nav-link" th:href="@{/profile}">
-                                <img src="images/credit-card_9654102.png" alt="User" class="icon">
-                            </a>
-                            <div class="logout-menu" id="logoutMenu">
-                                <a href="/auth/logout" class="logout-link">Đăng xuất</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <img src="images/add-cart_6337238.png" alt="Cart" class="icon">
-                            </a>
-                        </li>
-                    </ul>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script defer src="/custom/js/auth.js"></script>
+        
+    </head>
+    <body>
+        <div th:fragment="header_template">
+            <div class="header_section">
+                <div class="container-fluid">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="logo"><a th:href="@{/home}"><img src="images/logo_white.png"></a></div>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Stores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Blogs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Contact Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">Need help?</a>
+                                </li>
+                                <li class="nav-item profile-item">
+                                    <a class="nav-link" th:href="@{/profile}">
+                                        <img src="images/credit-card_9654102.png" alt="User" class="icon">
+                                    </a>
+                                    <div class="logout-menu" id="logoutMenu">
+                                        <a href="/auth/logout" class="logout-link">Đăng xuất</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <img src="images/add-cart_6337238.png" alt="Cart" class="icon">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
-            </nav>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

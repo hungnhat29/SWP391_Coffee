@@ -2,16 +2,12 @@ package com.SWP391.G3PCoffee.model;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@Builder
+@Data
 @Entity
+@Builder
 @Table(name = "categories")
 public class Category {
 

@@ -3,12 +3,63 @@
     <head>
         <meta charset="UTF-8">
         <title>Shop</title>
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+        <!-- style css -->
+        <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
+
         <style>
+            .text-brown {
+                color: #6F4E37;
+            }
+            .btn-brown {
+                background-color: #6F4E37;
+                color: white;
+            }
+            .btn-brown:hover {
+                background-color: #553829;
+                color: white;
+            }
+            .category-box {
+                width: 80px;
+                height: 80px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+            .category-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .category-box:hover {
+                border: 2px solid #6F4E37;
+                transform: scale(1.1);
+            }
+            .card:hover {
+                transform: scale(1.05);
+                transition: 0.3s;
+            }
+            .header_section {
+                width: 100%;
+                background-color: #252525;
+                padding: 20px 0;
+            }
+            .navbar-nav .nav-link {
+                color: white;
+                font-size: 18px;
+                padding: 0.5rem;
+            }
+            .navbar-nav .icon {
+                width: 24px;
+                height: 24px;
+            }
+            .footer_section {
+                background-color: #252525;
+                color: white;
+                padding: 95px 0;
+            }
+
             .profile-item {
                 position: relative;
             }
@@ -37,297 +88,117 @@
                 color: #000;
                 font-weight: bold;
             }
-
         </style>
     </head>
     <body>
-        <!-- Header section -->
+        <!--header section start -->
         <div th:replace="~{/header_template :: header_template}"></div>
-        <!-- Header section end -->
+        <!--header section end -->
 
-        <!-- MAIN CONTENT -->
+        <!-- Main content -->
         <div class="container mt-5">
             <h2 class="fw-bold text-brown mt-5 text-center">☕ G3P Coffee Menu</h2>
 
-            <!-- Danh sách danh mục -->
-            <div class="row justify-content-center my-5  ">
-                <div th:each="category : ${categories}" class="col-md-2 col-sm-4 col-6 text-center  ">
-                    <a th:href="@{'/shop?categoryId=' + ${category.id}}" style="color: #6F4E37; text-decoration: none">
-                        <div class="category-box p-3 rounded-circle shadow-sm bg-white d-inline-block "
-                             th:classappend="${selectedCategoryId} == category.id ? 'border border-primary' : ''">
-                            <img th:src="@{/images/{name}.jpg(name=${category.name.toLowerCase()})}"
-                                 class="img-fluid rounded-circle" alt="Category Image">
+            <!-- Categories -->
+            <div class="row justify-content-center my-5">
+                <div th:each="category : ${categories}" class="col-md-2 col-sm-4 col-6 text-center">
+                    <a th:href="@{/shop(categoryId=${category.id})}" class="text-decoration-none">
+                        <div class="category-box p-3 rounded-circle shadow-sm bg-white d-inline-block"
+                             th:classappend="${category.id == selectedCategoryId ? 'border border-primary' : ''}">
+                            <img class="img-fluid rounded-circle"
+                                 th:src="@{${category.imageUrl}}"
+                                 th:alt="${category.name}">
                         </div>
-                        <span class="d-block mt-2 fw-bold" th:text="${category.name}"></span>
+                        <span class="d-block mt-2 fw-bold text-brown" th:text="${category.name}">Category Name</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Danh sách sản phẩm -->
-            <div class="row mt-4 justify-content-center ">
+            <!-- Products -->
+            <div class="row mt-4 justify-content-center">
                 <div th:each="product : ${products}" class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
-                        <a th:href="@{'/product/detail?productId=' + ${product.id}}" style="color: #6F4E37; text-decoration: none;">
-                            <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/default-product.jpg'}"
-                                 class="card-img-top rounded-3" style="aspect-ratio: 1 / 1; object-fit: cover;"
-                                 alt="Product Image">
+                        <a th:href="@{/detail(productId=${product.id})}" class="text-decoration-none">
+                            <img th:src="@{${product.imageUrl != null ? product.imageUrl : '/images/default-product.jpg'}}"
+                                 class="card-img-top rounded-3"
+                                 style="aspect-ratio: 1 / 1; object-fit: cover;"
+                                 th:alt="${product.name}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-dark fw-bold" th:text="${product.name}">Product Name</h5>
+                                <p class="card-text text-danger fw-bold">
+                                    <span th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', 0, 'POINT')}">0</span> VND
+                                </p>
+                                <button class="btn btn-brown rounded-pill px-4">View Details</button>
+                            </div>
                         </a>
-                        <div class="card-body text-center">
-                            <h5 class="card-title text-dark fw-bold" th:text="${product.name}"></h5>
-                            <p class="card-text text-muted small" th:text="${product.description}"></p>
-                            <p class="text-danger fw-bold"><span th:text="${product.price}"></span> VND</p>
-                            <a th:href="@{'/product/detail?productId=' + ${product.id}}"
-                               class="btn btn-brown rounded-pill px-4">View Details</a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- footer section start -->
-        <div class="footer_section layout_padding">
+        <!-- Footer -->
+        <div class="footer_section mt-5">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6">
-                        <h3 class="useful_text">About</h3>
-                        <p class="footer_text">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation u</p>
+                    <div class="col-lg-4">
+                        <h3>About Us</h3>
+                        <p>Your coffee shop description here</p>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <h3 class="useful_text">Menu</h3>
-                        <div class="footer_menu">
-                            <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="about.html">About Us</a></li>
-                                <li><a href="gallery.html">Gallery</a></li>
-                                <li><a href="services.html">Services</a></li>
-                                <li><a href="contact.html">Contact Us</a></li>
-                            </ul>
-                        </div>
+                    <div class="col-lg-4">
+                        <h3>Contact</h3>
+                        <p>Address: Your address here</p>
+                        <p>Phone: Your phone here</p>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <h1 class="useful_text">Useful Link</h1>
-                        <p class="dummy_text">Adipiscing Elit, sed do Eiusmod Tempor incididunt </p>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <h1 class="useful_text">Contact Us</h1>
-                        <div class="location_text">
-                            <ul>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-map-marker" aria-hidden="true"></i><span class="padding_left_10">Address : Loram Ipusm</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-phone" aria-hidden="true"></i><span class="padding_left_10">Call : +01 1234567890</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-envelope" aria-hidden="true"></i><span class="padding_left_10">Email : demo@gmail.com</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="col-lg-4">
+                        <h3>Follow Us</h3>
+                        <p>Social media links here</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- footer section end -->
 
-        <!-- Javascript files-->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.bundle.min.js"></script>
-        <script src="js/jquery-3.0.0.min.js"></script>
-        <script src="js/plugin.js"></script>
-        <!-- sidebar -->
-        <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-        <script src="js/custom.js"></script>
-
-        <!-- Bootstrap JS -->
+        <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-        <!--css category-->
-        <style>
-            .text-brown {
-                color: #6F4E37;
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function logout() {
+                fetch('/auth/logout', {
+                    method: 'POST', // Gọi API với phương thức POST
+                    credentials: 'include' // Đảm bảo cookie được gửi kèm
+                })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire({
+                                    title: "Thành công",
+                                    text: "Đăng xuất thành công!",
+                                    icon: "success",
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                });
+                                // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                                setTimeout(() => {
+                                    window.location.href = "/login";
+                                }, 3000);
+                            } else {
+                                Swal.fire({
+                                    title: "Lỗi",
+                                    text: "Đăng xuất không thành công!",
+                                    icon: "error",
+                                    timer: 5000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: "Lỗi",
+                                text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                                icon: "error",
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+                        });
             }
-
-            .btn-brown {
-                background-color: #6F4E37;
-                color: white;
-            }
-
-            .btn-brown:hover {
-                background-color: #553829;
-
-            }
-
-            .category-box {
-                width: 80px;
-                height: 80px;
-                overflow: hidden;
-                transition: all 0.3s ease;
-            }
-
-            .category-box img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .category-box:hover {
-                border: 2px solid #6F4E37;
-                transform: scale(1.1);
-
-            }
-
-            .card:hover {
-                transform: scale(1.05);
-                transition: 0.3s;
-            }
-
-
-            /* header section start */
-
-
-            .header_section {
-
-                width: 100%;
-                background-color: #252525;
-                height: auto;
-                background-size: 100%;
-            }
-
-            .bg-light {
-                background-color: transparent !important;
-            }
-
-
-            .navbar-light .navbar-nav .active > .nav-link,
-            .navbar-light .navbar-nav .nav-link.active,
-            .navbar-light .navbar-nav .nav-link.show,
-            .navbar-light .navbar-nav .show > .nav-link {
-                color: #f76d37;
-            }
-
-            .navbar-light .navbar-nav .nav-link:focus,
-            .navbar-light .navbar-nav .nav-link:hover {
-                color: #f76d37;
-            }
-
-            .navbar-nav .nav-item .icon {
-                width: 24px; /* Điều chỉnh kích thước icon */
-                height: 24px;
-            }
-
-            .navbar {
-                padding: 20px 1rem;
-            }
-
-            .navbar-expand-lg .navbar-nav .nav-link {
-                padding-right: .5rem;
-                padding-left: .5rem;
-                font-size: 18px;
-                color: #fff;
-            }
-
-            .logo {
-            }
-
-
-            /* header section end */
-
-            /* footer section start */
-
-
-            .footer_section {
-                width: 100%;
-                float: left;
-                background-color: #252525;
-                height: auto;
-                padding: 95px 0px;
-            }
-
-            .useful_text {
-                width: 100%;
-                font-size: 24px;
-                color: #ffffff;
-                margin-bottom: 15px;
-                font-weight: bold;
-            }
-
-            .footer_text {
-                width: 100%;
-                float: left;
-                font-size: 14px;
-                color: #ffffff;
-                margin: 0px;
-            }
-
-            .footer_menu {
-                width: 100%;
-                float: left;
-            }
-
-            .footer_menu ul {
-                margin: 0px;
-                padding: 0px;
-            }
-
-            .footer_menu li {
-                font-size: 14px;
-                color: #ffffff;
-            }
-
-            .footer_menu li a {
-                color: #ffffff;
-            }
-
-            .footer_menu li a:hover {
-                color: #f76d37;
-            }
-
-            .dummy_text {
-                width: 30%;
-                float: left;
-                font-size: 14px;
-                color: #ffffff;
-                margin: 0px;
-            }
-
-            .location_text {
-                width: 100%;
-                float: left;
-            }
-
-            .location_text ul {
-                margin: 0px;
-                padding: 0px;
-            }
-
-            .location_text li {
-                font-size: 14px;
-                color: #ffffff;
-                padding: 0px 0px 5px 0px;
-            }
-
-            .location_text li a {
-                color: #ffffff;
-            }
-
-            .location_text li a:hover {
-                color: #f76d37;
-            }
-
-            .padding_left_10 {
-                padding-left: 10px;
-            }
-
-
-        </style>
-        /* footer section end */
+        </script>
     </body>
 </html>
