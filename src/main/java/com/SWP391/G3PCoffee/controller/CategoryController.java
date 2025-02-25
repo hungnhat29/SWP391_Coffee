@@ -38,15 +38,16 @@ public class CategoryController {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
-            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+            @RequestParam(value = "image", required = false) String imageFile) {
         try {
             // Tạo đối tượng category từ các field nhận được
             Category category = new Category();
             category.setId(id);
             category.setName(name);
             category.setDescription(description);
+            category.setImageUrl(imageFile);
 
-            boolean saveSuccess = categoryService.updateCategory(category, imageFile);
+            boolean saveSuccess = categoryService.updateCategory(category);
 
             return saveSuccess
                     ? ResponseEntity.ok(id == null ? "Thêm danh mục thành công" : "Cập nhật danh mục thành công")

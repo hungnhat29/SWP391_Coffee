@@ -8,7 +8,7 @@
 <body th:fragment="categoriesTable">
 <div class="container mt-5">
     <h2 class="text-2xl">Categories List</h2>
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
+    <button class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
     <table id="categoryTable" class="table table-bordered table-striped">
         <thead>
         <tr>
@@ -66,8 +66,8 @@
                                   placeholder="Enter category description"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="addCategoryImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="addCategoryImage" accept="image/*">
+                        <label for="addCategoryImage" class="form-label">Image</label>
+                        <input type="text" class="form-control" id="addCategoryImage" placeholder="Enter link image..">
                     </div>
                 </form>
             </div>
@@ -100,8 +100,8 @@
                                   placeholder="Enter category description"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="editCategoryImage" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="editCategoryImage" accept="image/*">
+                        <label for="editCategoryImage" class="form-label">Image</label>
+                        <input type="text" class="form-control" id="editCategoryImage" placeholder="Enter link image..">
                         <img id="editCategoryImagePreview" src="" alt="Category Image" style="max-width: 100px; display: none;">
                     </div>
                 </form>
@@ -135,7 +135,7 @@
                     "data": "imageUrl",
                     "render": function(data, type, row) {
                         if (data) {
-                            return `<img src="/images/${data}?t=${new Date().getTime()}" alt="Category Image" class="img-thumbnail" width="100">`;
+                            return `<img src="${data}?t=${new Date().getTime()}" alt="Category Image" class="img-thumbnail" width="100">`;
                         } else {
                             return `<span class="text-muted">No Image</span>`;
                         }
@@ -147,7 +147,7 @@
                     "data": null,
                     "render": function(data, type, row) {
                         return `
-                            <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
+                            <button class="btn btn-sm btn-danger edit-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
                             <button class="btn btn-sm btn-danger" data-id="${row.id}">Delete</button>
                         `;
                     }
@@ -174,7 +174,7 @@
                 $('#editCategoryName').val(data.name);
                 $('#editCategoryDescription').val(data.description);
                 if (data.imageUrl) {
-                    $('#editCategoryImagePreview').attr('src', `/images/${data.imageUrl}`).show();
+                    $('#editCategoryImagePreview').attr('src', `${data.imageUrl}`).show();
                 } else {
                     $('#editCategoryImagePreview').hide();
                 }
@@ -194,7 +194,8 @@
             var categoryId = $('#editCategoryModal').data('id'); // Lấy id đã lưu trước đó
             var categoryName = $('#editCategoryName').val();
             var categoryDescription = $('#editCategoryDescription').val();
-            var categoryImage = $('#editCategoryImage')[0].files[0]; // Lấy file ảnh
+           // var categoryImage = $('#editCategoryImage')[0].files[0];
+           var categoryImage = $('#editCategoryImage').val();
 
             if (!categoryName || !categoryDescription) {
                 showMessage('Các trường không được để trống', "error");
@@ -269,7 +270,8 @@
     // Lấy dữ liệu từ form
     var categoryName = $('#addCategoryName').val();
     var categoryDescription = $('#addCategoryDescription').val();
-    var categoryImage = $('#addCategoryImage')[0].files[0]; // Lấy file ảnh
+    // var categoryImage = $('#addCategoryImage')[0].files[0];
+    var categoryImage = $('#addCategoryImage').val();
 
     if (!categoryName || !categoryDescription) {
         showMessage('Các trường không được để trống', "error");

@@ -3,6 +3,7 @@ package com.SWP391.G3PCoffee.service;
 import com.SWP391.G3PCoffee.model.Category;
 import com.SWP391.G3PCoffee.model.Product;
 import com.SWP391.G3PCoffee.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +18,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
     @Autowired
-    private CategoryRepository categoryRepository;
-    private ProductService productService;
+    private final CategoryRepository categoryRepository;
+    private final ProductService productService;
     private static final String IMAGE_FOLDER = "src/main/resources/static/images/";
 
     public List<Category> findAllCategories() {
@@ -33,14 +35,14 @@ public class CategoryService {
     }
 
     @Transactional
-    public boolean updateCategory(Category categoryUpdate, MultipartFile imageFile) {
+    public boolean updateCategory(Category categoryUpdate) {
         Long categoryUpdateId = categoryUpdate.getId();
 
         if (categoryUpdateId == null) {
             // Tạo mới danh mục
-            if (imageFile != null && !imageFile.isEmpty()) {
-                categoryUpdate.setImageUrl(saveImage(imageFile));
-            }
+//            if (imageFile != null && !imageFile.isEmpty()) {
+//                categoryUpdate.setImageUrl(saveImage(imageFile));
+//            }
             categoryRepository.save(categoryUpdate);
         } else {
             // Cập nhật danh mục
@@ -49,16 +51,16 @@ public class CategoryService {
                 return false;
             }
 
-            String imageUrl = categoryInDb.getImageUrl(); // Giữ ảnh cũ nếu không có ảnh mới
-            if (imageFile != null && !imageFile.isEmpty()) {
-                imageUrl = saveImage(imageFile); // Cập nhật ảnh mới
-            }
+//            String imageUrl = categoryInDb.getImageUrl(); // Giữ ảnh cũ nếu không có ảnh mới
+//            if (imageFile != null && !imageFile.isEmpty()) {
+//                imageUrl = saveImage(imageFile); // Cập nhật ảnh mới
+//            }
 
             Category categoryPrepareUpdate = Category.builder()
                     .id(categoryUpdateId)
                     .name(categoryUpdate.getName())
                     .description(categoryUpdate.getDescription())
-                    .imageUrl(imageUrl)
+                    .imageUrl(categoryUpdate.getImageUrl())
                     .build();
 
             categoryRepository.save(categoryPrepareUpdate);
