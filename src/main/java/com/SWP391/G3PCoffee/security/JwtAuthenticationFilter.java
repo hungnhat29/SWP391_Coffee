@@ -19,7 +19,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtil;
     private final UserDetailsService userDetailsService;
-
+    
     public JwtAuthenticationFilter(JwtUtils jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
@@ -35,12 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String jwt = extractJwtFromCookies(request);
-
+        System.out.println("jwt============== " + jwt);
         if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtUtil.extractUsername(jwt);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
+                System.out.println("=========SUCCESSFULL========");
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

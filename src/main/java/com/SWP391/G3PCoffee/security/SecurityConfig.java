@@ -52,11 +52,12 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").hasRole("ADMIN")
-                        .requestMatchers("/auth/login", "/auth/register", "/home", "/auth/check-login").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
-                        .requestMatchers("/favicon.ico").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/").hasRole("ADMIN")
+//                        .requestMatchers("/shop", "/detail", "/home", "/api/cart", "/api/cart/**", "/cart", "/auth/login", "/auth/register", "/auth/check-login").permitAll()
+//                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
+//                        .requestMatchers("/favicon.ico").permitAll()
+                        
+                        .anyRequest().permitAll()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
