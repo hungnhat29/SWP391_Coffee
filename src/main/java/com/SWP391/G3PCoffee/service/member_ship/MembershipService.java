@@ -6,6 +6,8 @@ import com.SWP391.G3PCoffee.model.MembershipRequest;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.MembershipRepository;
 import com.SWP391.G3PCoffee.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class MembershipService {
     private final MembershipRepository membershipRepository;
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(MembershipService.class);
 
     public MembershipService(MembershipRepository membershipRepository, UserService userService) {
         this.membershipRepository = membershipRepository;
@@ -76,9 +79,10 @@ public class MembershipService {
             Membership membership = mapMemberShipByUserId.get(item.getId());
 
             MemberShipResponse memberShipResponse = MemberShipResponse.builder()
+                    .id(membership != null ? membership.getId() : 0)
                     .userId(item.getId())
                     .name(item.getName())
-                    .email(item.getPhone())
+                    .phone(item.getPhone())
                     .email(item.getEmail())
                     .point(membership != null ? membership.getPoints() : 0)
                     .rank(membership != null ? membership.getRank() : "")
@@ -95,6 +99,7 @@ public class MembershipService {
     public boolean saveDataMembership(MembershipRequest dataMembership) {
         String rank = dataMembership.getRank();
         List<Long> listUserId = dataMembership.getListUserId();
+
         if (rank == null || listUserId.isEmpty()) {
             return false;
         }
@@ -109,6 +114,9 @@ public class MembershipService {
         List<Membership> listMembershipNeedAdd = new ArrayList<>();
         listCustomer.forEach(user -> {
             Membership membership = mapMembershipByUserId.getOrDefault(user.getId(), null);
+            if (membership == null) {
+                membership = new Membership();
+            }
             membership.setMembershipType("");
             membership.setRank(rank);
             membership.setStatus("active");

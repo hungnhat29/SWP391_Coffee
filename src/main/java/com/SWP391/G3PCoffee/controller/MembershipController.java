@@ -21,7 +21,7 @@ public class MembershipController {
 
     private final MembershipService membershipService;
 
-    @GetMapping("/get-data-membership-by-rank")
+    @GetMapping("/membership")
     public String getMembershipByRank(Model model,
                                       @RequestParam(required = false) String rank) {
         List<String> listRank = membershipService.getAllRank();

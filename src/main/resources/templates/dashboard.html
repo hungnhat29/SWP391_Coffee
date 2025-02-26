@@ -276,7 +276,7 @@
                                 <button type="button">Customers List</button>
                             </li>
                             <li>
-                                <button type="button">Members List</button>
+                                <button onclick="window.location.href='/membership'" type="button">Members List</button>
                             </li>
                         </ul>
                     </div>
@@ -346,10 +346,5 @@
                 </li>
             </ul>
         </aside>
-
-        <div class="content">
-            <div th:replace="~{/membership-list :: membershipTable}"></div>
-        </div>
-
     </body>
 </html>
