@@ -33,6 +33,11 @@ public class HomeController {
     public String customerList() {
         return "customerlist"; // Tên file HTML trong thư mục templates
     }
+
+    @GetMapping("/categories")
+    public String categoriesList() {
+        return "categories-list"; // Tên file HTML trong thư mục templates
+    }
     
     
     @GetMapping("/users/customers/{customerId}/details")

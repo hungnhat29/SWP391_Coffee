@@ -5,8 +5,322 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body th:fragment="categoriesTable">
-<div class="container mt-5">
+<body >
+<style>
+    body {
+    background-color: #b8a890;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    background-color: #a89c86;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h2 {
+    color: white;
+}
+
+table {
+    background-color: #a89c86;
+    border-collapse: collapse;
+    width: 100%;
+    color: white;
+}
+
+thead {
+    background-color: #80725f;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #9c8c72;
+}
+
+tr:nth-child(even) {
+    background-color: #9c8c72;
+}
+
+.btn-primary {
+    background-color: #5a4a3f;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #3e322a;
+}
+
+.btn-danger {
+    background-color: #d66a4d;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #b8543e;
+}
+
+</style>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background-color: #C0B8AB !important;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 30%;
+        height: 100vh;
+        font-family: "Euclid Circular A";
+    }
+
+    button,
+    label {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        bottom: 44px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 260px;
+        border-radius: 16px;
+        padding: 0 16px;
+        background: rgb(0 0 0 / 32%);
+        backdrop-filter: blur(30px);
+        transition: width 0.4s;
+    }
+
+    .sidebar header {
+        display: flex;
+        align-items: center;
+        height: 72px;
+        padding-top: 10px;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
+    }
+
+    .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #F76D37;
+        margin: 0;
+        padding: 0;
+        font-family: "Euclid Circular A", sans-serif;
+    }
+
+    .sidebar input {
+        scale: 0;
+        position: absolute;
+    }
+
+    .sidebar input#settings:checked ~ div {
+        height: 150px;
+    }
+
+    .sidebar input#create:checked ~ div {
+        height: 200px;
+    }
+
+    .sidebar input#profile:checked ~ div {
+        height: 100px;
+    }
+
+    .sidebar :is(button, label) {
+        position: relative;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        height: 50px;
+        width: 100%;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1;
+        padding: 0 16px;
+        color: rgb(255 255 255 / 95%);
+    }
+
+    .sidebar label p:nth-child(2) {
+        flex: 1 1 auto;
+    }
+
+    .sidebar input:checked ~ label {
+        background: #1960f3;
+    }
+
+    .sidebar label i {
+        transition: 0.3s;
+    }
+
+    .sidebar input:checked ~ label > i:nth-child(3) {
+        rotate: -180deg;
+    }
+
+    .sidebar input:not(:checked) ~ label:hover,
+    .sidebar button:hover {
+        background: rgb(0 0 0 / 15%);
+    }
+
+    .sidebar ul {
+        display: grid;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .sub-menu {
+        position: relative;
+        overflow: hidden;
+        height: 0;
+        transition: 0.5s;
+    }
+
+    .sub-menu ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: grid;
+    }
+
+    .sub-menu button {
+        padding-left: 52px;
+    }
+
+    .sub-menu button::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 24px;
+        translate: 0 -50%;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: rgb(255 255 255 / 35%);
+    }
+
+    .sidebar .material-symbols-outlined {
+        font-size: 16px;
+    }
+
+    .sidebar i {
+        font-size: 20px;
+        width: 20px;
+        max-width: 20px;
+        min-width: 20px;
+    }
+
+    .content {
+        margin-left: 300px;
+        padding: 20px;
+        width: calc(100% - 300px);
+        background-color: #a89c86;
+        border-radius: 10px;
+     }
+
+</style>
+
+<aside class="sidebar">
+    <header>
+        <h1 class="logo-text">Admin Page</h1>
+    </header>
+
+    <ul>
+        <li>
+            <input type="radio" id="dashboard" name="sidebar" />
+            <label for="dashboard">
+                <i class="ai-dashboard"></i>
+                <p>Dashboard</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="settings" name="sidebar" />
+            <label for="settings">
+                <i class="ai-gear"></i>
+                <p>Customers</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li>
+                        <button type="button"><a href="/users/customers/list">Customers List</a></button>
+                    </li>
+                    <li>
+                        <button type="button">Members List</button>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="create" name="sidebar" />
+            <label for="create">
+                <i class="ai-folder-add"></i>
+                <p>Categories</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu !h-[50px]">
+                <ul>
+                    <li>
+                        <button type="button" onclick="window.location.href='/categories'"><a >Categories List</a></button>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="profile" name="sidebar" />
+            <label for="profile">
+                <i class="ai-person"></i>
+                <p>Profile</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li>
+                        <button type="button">Avatar</button>
+                    </li>
+                    <li>
+                        <button type="button">Theme</button>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="notifications" name="sidebar" />
+            <label for="notifications">
+                <i class="ai-bell"></i>
+                <p>Notifications</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="products" name="sidebar" />
+            <label for="products">
+                <i class="ai-cart"></i>
+                <p>Products</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="account" name="sidebar" />
+            <label for="account">
+                <i class="ai-lock-on"></i>
+                <p>Account</p>
+            </label>
+        </li>
+    </ul>
+</aside>
+<div class="content mt-5">
     <h2 class="text-2xl">Categories List</h2>
     <button class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
     <table id="categoryTable" class="table table-bordered table-striped">
@@ -123,11 +437,23 @@
 <script src="/js/alert.js"></script>
 
 <script>
+
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
     $(document).ready(function() {
         $('#categoryTable').DataTable({
             "ajax": {
                 "url": "/category/get-list-category",
-                "dataSrc": ""
+                "dataSrc": function(json) {
+                    // Duyệt qua từng phần tử để thêm thuộc tính không dấu
+                    json.forEach(item => {
+                        item.name_no_accents = removeAccents(item.name);  // Thêm cột không dấu
+                        item.description_no_accents = removeAccents(item.description);
+                    });
+                    return json;
+                }
             },
             "columns": [
                 { "data": "id" },
@@ -148,10 +474,12 @@
                     "render": function(data, type, row) {
                         return `
                             <button class="btn btn-sm btn-danger edit-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
-                            <button class="btn btn-sm btn-danger" data-id="${row.id}">Delete</button>
+                            <button class="btn btn-sm btn-danger removeBtn" data-id="${row.id}">Delete</button>
                         `;
                     }
-                }
+                },
+                { "data": "name_no_accents", "visible": false }, // Cột ẩn chứa tên không dấu
+                { "data": "description_no_accents", "visible": false } // Cột ẩn chứa mô tả không dấu
             ],
             "paging": true,
             "searching": true,
@@ -160,6 +488,12 @@
             "lengthChange": false,
             "pageLength": 5
         });
+
+        $('#categoryTable_filter input').on('keyup', function() {
+            let searchValue = removeAccents(this.value); // Chuyển input thành không dấu
+            table.columns([5, 6]).search(searchValue).draw(); // Tìm kiếm trên cột ẩn
+        });
+
     });
 
     $(document).on('click', '.edit-btn', function() {
@@ -173,6 +507,7 @@
                 // Điền dữ liệu vào form Edit
                 $('#editCategoryName').val(data.name);
                 $('#editCategoryDescription').val(data.description);
+                $('#editCategoryImage').val(data.imageUrl);
                 if (data.imageUrl) {
                     $('#editCategoryImagePreview').attr('src', `${data.imageUrl}`).show();
                 } else {
@@ -196,6 +531,12 @@
             var categoryDescription = $('#editCategoryDescription').val();
            // var categoryImage = $('#editCategoryImage')[0].files[0];
            var categoryImage = $('#editCategoryImage').val();
+
+           $('#editCategoryImage').on("blur", function () {
+                if ($.trim($(this).val()) === "") {
+                  $(this).val("https://");
+                }
+           });
 
             if (!categoryName || !categoryDescription) {
                 showMessage('Các trường không được để trống', "error");
@@ -222,10 +563,7 @@
                     showMessage(response, "success");
                     $('#editCategoryModal').modal('hide'); // Đóng modal
                     $('#editCategoryModal').on('hidden.bs.modal', function () {
-                        $('#editCategoryName').val('');
-                        $('#editCategoryDescription').val('');
-                        $('#editCategoryImage').val('');
-                        $('.modal-backdrop').css('display', 'none');
+                      $('.modal-backdrop').remove();
                     });
                     $('#categoryTable').DataTable().ajax.reload(); // Reload lại bảng
                 },
@@ -236,7 +574,7 @@
         });
 
     // Handle delete button click
-    $(document).on('click', '.btn-danger', function () {
+    $(document).on('click', '.removeBtn', function () {
         var categoryId = $(this).data('id');
 
         Swal.fire({
@@ -266,12 +604,31 @@
         });
     });
 
+    $('#addCategoryModal').on('show.bs.modal', function () {
+       $('#addCategoryImage').val("https://");
+    });
+
+        $('#editCategoryModal').on('show.bs.modal', function () {
+            if (!$('#editCategoryImage').val()) {
+              $('#editCategoryImage').val("https://");
+            }
+          });
+
+          // Nếu người dùng xóa hết nội dung, tự động đặt lại giá trị mặc định
+          $('#addCategoryImage, #editCategoryImage').on('blur', function () {
+            if ($.trim($(this).val()) === "") {
+              $(this).val("https://");
+            }
+          });
+
     $('#addCategoryBtn').on('click', function() {
     // Lấy dữ liệu từ form
     var categoryName = $('#addCategoryName').val();
     var categoryDescription = $('#addCategoryDescription').val();
     // var categoryImage = $('#addCategoryImage')[0].files[0];
     var categoryImage = $('#addCategoryImage').val();
+
+
 
     if (!categoryName || !categoryDescription) {
         showMessage('Các trường không được để trống', "error");
@@ -300,6 +657,7 @@
                 // Reset nội dung modal sau khi đóng
                 $('#addCategoryName').val('');
                 $('#addCategoryDescription').val('');
+                $('#addCategoryImage').val('');
                 $('.modal-backdrop').css('display', 'none');
             });
             $('#categoryTable').DataTable().ajax.reload();  // Reload lại bảng

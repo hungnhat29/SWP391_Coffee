@@ -301,7 +301,7 @@
                         <div class="sub-menu !h-[50px]">
                             <ul>
                                 <li>
-                                    <button type="button" onclick="showContent('categories')"><a >Categories List</a></button>
+                                    <button type="button" onclick="window.location.href='/categories'"><a >Categories List</a></button>
                                 </li>
                             </ul>
                         </div>
@@ -347,35 +347,8 @@
                     </li>
                 </ul>
             </aside>
-<!--            <div id="dynamic-content" class="content" style="display: none;"></div>-->
-            <div class="content">
-                <div th:replace="~{/categories-list :: categoriesTable}"></div>
-            </div>
+
         </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
-    <script>
-        function showContent(listType) {
-            const contentDiv = document.getElementById("dynamic-content");
-
-            // Hiển thị div khi nhấp vào nút
-            contentDiv.style.display = "block";
-
-            // Xóa nội dung cũ
-            contentDiv.innerHTML = "";
-
-            // Tạo phần tử div mới
-            const newDiv = document.createElement("div");
-
-            // Thiết lập th:insert động dựa trên loại danh sách
-            if (listType === "categories") {
-                newDiv.setAttribute("th:insert", "~{/categories-list :: categoriesTable}");
-            } else if (listType === "customer-list") {
-                newDiv.setAttribute("th:insert", "~{/customer-list :: customerTable}");
-            }
-
-            // Thêm phần tử mới vào DOM
-            contentDiv.appendChild(newDiv);
-        }
-    </script>
 </html>
