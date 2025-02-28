@@ -355,7 +355,7 @@ tr:nth-child(even) {
         <div>
             <label for="rankFilter" class="me-2">Filter by Rank:</label>
             <select id="rankFilter" class="form-select d-inline-block w-auto">
-                <option value="">None</option>
+                <option th:value="${null}">All</option>
                 <option th:each="rankItem : ${listRank}"
                         th:value="${rankItem}"
                         th:text="${rankItem}"
@@ -609,7 +609,7 @@ tr:nth-child(even) {
         border: 2px solid #007bff; /* Viền màu xanh */
         border-radius: 5px; /* Bo góc */
         outline: none;
-        background-color: white;
+        background-color: white !important;
     }
 
     /* Khi focus vào ô tìm kiếm */

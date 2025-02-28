@@ -17,7 +17,7 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     List<String> getAllRankOfMembership();
 
     @Query(value = "select m from Membership m " +
-            "where m.rank = ?1")
+            "WHERE (:rank IS NULL OR :rank = '' OR m.rank = :rank)")
     List<Membership> getListMemberShipByRank(String rank);
 
     @Query(value = "select m from Membership m " +

@@ -56,7 +56,10 @@ public class MembershipService {
         }
         List<Membership> listMemberShip = membershipRepository.getListMemberShipByRank(rank);
 
-        return convertDataMemberShip(listCustomer, listMemberShip, rank);
+        return convertDataMemberShip(listCustomer, listMemberShip, rank)
+                .stream()
+                .filter(memberShip -> memberShip.getRank() != null && !memberShip.getRank().isEmpty()) // Loại bỏ bản ghi không có rank
+                .collect(Collectors.toList());
     }
 
     public List<MemberShipResponse> getAllDataMemberShip() {
@@ -120,7 +123,7 @@ public class MembershipService {
             membership.setMembershipType("");
             membership.setRank(rank);
             membership.setStatus("active");
-            membership.setPoints(isNewRank ? 0 : membership.getPoints());
+            membership.setPoints(membership.getPoints() != null ? membership.getPoints() : 0);
             membership.setUser(user);
             membership.setStartDate(LocalDate.now());
             membership.setExpiryDate(LocalDate.now().plusMonths(6));

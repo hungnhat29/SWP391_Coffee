@@ -25,10 +25,8 @@ public class MembershipController {
     public String getMembershipByRank(Model model,
                                       @RequestParam(required = false) String rank) {
         List<String> listRank = membershipService.getAllRank();
-        List<MemberShipResponse> listMembership = new ArrayList<>();
-        if (rank != null) {
-            listMembership = membershipService.getDataMemberShipByRank(rank);
-        }
+        List<MemberShipResponse> listMembership = membershipService.getDataMemberShipByRank(rank);
+
         List<MemberShipResponse> listAllCustomer = membershipService.getAllDataMemberShip();
 
         model.addAttribute("listMembershipByRank", listMembership);
