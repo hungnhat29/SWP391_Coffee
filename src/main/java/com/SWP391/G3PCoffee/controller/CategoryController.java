@@ -11,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/category")
@@ -34,7 +36,7 @@ public class CategoryController {
     }
 
     @PostMapping(value = "/update-category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateCategory(
+    public ResponseEntity<Map<String, String>> updateCategory(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -47,13 +49,16 @@ public class CategoryController {
             category.setDescription(description);
             category.setImageUrl(imageFile);
 
-            boolean saveSuccess = categoryService.updateCategory(category);
+            // Gọi service để cập nhật danh mục
+            Map<String, String> response = categoryService.updateCategory(category);
 
-            return saveSuccess
-                    ? ResponseEntity.ok(id == null ? "Thêm danh mục thành công" : "Cập nhật danh mục thành công")
-                    : ResponseEntity.badRequest().body("Không tìm thấy danh mục để cập nhật");
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Lỗi hệ thống: " + e.getMessage());
+            errorResponse.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 

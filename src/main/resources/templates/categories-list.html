@@ -386,8 +386,8 @@ tr:nth-child(even) {
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="addCategoryBtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="addCategoryBtn" class="btn btn-danger">Save</button>
             </div>
         </div>
     </div>
@@ -421,8 +421,8 @@ tr:nth-child(even) {
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button id="updateCategoryBtn" type="button" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button id="updateCategoryBtn" type="button" class="btn btn-danger">Update</button>
             </div>
         </div>
     </div>
@@ -560,15 +560,18 @@ tr:nth-child(even) {
                 processData: false, // Không xử lý dữ liệu thành chuỗi
                 contentType: false, // Để FormData tự thiết lập content type
                 success: function(response) {
-                    showMessage(response, "success");
-                    $('#editCategoryModal').modal('hide'); // Đóng modal
-                    $('#editCategoryModal').on('hidden.bs.modal', function () {
-                      $('.modal-backdrop').remove();
-                    });
-                    $('#categoryTable').DataTable().ajax.reload(); // Reload lại bảng
+                    showMessage(response.message, response.messageType);
+                    if (response.messageType === "success") {
+                        $('#editCategoryModal').modal('hide'); // Đóng modal
+                        $('#editCategoryModal').on('hidden.bs.modal', function () {
+                            $('.modal-backdrop').css('display', 'none');
+                        });
+                        $('#categoryTable').DataTable().ajax.reload(); // Reload lại bảng
+                    }
                 },
                 error: function(xhr) {
-                    showMessage('Cập nhật thất bại: ' + xhr.responseText, "error");
+                    let errorResponse = JSON.parse(xhr.responseText);
+                    showMessage(errorResponse.message, errorResponse.messageType);
                 }
             });
         });

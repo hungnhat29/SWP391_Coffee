@@ -4,6 +4,8 @@ import com.SWP391.G3PCoffee.model.Category;
 import com.SWP391.G3PCoffee.model.Product;
 import com.SWP391.G3PCoffee.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +35,21 @@ public class CategoryService {
     }
 
     @Transactional
-    public boolean updateCategory(Category categoryUpdate) {
+    public Map<String, String> updateCategory(Category categoryUpdate) {
+        Map<String, String> response = new HashMap<>();
         Long categoryUpdateId = categoryUpdate.getId();
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        Optional<Category> existingCategory = categoryRepository.findByName(categoryUpdate.getName());
+
+        logger.info("Checking existing category with name: {}", categoryUpdate.getName());
+        existingCategory.ifPresent(cat -> logger.info("Existing Category Found: ID = {}, Name = {}", cat.getId(), cat.getName()));
+        if (existingCategory.isPresent()) {
+            response.put("message", "Tên danh mục đã tồn tại!");
+            response.put("messageType", "error");
+            return response;
+        }
 
         if (categoryUpdateId == null) {
             // Tạo mới danh mục
@@ -44,11 +57,14 @@ public class CategoryService {
 //                categoryUpdate.setImageUrl(saveImage(imageFile));
 //            }
             categoryRepository.save(categoryUpdate);
+            response.put("message", "Thêm danh mục thành công!");
+            response.put("messageType", "success");
         } else {
             // Cập nhật danh mục
             Category categoryInDb = getCategoryById(categoryUpdateId);
             if (categoryInDb == null) {
-                return false;
+                response.put("message", "Không tìm thấy danh mục!");
+                response.put("messageType", "error");
             }
 
 //            String imageUrl = categoryInDb.getImageUrl(); // Giữ ảnh cũ nếu không có ảnh mới
@@ -64,8 +80,11 @@ public class CategoryService {
                     .build();
 
             categoryRepository.save(categoryPrepareUpdate);
+            response.put("message", "Cập nhật danh mục thành công!");
+            response.put("messageType", "success");
         }
-        return true;
+
+        return response;
     }
 
     public boolean deleteCategory(Long categoryId) {

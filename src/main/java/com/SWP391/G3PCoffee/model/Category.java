@@ -21,7 +21,7 @@ public class Category {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "image_url", length = 255)
+    @Column(name = "image_url", length = 1000)
     private String imageUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)
