@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Purchase History</title>
+  <!-- Include your CSS and other head elements -->
+</head>
+<body>
+<div class="container">
+  <h1>Your Purchase History</h1>
+
+  <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+
+  <div th:unless="${orders.empty}" class="order-history">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Payment Method</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+        <td th:text="${'$' + order.orderTotal}"></td>
+        <td th:text="${order.paymentMethod}"></td>
+        <td th:text="${order.status}"></td>
+        <td>
+          <a th:href="@{/order/confirmation/{id}(id=${order.id})}" class="btn btn-primary btn-sm">View Details</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add a login prompt for guest users -->
+  <div th:if="${!isLoggedIn}" class="mt-4 alert alert-warning">
+    <p>You are currently viewing as a guest. <a href="/login">Log in</a> to access your purchase history across all devices.</p>
+  </div>
+</div>
+</body>
+</html>

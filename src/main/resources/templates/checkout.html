@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - G3P Coffee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
+    <style>
+        .cart-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .checkout-form label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option.selected {
+            border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .payment-option img {
+            height: 30px;
+            margin-bottom: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .product-details {
+            flex-grow: 1;
+        }
+
+        .product-price {
+            font-weight: bold;
+            text-align: right;
+            min-width: 100px;
+        }
+
+        .customizations {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #3e8e41;
+        }
+
+        .error-message {
+            color: #d9534f;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .col-md-6 {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header will be here -->
+<div th:replace="~{/header_template :: header_template}"></div>
+
+<div class="container my-5">
+    <h1 class="mb-4">Checkout</h1>
+
+    <!-- Alert for errors -->
+    <div id="errorAlert" class="alert alert-danger" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i> <span id="errorMessage"></span>
+    </div>
+
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-md-7 checkout-form">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Shipping Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="shippingAddress">Shipping Address</label>
+                        <textarea id="shippingAddress" class="form-control" rows="3" required></textarea>
+                        <div class="error-message" id="addressError">Please enter your shipping address</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>Payment Method</h4>
+                </div>
+                <div class="card-body">
+                    <div class="payment-methods">
+                        <div class="payment-option" data-method="COD" onclick="selectPaymentMethod('COD')">
+                            <img src="/images/cod.png" alt="COD">
+                            <div>
+                                <h5>Cash on Delivery</h5>
+                                <p>Pay when you receive your order</p>
+                            </div>
+                        </div>
+                        <div class="payment-option" data-method="VNPAY" onclick="selectPaymentMethod('VNPAY')">
+                            <img src="/images/vnpay.png" alt="VNPAY">
+                            <div>
+                                <h5>VNPay</h5>
+                                <p>Pay securely with VNPAY</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="error-message" id="paymentError">Please select a payment method</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="cart-items">
+                        <div th:each="item : ${cartItems}" class="product-item">
+                            <img th:src="${item.product.imageUrl}" alt="Product" class="product-image">
+                            <div class="product-details">
+                                <h5 th:text="${item.product.name}">Product Name</h5>
+                                <p>Quantity: <span th:text="${item.quantity}">1</span></p>
+                                <div class="customizations">
+                                    <div th:if="${item.sizeInfo}">
+                                        Size: <span
+                                            th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getSizeName(item.sizeInfo)}">Regular</span>
+                                    </div>
+                                    <div th:if="${item.toppingsInfo}">
+                                        Toppings: <span
+                                            th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}">None</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-price">
+                                <span th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
+                                đ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
+                            đ
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between font-weight-bold mt-3 pt-3 border-top">
+                            <span>Total:</span>
+                            <span class="text-primary"
+                                  th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
+                            đ
+                        </div>
+                    </div>
+
+                    <button id="placeOrderBtn" class="btn-primary mt-4" onclick="placeOrder()">
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer will be here -->
+<div th:replace="~{/footer-template :: footer-template}"></div>
+
+<script>
+    let selectedPaymentMethod = null;
+
+    function selectPaymentMethod(method) {
+        selectedPaymentMethod = method;
+
+        // Update UI
+        document.querySelectorAll('.payment-option').forEach(option => {
+            if (option.dataset.method === method) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        });
+
+        // Hide error if previously shown
+        document.getElementById('paymentError').style.display = 'none';
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        // Check shipping address
+        const shippingAddress = document.getElementById('shippingAddress').value.trim();
+        if (!shippingAddress) {
+            document.getElementById('addressError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('addressError').style.display = 'none';
+        }
+
+        // Check payment method
+        if (!selectedPaymentMethod) {
+            document.getElementById('paymentError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('paymentError').style.display = 'none';
+        }
+
+        return isValid;
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMessage = document.getElementById('errorMessage');
+
+        errorMessage.textContent = message;
+        errorAlert.style.display = 'block';
+
+        // Scroll to error
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function placeOrder() {
+        if (!validateForm()) {
+            return;
+        }
+
+        // Disable button to prevent multiple submissions
+        const orderButton = document.getElementById('placeOrderBtn');
+        orderButton.disabled = true;
+        orderButton.textContent = 'Processing...';
+
+        // Prepare checkout data
+        const checkoutData = {
+            shippingAddress: document.getElementById('shippingAddress').value.trim(),
+            paymentMethod: selectedPaymentMethod,
+            returnUrl: window.location.origin + '/payment/vnpay-return'
+        };
+
+        // Send API request
+        fetch('/api/checkout/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(checkoutData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to appropriate page
+                    window.location.href = data.redirectUrl;
+                } else {
+                    // Show error message
+                    showError(data.message || 'An error occurred. Please try again.');
+                    orderButton.disabled = false;
+                    orderButton.textContent = 'Place Order';
+                }
+            })
+            .catch(error => {
+                console.error('Error processing checkout:', error);
+                showError('An unexpected error occurred. Please try again.');
+                orderButton.disabled = false;
+                orderButton.textContent = 'Place Order';
+            });
+    }
+</script>
+</body>
+</html>

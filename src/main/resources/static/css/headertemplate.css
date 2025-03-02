@@ -7,13 +7,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : hungp
 */
 /* header section start */
+body, html {
+    margin: 0;
+    padding: 0;
+}
 
 .header_section {
     width: 100%;
-    float: left;
+    /*float: left;*/
     background-color: #252525;
     height: auto;
     background-size: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.container-fluid {
+    padding: 0;
 }
 
 .bg-light {
@@ -45,7 +55,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .navbar {
-    padding: 20px 1rem;
+    padding: 10px 1rem; /* Reduced from 20px to 10px */
+    margin: 0;
 }
 
 .navbar-expand-lg .navbar-nav .nav-link {
@@ -55,7 +66,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     color: #fff;
 }
 
-.logo {
+.navbar-collapse {
+    padding: 0;
 }
-
+.logo {
+    display: flex;
+    align-items: center;
+}
 /* header section end */
