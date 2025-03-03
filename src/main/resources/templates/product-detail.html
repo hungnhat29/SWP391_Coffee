@@ -120,7 +120,7 @@
                 <div class="option-section" th:if="${product.sizes != null and not #lists.isEmpty(product.sizes)}">
                     <div class="option-title">Select size (required)</div>
                     <div class="options-grid">
-                        <div th:each="size : ${product.sizes}" 
+                        <div th:each="size : ${product.sizes}"
                              class="size-option"
                              th:data-price="${size.price}"
                              onclick="selectSize(this)">
@@ -134,7 +134,7 @@
                 <div class="option-section" th:if="${product.toppings != null and not #lists.isEmpty(product.toppings)}">
                     <div class="option-title">Topping</div>
                     <div class="options-grid">
-                        <div th:each="topping : ${product.toppings}" 
+                        <div th:each="topping : ${product.toppings}"
                              class="topping-option"
                              th:data-price="${topping.price}"
                              onclick="toggleTopping(this)">
@@ -180,7 +180,7 @@
         function toggleTopping(element) {
             element.classList.toggle('selected');
             const price = parseFloat(element.getAttribute('data-price'));
-            
+
             if (element.classList.contains('selected')) {
                 selectedToppings.add(price);
             } else {
@@ -197,7 +197,7 @@
             selectedToppings.forEach(price => {
                 total += price;
             });
-            
+
             document.querySelector('.product-price span').textContent = total.toLocaleString();
         }
     </script>

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
@@ -12,9 +11,9 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @Column(columnDefinition = "NTEXT")
@@ -22,24 +21,28 @@ public class Product {
 
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
-    
-    @Column(name = "category_id")
-    private Integer categoryId;
 
-    @Column(name = "image_url")
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
-    @Column(name = "sizes", columnDefinition = "NVARCHAR(MAX)")
-    private String sizes; // JSON String
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String sizes;
 
-    @Column(name = "toppings", columnDefinition = "NVARCHAR(MAX)")
-    private String toppings; // JSON String
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String toppings;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
-
-

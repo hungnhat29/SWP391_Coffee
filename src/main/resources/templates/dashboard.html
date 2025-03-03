@@ -87,6 +87,7 @@
                 position: absolute;
             }
 
+
             .sidebar input#settings:checked ~ div {
                 height: 150px;
             }
@@ -97,6 +98,9 @@
 
             .sidebar input#profile:checked ~ div {
                 height: 100px;
+            }
+            .sidebar input#products:checked ~ div {
+                height: 50px;
             }
 
             .sidebar :is(button, label) {
@@ -268,11 +272,20 @@
                     </label>
                 </li>
                 <li>
+                <li>
                     <input type="radio" id="products" name="sidebar" />
                     <label for="products">
-                        <i class="ai-cart"></i>
+                        <i class="ai-folder-add"></i>
                         <p>Products</p>
+                        <i class="ai-chevron-down-small"></i>
                     </label>
+                    <div class="sub-menu !h-[50px]">
+                        <ul>
+                            <li>
+                                <button type="button" onclick="window.location.href='/products'"><a >Products List</a></button>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li>
                     <input type="radio" id="account" name="sidebar" />

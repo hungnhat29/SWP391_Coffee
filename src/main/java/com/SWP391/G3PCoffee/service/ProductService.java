@@ -24,12 +24,12 @@ public class ProductService {
     }
 
     public Optional<ProductDTO> getProductById(Integer id) {
-        return productRepository.findById(id).map(this::convertToDTO);
+        return productRepository.findById(Long.valueOf(id)).map(this::convertToDTO);
     }
 
     public ProductDTO convertToDTO(Product product) {
         ProductDTO dto = new ProductDTO();
-        dto.setId(product.getId());
+        dto.setId(Math.toIntExact(product.getId()));
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setBasePrice(product.getBasePrice());
@@ -59,5 +59,32 @@ public class ProductService {
         }
 
         return dto;
+    }
+    public List<Product> findAllProducts() {
+        List<Product> products = productRepository.findAll();
+        System.out.println("findAllProducts: " + products);
+        return products;
+    }
+
+    public Product getProductById(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        System.out.println("getProductById(" + id + "): " + product);
+        return product;
+    }
+
+    public Product saveProduct(Product product) {
+        Product savedProduct = productRepository.save(product);
+        System.out.println("saveProduct: " + savedProduct);
+        return savedProduct;
+    }
+
+    public boolean deleteProduct(Long id) {
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+            System.out.println("deleteProduct(" + id + "): Success");
+            return true;
+        }
+        System.out.println("deleteProduct(" + id + "): Not found");
+        return false;
     }
 }

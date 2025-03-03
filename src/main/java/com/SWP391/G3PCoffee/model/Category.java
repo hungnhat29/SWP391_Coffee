@@ -7,19 +7,20 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder
 @Table(name = "categories")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, length = 255)
     private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     @Column(name = "image_url", length = 255)
     private String imageUrl;
 
@@ -34,6 +35,17 @@ public class Category {
         this.updatedAt = LocalDateTime.now();
     }
 
-    
-}
+    // Constructors
+    public Category() {
+    }
 
+    public Category(Long id, String name, String description, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+}

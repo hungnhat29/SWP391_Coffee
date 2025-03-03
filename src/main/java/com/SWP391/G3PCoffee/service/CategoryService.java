@@ -9,11 +9,19 @@ import java.util.List;
 
 @Service
 public class CategoryService {
+
     @Autowired
     private CategoryRepository categoryRepository;
 
-
     public List<Category> findAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        System.out.println("findAllCategories: " + categories);
+        return categories;
+    }
+
+    public Category getCategoryById(Long id) {
+        Category category = categoryRepository.findById(Math.toIntExact(id)).orElse(null);
+        System.out.println("getCategoryById(" + id + "): " + category);
+        return category;
     }
 }
