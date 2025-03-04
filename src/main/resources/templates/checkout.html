@@ -125,6 +125,29 @@
         <div class="col-md-7 checkout-form">
             <div class="card mb-4">
                 <div class="card-header">
+                    <h4>Customer Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="customerName">Full Name</label>
+                        <input type="text" id="customerName" class="form-control" required>
+                        <div class="error-message" id="nameError">Please enter your full name</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerEmail">Email Address</label>
+                        <input type="email" id="customerEmail" class="form-control" required>
+                        <div class="error-message" id="emailError">Please enter a valid email address</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerPhone">Phone Number</label>
+                        <input type="tel" id="customerPhone" class="form-control" required>
+                        <div class="error-message" id="phoneError">Please enter your phone number</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
                     <h4>Shipping Information</h4>
                 </div>
                 <div class="card-body">
@@ -245,6 +268,34 @@
     function validateForm() {
         let isValid = true;
 
+        // Check customer name
+        const customerName = document.getElementById('customerName').value.trim();
+        if (!customerName) {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('nameError').style.display = 'none';
+        }
+
+        // Check customer email
+        const customerEmail = document.getElementById('customerEmail').value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!customerEmail || !emailRegex.test(customerEmail)) {
+            document.getElementById('emailError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('emailError').style.display = 'none';
+        }
+
+        // Check customer phone
+        const customerPhone = document.getElementById('customerPhone').value.trim();
+        if (!customerPhone) {
+            document.getElementById('phoneError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('phoneError').style.display = 'none';
+        }
+
         // Check shipping address
         const shippingAddress = document.getElementById('shippingAddress').value.trim();
         if (!shippingAddress) {
@@ -288,6 +339,9 @@
 
         // Prepare checkout data
         const checkoutData = {
+            customerName: document.getElementById('customerName').value.trim(),
+            customerEmail: document.getElementById('customerEmail').value.trim(),
+            customerPhone: document.getElementById('customerPhone').value.trim(),
             shippingAddress: document.getElementById('shippingAddress').value.trim(),
             paymentMethod: selectedPaymentMethod,
             returnUrl: window.location.origin + '/payment/vnpay-return'

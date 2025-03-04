@@ -38,7 +38,10 @@ public class Order {
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
+    private String customerAddress;
     @PrePersist
     protected void onCreate() {
         orderDate = LocalDateTime.now();
@@ -53,4 +56,6 @@ public class Order {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    private String firstProductImageUrl;
 }

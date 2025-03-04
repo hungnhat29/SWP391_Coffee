@@ -16,4 +16,8 @@ public class CheckoutRequest {
     private String shippingAddress;
     private String paymentMethod; // "COD", "VNPAY", etc.
     private String returnUrl; // Return URL for payment gateway
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
+    private String customerAddress;
 }

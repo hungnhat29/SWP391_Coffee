@@ -6,6 +6,8 @@ import com.SWP391.G3PCoffee.model.OrderItem;
 import com.SWP391.G3PCoffee.repository.OrderRepository;
 import com.SWP391.G3PCoffee.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,8 @@ public class OrderService {
             String sessionId, 
             List<Cart> cartItems, 
             String shippingAddress, 
-            String paymentMethod) {
+            String paymentMethod, String customerName, String customerEmail,
+            String customerPhone) {
         
         // Calculate order total
         BigDecimal orderTotal = cartItems.stream()
@@ -60,7 +63,11 @@ public class OrderService {
             orderItem.setSizeInfo(cartItem.getSizeInfo());
             orderItem.setToppingsInfo(cartItem.getToppingsInfo());
             orderItem.setSubTotal(cartItem.getSubTotal());
-            
+
+            order.setCustomerName(customerName);
+            order.setCustomerEmail(customerEmail);
+            order.setCustomerPhone(customerPhone);
+            order.setCustomerAddress(shippingAddress);
             orderItemRepository.save(orderItem);
         }
         
@@ -93,5 +100,24 @@ public class OrderService {
     
     public List<Order> getGuestOrders(String sessionId) {
         return orderRepository.findBySessionId(sessionId);
+    }
+
+    public List<Order> getOrdersByUserId(Integer userId) {
+        // Implement logic to fetch orders by user ID from database
+        return orderRepository.findByUserIdOrderByOrderDateDesc(userId);
+    }
+
+    public List<Order> getOrdersBySessionId(String sessionId) {
+        // Implement logic to fetch orders by session ID from database
+        return orderRepository.findBySessionIdOrderByOrderDateDesc(sessionId);
+    }
+
+    // Add these methods to your existing OrderService class
+    public Page<Order> getPagedOrdersByUserId(Integer userId, Pageable pageable) {
+        return orderRepository.findByUserIdOrderByOrderDateDesc(userId, pageable);
+    }
+
+    public Page<Order> getPagedOrdersBySessionId(String sessionId, Pageable pageable) {
+        return orderRepository.findBySessionIdOrderByOrderDateDesc(sessionId, pageable);
     }
 }

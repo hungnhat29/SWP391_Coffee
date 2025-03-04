@@ -3,9 +3,8 @@ package com.SWP391.G3PCoffee.controller;
 import com.SWP391.G3PCoffee.model.Cart;
 import com.SWP391.G3PCoffee.model.Order;
 import com.SWP391.G3PCoffee.model.OrderItem;
-import com.SWP391.G3PCoffee.service.CartService;
-import com.SWP391.G3PCoffee.service.OrderService;
-import com.SWP391.G3PCoffee.service.PaymentService;
+import com.SWP391.G3PCoffee.model.User;
+import com.SWP391.G3PCoffee.service.*;
 import com.SWP391.G3PCoffee.model.CheckoutRequest;
 import com.SWP391.G3PCoffee.model.PaymentResponse;
 
@@ -15,9 +14,11 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,22 +35,48 @@ public class CheckoutController {
     @Autowired
     private PaymentService paymentService;
 
-    @GetMapping("/checkout")
-    public String showCheckoutPage(
-            Model model,
-            HttpSession session,
-            @SessionAttribute(name = "userId", required = false) Integer userId) {
+    @Autowired
+    private UserService userService;
 
-        // Get cart items based on user status (logged in or guest)
+    @Autowired
+    private EmailService emailService;
+
+    // Helper method to get or create session ID (copied from CartController)
+    private String getOrCreateSessionId(HttpSession session) {
+        String sessionId = (String) session.getAttribute("sessionId");
+        if (sessionId == null || sessionId.isEmpty()) {
+            sessionId = UUID.randomUUID().toString();
+            session.setAttribute("sessionId", sessionId);
+        }
+        return sessionId;
+    }
+
+    @GetMapping("/checkout")
+    public String showCheckoutPage(Model model, HttpSession session, Authentication authentication) {
+        // Get cart items based on authentication status
         List<Cart> cartItems;
-        if (userId != null) {
-            cartItems = cartService.getCartItems(userId, null);
-        } else {
-            String sessionId = (String) session.getAttribute("sessionId");
-            if (sessionId == null || sessionId.isEmpty()) {
-                return "redirect:/cart?error=empty";
+        User user = null;
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            user = userService.getCustomerByEmail(email);
+
+            if (user != null) {
+                // User is authenticated, get cart by userId
+                cartItems = cartService.getCartItems(user.getId().intValue(), null);
+                model.addAttribute("isLoggedIn", true);
+                // You can add user details here if needed
+            } else {
+                // Authentication exists but user not found (shouldn't normally happen)
+                String sessionId = getOrCreateSessionId(session);
+                cartItems = cartService.getCartItems(null, sessionId);
+                model.addAttribute("isLoggedIn", false);
             }
+        } else {
+            // User is not authenticated, use session-based cart
+            String sessionId = getOrCreateSessionId(session);
             cartItems = cartService.getCartItems(null, sessionId);
+            model.addAttribute("isLoggedIn", false);
         }
 
         // Check if cart is empty
@@ -65,14 +92,6 @@ public class CheckoutController {
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalAmount", totalAmount);
 
-        // Add user information if logged in
-        if (userId != null) {
-            model.addAttribute("isLoggedIn", true);
-            // You can add user details here if needed
-        } else {
-            model.addAttribute("isLoggedIn", false);
-        }
-
         return "checkout";
     }
 
@@ -81,11 +100,30 @@ public class CheckoutController {
     public Map<String, Object> processCheckout(
             @RequestBody CheckoutRequest checkoutRequest,
             HttpSession session,
-            @SessionAttribute(name = "userId", required = false) Integer userId) {
+            Authentication authentication) {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
+            // Get user information based on authentication
+            Integer userId = null;
+            String sessionId = null;
+
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                User user = userService.getCustomerByEmail(email);
+
+                if (user != null) {
+                    userId = user.getId().intValue();
+                } else {
+                    // Fallback to session if user not found
+                    sessionId = getOrCreateSessionId(session);
+                }
+            } else {
+                // Not authenticated, use session
+                sessionId = getOrCreateSessionId(session);
+            }
+
             // Validate checkout data
             if (checkoutRequest == null ||
                     checkoutRequest.getShippingAddress() == null ||
@@ -98,11 +136,9 @@ public class CheckoutController {
 
             // Get cart items based on user status
             List<Cart> cartItems;
-            String sessionId = null;
             if (userId != null) {
                 cartItems = cartService.getCartItems(userId, null);
             } else {
-                sessionId = (String) session.getAttribute("sessionId");
                 if (sessionId == null || sessionId.isEmpty()) {
                     response.put("success", false);
                     response.put("message", "Invalid session");
@@ -118,13 +154,20 @@ public class CheckoutController {
                 return response;
             }
 
+            String customerName = checkoutRequest.getCustomerName();
+            String customerEmail = checkoutRequest.getCustomerEmail();
+            String customerPhone = checkoutRequest.getCustomerPhone();
+
             // Create order with items
             Order order = orderService.createOrder(
                     userId,
                     sessionId,
                     cartItems,
                     checkoutRequest.getShippingAddress(),
-                    checkoutRequest.getPaymentMethod()
+                    checkoutRequest.getPaymentMethod(),
+                    customerName,
+                    customerEmail,
+                    customerPhone
             );
 
             // Process payment based on payment method
@@ -140,8 +183,31 @@ public class CheckoutController {
                 response.put("success", true);
                 response.put("redirectUrl", paymentUrl);
                 response.put("orderId", order.getId());
+            } else if ("COD".equalsIgnoreCase(checkoutRequest.getPaymentMethod())) {
+                // For COD orders, send confirmation email
+                try {
+                    emailService.sendOrderConfirmationEmail(order);
+                } catch (Exception e) {
+                    // Log email error but don't block the order processing
+                    System.err.println("Failed to send confirmation email: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+                // Update order status to "pending"
+                orderService.updateOrderStatus(order.getId(), "pending", "Cash on Delivery");
+
+                // Clear cart after successful order creation
+                if (userId != null) {
+                    cartService.clearCart(userId, null);
+                } else {
+                    cartService.clearCart(null, sessionId);
+                }
+
+                response.put("success", true);
+                response.put("redirectUrl", "/order/confirmation/" + order.getId());
+                response.put("orderId", order.getId());
             } else {
-                // COD or other payment methods
+                // Other payment methods
                 response.put("success", true);
                 response.put("redirectUrl", "/order/confirmation/" + order.getId());
                 response.put("orderId", order.getId());
@@ -168,9 +234,28 @@ public class CheckoutController {
             @RequestParam Map<String, String> queryParams,
             Model model,
             HttpSession session,
-            @SessionAttribute(name = "userId", required = false) Integer userId) {
+            Authentication authentication) {
 
         try {
+            // Get user information based on authentication
+            Integer userId = null;
+            String sessionId = null;
+
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                User user = userService.getCustomerByEmail(email);
+
+                if (user != null) {
+                    userId = user.getId().intValue();
+                } else {
+                    // Fallback to session if user not found
+                    sessionId = getOrCreateSessionId(session);
+                }
+            } else {
+                // Not authenticated, use session
+                sessionId = getOrCreateSessionId(session);
+            }
+
             // Log all query parameters for debugging
             for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
@@ -190,7 +275,6 @@ public class CheckoutController {
                 if (userId != null) {
                     cartService.clearCart(userId, null);
                 } else {
-                    String sessionId = (String) session.getAttribute("sessionId");
                     if (sessionId != null && !sessionId.isEmpty()) {
                         cartService.clearCart(null, sessionId);
                     }
@@ -219,21 +303,28 @@ public class CheckoutController {
     public String showOrderConfirmation(
             @PathVariable Integer orderId,
             Model model,
-            @SessionAttribute(name = "userId", required = false) Integer userId) {
+            Authentication authentication) {
 
         try {
+            // Get order details
             Order order = orderService.getOrderById(orderId);
 
             // Verify that this order belongs to the current user or session
-            if (userId != null) {
-                if (!userId.equals(order.getUserId())) {
-                    return "redirect:/access-denied";
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                User user = userService.getCustomerByEmail(email);
+
+                if (user != null && order.getUserId() != null) {
+                    // For authenticated users, verify the order belongs to them
+                    if (!(user.getId().intValue() == order.getUserId())) {
+                        return "redirect:/access-denied";
+                    }
                 }
-            } else {
-                // For guest users, we could check session ID, but this might be less reliable
-                // after payment redirection, so we'll skip detailed validation for guests
+                // For authenticated users viewing a session-based order,
+                // we could add additional checks here
             }
 
+            // Add order details to model
             model.addAttribute("order", order);
             model.addAttribute("orderItems", orderService.getOrderItems(orderId));
 
