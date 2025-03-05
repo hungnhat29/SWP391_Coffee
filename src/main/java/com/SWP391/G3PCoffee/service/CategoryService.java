@@ -39,13 +39,9 @@ public class CategoryService {
         Map<String, String> response = new HashMap<>();
         Long categoryUpdateId = categoryUpdate.getId();
 
-        Logger logger = LoggerFactory.getLogger(this.getClass());
-
         Optional<Category> existingCategory = categoryRepository.findByName(categoryUpdate.getName());
 
-        logger.info("Checking existing category with name: {}", categoryUpdate.getName());
-        existingCategory.ifPresent(cat -> logger.info("Existing Category Found: ID = {}, Name = {}", cat.getId(), cat.getName()));
-        if (existingCategory.isPresent()) {
+        if (existingCategory.isPresent() && !existingCategory.get().getId().equals(categoryUpdateId)) {
             response.put("message", "Tên danh mục đã tồn tại!");
             response.put("messageType", "error");
             return response;
