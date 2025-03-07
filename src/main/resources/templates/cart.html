@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopping Cart - G3P Coffee</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-gray-100">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-3xl font-bold mb-8">Your Cart</h1>
+
+            <!-- Empty cart message -->
+            <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-8">
+                <i class="fas fa-shopping-cart text-gray-400 text-5xl mb-4"></i>
+                <p class="text-gray-500">Your cart is empty</p>
+                <a href="/shop" class="inline-block mt-4 px-6 py-2 bg-brown-600 text-black rounded hover:bg-brown-700">
+                    Continue Shopping
+                </a>
+            </div>
+
+            <!-- Cart items -->
+            <div th:unless="${#lists.isEmpty(cartItems)}" class="bg-white rounded-lg shadow-md">
+                <!-- Cart items list -->
+                <div class="divide-y divide-gray-200">
+                    <div th:each="item : ${cartItems}" class="p-6 flex items-center">
+                        <!-- Product image -->
+                        <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" 
+                             class="w-24 h-24 object-cover rounded">
+
+                        <!-- Product details -->
+                        <div class="flex-1 ml-6">
+                            <h3 th:text="${item.product.name}" class="text-lg font-semibold"></h3>
+
+                            <!-- Size info if available -->
+                            <div th:if="${item.sizeInfo != null and item.sizeInfo != ''}" class="text-sm text-gray-600">
+                                <span>Size: </span>
+                                <span th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getSizeName(item.sizeInfo)}"></span>
+                            </div>
+
+                            <!-- Toppings if available -->
+                            <div th:if="${item.toppingsInfo != null and item.toppingsInfo != ''}" class="text-sm text-gray-600">
+                                <span>Toppings: </span>
+                                <span th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}"></span>
+                            </div>
+
+                            <!-- Sub-total -->
+                            <div class="text-sm font-medium mt-2">
+                                <span>Sub-total: </span>
+                                <span th:id="'subtotal-' + ${item.id}"
+                                      th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT') + 'đ'}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Quantity controls -->
+                        <div class="flex items-center mx-6">
+                            <button th:onclick="'updateQuantity(' + ${item.id} + ', -1)'" 
+                                    class="px-3 py-1 border rounded-l hover:bg-gray-100">-</button>
+                            <input type="number" th:id="'quantity-' + ${item.id}" th:value="${item.quantity}" 
+                                   class="w-16 text-center border-t border-b" readonly>
+                            <button th:onclick="'updateQuantity(' + ${item.id} + ', 1)'" 
+                                    class="px-3 py-1 border rounded-r hover:bg-gray-100">+</button>
+                        </div>
+
+                        <!-- Remove button -->
+                        <button th:onclick="'removeItem(' + ${item.id} + ')'" 
+                                class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cart summary -->
+                <div class="p-6 bg-gray-50 rounded-b-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold">Total:</span>
+                        <span id="totalAmount" class="text-2xl font-bold text-brown-600">
+                            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}"></span>đ
+                        </span>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <a href="/shop" class="px-6 py-2 border border-gray-300 rounded hover:bg-gray-100">
+                            Continue Shopping
+                        </a>
+                        <button onclick="checkout()" 
+                                class="px-6 py-2 bg-brown-600 text-white rounded hover:bg-brown-700">
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for cart operations -->
+        <script>
+            function updateQuantity(cartId, change) {
+                const quantityElement = document.getElementById(`quantity-${cartId}`);
+                if (!quantityElement) {
+                    console.error(`Quantity element not found for cart ID: ${cartId}`);
+                    return;
+                }
+
+                const currentQuantity = parseInt(quantityElement.value) || 1;
+                let newQuantity = currentQuantity + change;
+                if (newQuantity < 1)
+                    newQuantity = 1;
+
+                // Cập nhật hiển thị tạm thời cho số lượng
+                quantityElement.value = newQuantity;
+
+                fetch(`/api/cart/${cartId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({quantity: newQuantity}),
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update quantity');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Cập nhật lại phần subtotal nếu có trả về từ server
+                    const subtotalElement = document.getElementById(`subtotal-${cartId}`);
+                    if (subtotalElement && data.subTotal) {
+                        subtotalElement.textContent = formatCurrency(data.subTotal) + 'đ';
+                    }
+                    updateTotalAmount();
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                    // Khôi phục số lượng ban đầu nếu có lỗi
+                    quantityElement.value = currentQuantity;
+                });
+            }
+
+            function updateTotalAmount() {
+                let total = 0;
+                document.querySelectorAll('[id^="subtotal-"]').forEach(element => {
+                    const subtotalText = element.textContent.replace(/[^\d]/g, '');
+                    total += parseInt(subtotalText) || 0;
+                });
+                const totalAmountElement = document.getElementById('totalAmount');
+                if (totalAmountElement) {
+                    totalAmountElement.textContent = formatCurrency(total) + 'đ';
+                }
+            }
+
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('vi-VN').format(amount);
+            }
+
+            async function removeItem(cartId) {
+                if (!confirm('Are you sure you want to remove this item?'))
+                    return;
+                try {
+                    const response = await fetch(`/api/cart/${cartId}`, {method: 'DELETE'});
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        throw new Error('Failed to remove item');
+                    }
+                } catch (error) {
+                    console.error('Error removing item:', error);
+                }
+            }
+
+            function checkout() {
+                window.location.href = '/checkout';
+            }
+        </script>
+    </body>
+</html>

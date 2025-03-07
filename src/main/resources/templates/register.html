@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>
+    Register
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen" style="background-image: url('/images/img.png'); /* Đường dẫn đến ảnh nền */
+  background-size: cover; /* Ảnh phủ toàn bộ màn hình */
+  background-position: center; /* Ảnh nằm ở giữa */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */">
+<div class="rounded-lg flex flex-col md:flex-row w-full max-w-12xl">
+
+  <div class=" p-8 ml-auto w-[30%]">
+    <div class="flex mb-4">
+      <a th:href="@{/home}"><i class="fas fa-home text-2xl">
+      </i></a>
+    </div>
+    <h2 class="text-4xl font-bold mb-6 text-center">
+      Register
+    </h2>
+    <form id="registerForm">
+      <div class="mb-4">
+        <label class="block text-gray-700">Fullname</label>
+        <input type="text" id="fullName" name="fullName" class="w-full px-3 py-2 border rounded-lg"/>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Phone</label>
+        <input type="text" id="phone" name="phone" class="w-full px-3 py-2 border rounded-lg"/>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Email</label>
+        <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg"/>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Password</label>
+        <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg"/>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Re-password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="w-full px-3 py-2 border rounded-lg"/>
+      </div>
+      <div class="mb-6">
+        <button type="submit" class="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600">
+          SUBMIT
+        </button>
+      </div>
+      <p id="error-message" class="text-red-500 text-sm text-center"></p>
+    </form>
+    <div class="text-center">
+      <p class="text-gray-700">
+        Do you already have an account?
+        <a class="text-black font-bold" th:href="@{/auth/login}">
+          Login
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#registerForm").submit(function (event) {
+      event.preventDefault();
+
+      let formData = {
+        fullName: $("#fullName").val(),
+        phone: $("#phone").val(),
+        email: $("#email").val(),
+        password: $("#password").val(),
+        confirmPassword: $("#confirmPassword").val()
+      };
+
+      if (!formData.fullName || !formData.phone || !formData.email || !formData.password || !formData.confirmPassword) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Vui lòng điền đầy đủ tất cả các trường!",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // Kiểm tra định dạng số điện thoại
+      const phoneRegex = /^0\d{9}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Số điện thoại không hợp lệ.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // Kiểm tra định dạng mật khẩu
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+      if (!passwordRegex.test(formData.password)) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Mật khẩu phải có ít nhất 6 ký tự và bao gồm cả chữ cái lẫn số.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      // Kiểm tra mật khẩu trùng khớp
+      if (formData.password !== formData.confirmPassword) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          text: "Mật khẩu nhập lại không khớp.",
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false
+        });
+        return;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "/auth/register",
+        contentType: "application/json",
+        data: JSON.stringify(formData),
+        success: function () {
+          window.location.href = "/home";
+        },
+        error: function (xhr) {
+          let errorMessage = xhr.responseJSON?.message || "Registration failed!";
+          Swal.fire({
+                        toast: true,
+                        position: 'top-end', // Hiển thị ở góc trên bên phải
+                        icon: 'error',
+                        title: errorMessage,
+                        showConfirmButton: false,
+                        timer: 5000, // Hiển thị trong 5 giây
+                    });
+        }
+      });
+    });
+  });
+</script>
+
+</html>

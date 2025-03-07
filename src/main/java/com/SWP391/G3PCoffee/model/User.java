@@ -14,12 +14,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "Users")
+@Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +53,5 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 }

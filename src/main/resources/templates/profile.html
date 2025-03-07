@@ -1,0 +1,334 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
+    <!-- Tweaks for older IEs (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <!-- Fancybox CSS (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/alert.js"></script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #d4fc79, #96e6a1, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+    <style>
+        .profile-item {
+    position: relative;
+}
+
+.logout-menu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Hiển thị bên dưới icon */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.profile-item:hover .logout-menu {
+    display: block;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="bg-[#f66d37] w-full py-3 shadow-lg layout_padding banner_section" style="background-image: none;">
+    <div class="mx-auto w-full">
+        <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
+            <li class="hover:text-white">
+                <a th:href="@{/profile}" class="text-white font-medium">
+                    Profile
+                </a>
+            </li>
+            <li class="hover:text-white">
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
+                    Point
+                </a>
+            </li>
+            <li class="hover:text-white">
+                <a th:href="@{/voucher}" class="text-black font-medium hover:text-white">
+                    Voucher
+                </a>
+            </li>
+            <li class="hover:text-white">
+                <a th:href="@{/my_voucher}" class="text-black font-medium hover:text-white">
+                    My Voucher
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="flex justify-center p-2 bg-gray-100">
+    <div class="w-full max-w-md p-4">
+        <h1 class="text-3xl font-bold text-orange-500 mb-6">
+            Profile
+        </h1>
+        <div class="bg-pink-50 p-6 rounded-lg shadow-md text-center">
+            <div class="relative">
+                <img alt="Profile picture of a person" class="w-24 h-24 rounded-full mx-auto mb-4" height="100"
+                     src="https://storage.googleapis.com/a1aa/image/XQ-KXbpdI25b6mn--SeMtAQJANdK7semR9safjeTjss.jpg"
+                     width="100"/>
+                <i id="editIcon" class="fas fa-pen text-orange-500 absolute top-0 right-0 cursor-pointer">
+                </i>
+            </div>
+<!--            <p class="text-sm text-gray-500">-->
+<!--                ID: <span th:text="${user.id}"></span>-->
+<!--            </p>-->
+            <h2 class="text-2xl font-semibold mb-2">
+                <span th:text="${user.name}"></span>
+            </h2>
+            <p class="text-orange-500 font-semibold mb-2">
+                <span th:text="${membership.rank}"></span> VIP
+            </p>
+            <p class="text-sm text-gray-500 mb-2">
+                Male
+            </p>
+            <p class="text-sm text-gray-500 mb-2">
+                21/09/2004
+            </p>
+            <p class="text-sm text-gray-500 mb-2">
+                Address: <span th:text="${user.address}"></span>
+            </p>
+            <div class="flex items-center justify-center mb-2">
+                <i class="fas fa-phone-alt text-black mr-2">
+                </i>
+                <p class="text-sm text-black">
+                    Tel: <span th:text="${user.phone}"></span>
+                </p>
+            </div>
+            <div class="flex items-center justify-center">
+                <i class="fas fa-envelope text-black mr-2">
+                </i>
+                <p class="text-sm text-black">
+                    Email: <span th:text="${user.email}"></span>
+                </p>
+            </div>
+        </div>
+        <div class="mt-6 text-center">
+            <h3 class="text-lg font-semibold mb-2">
+                Order and Transaction History
+            </h3>
+            <ul class="text-orange-500">
+                <li class="mb-1">
+                    <a href="#">
+                        Recent Order
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#">
+                        Purchase History
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#">
+                        Payment History
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/change_password}">
+                        Change Password
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="flex flex-col min-h-screen p-4">
+        <h1 class="text-orange-500 text-3xl font-bold mb-4">Point</h1>
+        <div class="w-[400px] p-7 rounded-[30px] gradient-bg text-white relative">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-lg">Point</span>
+                <i class="fas fa-credit-card text-2xl"></i>
+            </div>
+            <div class="text-4xl font-bold mb-4">
+                <span th:text="${membership.points}">0</span>
+            </div>
+            <div class="mx-8">
+                <div class="flex justify-around items-center mb-4 text-xl">
+                    <span class="font-bold">••••</span>
+                    <span class="font-bold">••••</span>
+                    <span class="font-bold">••••</span>
+                    <span class="font-bold" th:text="${user.id}"></span>
+                </div>
+            </div>
+            <div>
+                <div class="">
+                    <div class="w-2/3 flex justify-between item-center text-sm mb-4">
+                        <div>
+                            <div>VALID THRU</div>
+                            <div class="font-bold">
+                                <span th:text="${membership.expiryDate}">N/A</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div>CARD HOLDER</div>
+                            <div class="font-bold">User</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/3">
+                    <div class="absolute bottom-4 right-4 text-sm">MEMBER CARD</div>
+                </div>
+            </div>
+        </div>
+        <div class="w-[400px] flex justify-center items-center">
+            <div class="w-[80%] mt-4 px-4 py-3 rounded-full bg-gradient-to-r from-blue-200 via-purple-300 to-pink-300 flex flex-col justify-center items-center">
+                <img src="images/Group.png" alt="Barcode image" class="w-auto px-2 h-10 object-contain">
+                <p class="mt-2 text-black text-lg font-medium tracking-widest">12345678210904</p>
+            </div>
+        </div>
+
+<!--        <div class="mt-4 text-center">-->
+<!--            <div class="flex items-center justify-center mb-2">-->
+<!--                <i class="fas fa-cogs text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Point Management</a>-->
+<!--            </div>-->
+<!--            <div class="flex items-center justify-center mb-2">-->
+<!--                <i class="fas fa-gift text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Membership Privileges</a>-->
+<!--            </div>-->
+<!--            <div class="flex items-center justify-center">-->
+<!--                <i class="fas fa-book text-lg mr-2"></i>-->
+<!--                <a href="#" class="text-orange-500">Rules</a>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</div>
+
+<div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Profile</h3>
+            <div class="mt-2 px-7 py-3">
+                <form th:action="@{/profile/update}" method="post" th:object="${user}">
+                    <input type="hidden" th:field="*{id}"/>
+                    <label for="name">Name:</label>
+                    <input id="name" type="text" th:field="*{name}" class="mb-3 px-3 py-2 border rounded-lg w-full" required>
+
+                    <label for="phone">Phone:</label>
+                    <input id="phone" type="text" th:field="*{phone}" class="mb-3 px-3 py-2 border rounded-lg w-full" required>
+
+
+                    <label for="address">Address:</label>
+                    <input id="address" type="text" th:field="*{address}"
+                           class="mb-3 px-3 py-2 border rounded-lg w-full">
+
+                    <button id="saveBtn" type="button" class="px-4 py-2 bg-orange-500 text-white rounded-md">Save</button>
+                </form>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="closeBtn"
+                        class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Close
+                </button>
+            </div>
+            <p id="successMessage" th:if="${successMessage}" th:text="${successMessage}" class="text-green-500 hidden"></p>
+            <span id="phoneError" class="text-red-500 text-sm hidden"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lấy các phần tử DOM cần thiết
+    const editIcon = document.getElementById('editIcon');
+    const editModal = document.getElementById('editModal');
+    const closeBtn = document.getElementById('closeBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    const userName = document.querySelector('[th\\:text="${user.name}"]');
+    const userPhone = document.querySelector('[th\\:text="${user.phone}"]');
+    const userAddress = document.querySelector('[th\\:text="${user.address}"]');
+    const phoneInput = document.getElementById('phone');
+    const phoneError = document.getElementById('phoneError');
+
+    // Hiển thị modal khi nhấp vào biểu tượng chỉnh sửa
+    editIcon.addEventListener('click', () => {
+        if (userName) editName.value = userName.innerText;
+        if (userPhone) editPhone.value = userPhone.innerText;
+        if (userAddress) editAddress.value = userAddress.innerText;
+        editModal.classList.remove('hidden');
+    });
+
+    // Ẩn modal khi nhấp vào nút đóng
+    closeBtn.addEventListener('click', () => {
+        editModal.classList.add('hidden');
+    });
+
+    // Xác minh số điện thoại
+    const validatePhone = (phone) => {
+        const phoneRegex = /^0\d{9}$/; // Bắt đầu bằng số 0 và có tổng cộng 10 số
+        return phoneRegex.test(phone);
+    };
+
+    // Lưu thông tin và ẩn modal khi nhấp vào nút lưu
+    saveBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Ngăn chặn hành động mặc định
+
+        const phoneValue = phoneInput.value.trim();
+
+        if (!validatePhone(phoneValue)) {
+            // Hiển thị lỗi dưới input số điện thoại
+            phoneError.textContent = "Số điện thoại không hợp lệ.";
+            phoneError.classList.remove('hidden');
+            return; // Không gửi form
+        }
+        editModal.classList.add('hidden');
+        showMessage("Cập nhật thông tin thành công!", "success");
+
+        // Đợi 3 giây rồi chuyển hướng hoặc gửi form
+        setTimeout(() => {
+            document.querySelector('form').submit();
+            window.location.href = '/profile';
+        }, 2000);
+
+    });
+</script>
+</body>
+</html>
