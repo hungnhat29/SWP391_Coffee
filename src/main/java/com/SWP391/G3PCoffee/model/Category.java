@@ -6,9 +6,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Table(name = "categories")
+@Entity
+@Table(name = "Categories")
 public class Category {
 
     @Id
@@ -21,7 +23,7 @@ public class Category {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "image_url", length = 1000)
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -34,19 +36,4 @@ public class Category {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    // Constructors
-    public Category() {
-    }
-
-    public Category(Long id, String name, String description, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
 }
-
