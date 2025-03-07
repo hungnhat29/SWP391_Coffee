@@ -880,6 +880,64 @@ a:hover {
 .padding_0 {
     padding: 0px;
 }
+/* General styles for the contact section */
+.contact_section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.contact_text {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.contact_message {
+    font-size: 18px;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+}
+
+/* Button styles */
+.send_btn {
+    margin-top: 20px;
+}
+
+.contactp_bt {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.contactp_bt:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .contact_text {
+        font-size: 28px;
+    }
+
+    .contact_message {
+        font-size: 16px;
+    }
+
+    .main_bt {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
+}
 
 /* contact section end */
 

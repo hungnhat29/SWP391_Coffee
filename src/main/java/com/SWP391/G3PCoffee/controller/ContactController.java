@@ -23,4 +23,14 @@ public class ContactController {
             return ResponseEntity.status(500).body("Error sending email: " + e.getMessage());
         }
     }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<String> sendOtp(@RequestParam String email) {
+        try {
+            emailContactService.sendVerificationOtp(email);
+            return ResponseEntity.ok ("OTP đã được gửi đến email: " + email);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error sending email: " + e.getMessage());
+        }
+    }
 }

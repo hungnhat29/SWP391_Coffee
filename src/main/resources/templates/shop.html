@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
         <!-- style css -->
         <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
-        
+
         <style>
             .text-brown {
                 color: #6F4E37;
@@ -105,8 +105,8 @@
                     <a th:href="@{/shop(categoryId=${category.id})}" class="text-decoration-none">
                         <div class="category-box p-3 rounded-circle shadow-sm bg-white d-inline-block"
                              th:classappend="${category.id == selectedCategoryId ? 'border border-primary' : ''}">
-                            <img class="img-fluid rounded-circle" 
-                                 th:src="@{${category.imageUrl}}" 
+                            <img class="img-fluid rounded-circle"
+                                 th:src="@{${category.imageUrl}}"
                                  th:alt="${category.name}">
                         </div>
                         <span class="d-block mt-2 fw-bold text-brown" th:text="${category.name}">Category Name</span>
@@ -120,7 +120,7 @@
                     <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
                         <a th:href="@{/detail(productId=${product.id})}" class="text-decoration-none">
                             <img th:src="@{${product.imageUrl != null ? product.imageUrl : '/images/default-product.jpg'}}"
-                                 class="card-img-top rounded-3" 
+                                 class="card-img-top rounded-3"
                                  style="aspect-ratio: 1 / 1; object-fit: cover;"
                                  th:alt="${product.name}">
                             <div class="card-body text-center">

@@ -1,4 +1,4 @@
-﻿use
+use
 master
 DROP
 DATABASE G3P_Coffee
@@ -171,7 +171,7 @@ DECLARE @Toppings NVARCHAR(MAX) = N'{
 }';
 SET IDENTITY_INSERT products ON;
 INSERT INTO Products (id, name, description, base_price, category_id, image_url, sizes, toppings)
-VALUES 
+VALUES
 (1, 'Trà Xanh Espresso Marble', 'Cho ngày thêm tươi, tỉnh, êm, mượt với Trà Xanh Espresso Marble. Đây là sự mai mối bất ngờ giữa trà xanh Tây Bắc vị mộc và cà phê Arabica Đà Lạt. Muốn ngày thêm chút highlight, nhớ tìm đến sự bất ngờ này bạn nhé!', 49000, 1, 'https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc.png', @Sizes, @Toppings),
 (2, 'Bơ Arabica', 'Bơ sáp Đắk Lắk dẻo quẹo hòa quyện cùng Cà phê Arabica Cầu Đất êm mượt. Khuấy đều để thưởng thức hương vị tươi tỉnh, đầy mới lạ!', 49000, 2, 'https://product.hstatic.net/1000075078/product/1737357055_bo-arabica_b64556656a7d479bbe641ab7cff99605.png', @Sizes, @Toppings),
 (3, 'Đường Đen Sữa Đá', 'Đường đen thơm ngọt hòa quyện cùng sữa đặc và đá viên, tạo nên một thức uống mát lạnh, sảng khoái cho ngày dài.', 45000, 2, 'https://product.hstatic.net/1000075078/product/1737357048_uong-den-sua-da_979b4b23b19f429b9dedb3491743c016.png', @Sizes, @Toppings),

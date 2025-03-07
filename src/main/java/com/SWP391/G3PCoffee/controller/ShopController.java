@@ -29,7 +29,7 @@ public class ShopController {
     private UserService userService;
 
     @GetMapping("/shop")
-    public String showShop(@RequestParam(value = "categoryId", required = false) Integer categoryId, Model model) {
+    public String showShop(@RequestParam(value = "categoryId", required = false) Long categoryId, Model model) {
         // Lấy danh sách danh mục
         List<Category> categories = categoryRepository.findAll();
         model.addAttribute("categories", categories);

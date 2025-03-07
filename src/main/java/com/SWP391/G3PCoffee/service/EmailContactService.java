@@ -13,11 +13,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Service
 public class EmailContactService {
 
     @Autowired
     private JavaMailSender mailSender;
+    private Map<String, String> otpCache = new ConcurrentHashMap<>();
 
     public void sendContactEmail(ContactRequest request) throws MessagingException {
         String toEmail = "hungpoporo@gmail.com"; // Email nhận thông báo
@@ -36,4 +41,42 @@ public class EmailContactService {
 
         mailSender.send(message);
     }
+
+    public void sendVerificationOtp(String email) throws MessagingException {
+        String otp = generateOtp();
+        // Lưu OTP vào cache
+        otpCache.put(email, otp);
+
+        // Nội dung email
+        String subject = "Xác minh email - Mã OTP của bạn";
+        String body = "<p>Chào bạn,</p>"
+                + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
+                + "<p>Vui lòng nhập mã này để hoàn tất quá trình đăng ký.</p>"
+                + "<br/><p>Trân trọng,</p>";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(email);
+        helper.setSubject(subject);
+        helper.setText(body, true); // `true` để hỗ trợ HTML trong email
+
+        mailSender.send(message);
+    }
+
+    public boolean verifyOtp(String email, String otpInput) {
+        String cachedOtp = otpCache.get(email);
+        if(cachedOtp != null && cachedOtp.equals(otpInput)) {
+            // Sau khi xác minh thành công, có thể xóa OTP khỏi cache
+            otpCache.remove(email);
+            return true;
+        }
+        return false;
+    }
+
+    private String generateOtp() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
 }
