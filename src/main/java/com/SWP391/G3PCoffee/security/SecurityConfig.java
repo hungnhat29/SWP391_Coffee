@@ -52,10 +52,10 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/admin/dashboard").hasRole("ADMIN")
 //                        .requestMatchers("/shop", "/detail", "/home", "/api/cart", "/api/cart/**", "/cart", "/api/checkout/process", "/purchase-history", "/auth/login", "/auth/register", "/auth/check-login").permitAll()
-//                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
-//                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         
                         .anyRequest().permitAll()
                 )

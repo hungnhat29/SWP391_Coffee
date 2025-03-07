@@ -10,11 +10,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    List<Order> findByUserId(Integer userId);
-    List<Order> findBySessionId(String sessionId);
-    List<Order> findByUserIdOrderByOrderDateDesc(Integer userId);
-    List<Order> findBySessionIdOrderByOrderDateDesc(String sessionId);
 
     Page<Order> findByUserIdOrderByOrderDateDesc(Integer userId, Pageable pageable);
     Page<Order> findBySessionIdOrderByOrderDateDesc(String sessionId, Pageable pageable);
+
+    Order findFirstBySessionIdOrderByOrderDateDesc(String sessionId);
 }

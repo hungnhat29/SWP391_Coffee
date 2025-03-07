@@ -92,7 +92,7 @@
                 success: function (response) {
                     let role = response.role;
                     if (role.toString().includes("admin")) {
-                        window.location.href = "/";
+                        window.location.href = "/admin/dashboard";
                     } else if (role.toString().includes("customer")) {
                         window.location.href = "/home";
                     } else {

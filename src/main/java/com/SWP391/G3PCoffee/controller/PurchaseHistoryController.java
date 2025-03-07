@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -73,13 +74,24 @@ public class PurchaseHistoryController {
             } else {
                 // Authentication exists but user not found (shouldn't normally happen)
                 String sessionId = getOrCreateSessionId(session);
-                orderPage = orderService.getPagedOrdersBySessionId(sessionId, pageable);
+                // Get the most recent order for guest users
+                Order mostRecentOrder = orderService.getMostRecentOrderBySessionId(sessionId);
+                List<Order> singleOrderList = new ArrayList<>();
+                if (mostRecentOrder != null) {
+                    singleOrderList.add(mostRecentOrder);
+                }
+                orderPage = new PageImpl<>(singleOrderList, pageable, singleOrderList.size());
                 isLoggedIn = false;
             }
         } else {
-            // For guest users, get orders by session ID
+            // For guest users, get the most recent order by session ID
             String sessionId = getOrCreateSessionId(session);
-            orderPage = orderService.getPagedOrdersBySessionId(sessionId, pageable);
+            Order mostRecentOrder = orderService.getMostRecentOrderBySessionId(sessionId);
+            List<Order> singleOrderList = new ArrayList<>();
+            if (mostRecentOrder != null) {
+                singleOrderList.add(mostRecentOrder);
+            }
+            orderPage = new PageImpl<>(singleOrderList, pageable, singleOrderList.size());
             isLoggedIn = false;
         }
 

@@ -94,23 +94,23 @@ public class OrderService {
         return orderRepository.save(order);
     }
     
-    public List<Order> getUserOrders(Integer userId) {
-        return orderRepository.findByUserId(userId);
-    }
-    
-    public List<Order> getGuestOrders(String sessionId) {
-        return orderRepository.findBySessionId(sessionId);
-    }
-
-    public List<Order> getOrdersByUserId(Integer userId) {
-        // Implement logic to fetch orders by user ID from database
-        return orderRepository.findByUserIdOrderByOrderDateDesc(userId);
-    }
-
-    public List<Order> getOrdersBySessionId(String sessionId) {
-        // Implement logic to fetch orders by session ID from database
-        return orderRepository.findBySessionIdOrderByOrderDateDesc(sessionId);
-    }
+//    public List<Order> getUserOrders(Integer userId) {
+//        return orderRepository.findByUserId(userId);
+//    }
+//
+//    public List<Order> getGuestOrders(String sessionId) {
+//        return orderRepository.findBySessionId(sessionId);
+//    }
+//
+//    public List<Order> getOrdersByUserId(Integer userId) {
+//        // Implement logic to fetch orders by user ID from database
+//        return orderRepository.findByUserIdOrderByOrderDateDesc(userId);
+//    }
+//
+//    public List<Order> getOrdersBySessionId(String sessionId) {
+//        // Implement logic to fetch orders by session ID from database
+//        return orderRepository.findBySessionIdOrderByOrderDateDesc(sessionId);
+//    }
 
     // Add these methods to your existing OrderService class
     public Page<Order> getPagedOrdersByUserId(Integer userId, Pageable pageable) {
@@ -119,5 +119,9 @@ public class OrderService {
 
     public Page<Order> getPagedOrdersBySessionId(String sessionId, Pageable pageable) {
         return orderRepository.findBySessionIdOrderByOrderDateDesc(sessionId, pageable);
+    }
+
+    public Order getMostRecentOrderBySessionId(String sessionId) {
+        return orderRepository.findFirstBySessionIdOrderByOrderDateDesc(sessionId);
     }
 }

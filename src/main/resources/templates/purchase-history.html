@@ -12,6 +12,11 @@
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
             rel="stylesheet"
     />
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -48,305 +53,341 @@
             color: #666;
             margin-top: 5px;
         }
+
+        .profile-item {
+            position: relative;
+        }
+
+        .logout-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Hiển thị bên dưới icon */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .profile-item:hover .logout-menu {
+            display: block;
+        }
+
+        .logout-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
     </style>
 </head>
-<body class="p-6 min-h-screen bg-gray-50">
+<body>
 <!-- Header Section -->
-<header
-        class="p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
->
-    <div
-            class="flex justify-between items-center max-sm:flex-col max-sm:gap-4"
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="p-6 min-h-screen bg-gray-50">
+    <header
+            class="p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
     >
-        <h1 class="text-2xl text-gray-800 max-sm:text-xl">Purchase History</h1>
-        <div class="flex gap-4 max-sm:w-full">
-            <div
-                    class="flex items-center px-4 py-0 bg-white rounded-lg border border-solid w-[373px] max-sm:w-full"
-            >
-                <i class="ti ti-search text-gray-500"></i>
-                <input
-                        type="text"
-                        placeholder="Search orders..."
-                        class="p-2 w-full text-base text-gray-400 border-[none]"
-                />
-            </div>
-            <div
-                    class="flex gap-2 items-center px-3 py-0 bg-white rounded-lg border border-solid cursor-pointer"
-            >
-                <span class="text-base text-black">All Time</span>
-                <i class="ti ti-chevron-down"></i>
+        <div
+                class="flex justify-between items-center max-sm:flex-col max-sm:gap-4"
+        >
+            <h1 class="text-2xl text-gray-800 max-sm:text-xl">Purchase History</h1>
+            <div class="flex gap-4 max-sm:w-full">
+                <div
+                        class="flex items-center px-4 py-0 bg-white rounded-lg border border-solid w-[373px] max-sm:w-full"
+                >
+                    <i class="ti ti-search text-gray-500"></i>
+                    <input
+                            type="text"
+                            placeholder="Search orders..."
+                            class="p-2 w-full text-base text-gray-400 border-[none]"
+                    />
+                </div>
+                <div
+                        class="flex gap-2 items-center px-3 py-0 bg-white rounded-lg border border-solid cursor-pointer"
+                >
+                    <span class="text-base text-black">All Time</span>
+                    <i class="ti ti-chevron-down"></i>
+                </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<!-- No Orders Message -->
-<div th:if="${noOrders}" class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
-    <i class="ti ti-shopping-cart text-5xl text-gray-300"></i>
-    <p class="mt-4 text-lg text-gray-600">You don't have any order history yet.</p>
-    <a href="/" class="inline-block mt-4 px-4 py-2 text-white bg-black rounded-lg">Start Shopping</a>
-</div>
-
-<!-- Orders List Section -->
-<section th:unless="${noOrders}" class="flex flex-col gap-4">
-    <!-- Message for empty orders list -->
-    <div th:if="${#lists.isEmpty(orders)}"
-         class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
+    <!-- No Orders Message -->
+    <div th:if="${noOrders}" class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
         <i class="ti ti-shopping-cart text-5xl text-gray-300"></i>
         <p class="mt-4 text-lg text-gray-600">You don't have any order history yet.</p>
         <a href="/" class="inline-block mt-4 px-4 py-2 text-white bg-black rounded-lg">Start Shopping</a>
     </div>
 
-    <!-- Order Items -->
-    <article
-            th:each="order : ${orders}"
-            class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:p-4"
-    >
-        <div class="flex justify-between max-sm:flex-col">
-            <div class="flex gap-4 mb-4">
-                <!-- Show first product image if available, otherwise show placeholder -->
-                <div th:if="${order.firstProductImageUrl != null}" class="w-16 h-16">
-                    <img th:src="${order.firstProductImageUrl}" alt="Product image"
-                         class="object-cover w-16 h-16 rounded-lg"/>
-                </div>
-                <div th:unless="${order.firstProductImageUrl != null}"
-                     class="flex justify-center items-center object-cover w-16 h-16 rounded-lg bg-gray-200">
-                    <i class="ti ti-coffee text-2xl text-gray-400"></i>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <h3 class="text-lg text-black">Order #<span th:text="${order.id}"></span></h3>
-                    <p class="text-base text-gray-500" th:text="${#temporals.format(order.orderDate, 'MMMM d, yyyy')}">
-                        Order Date</p>
-                </div>
-            </div>
-            <div class="flex flex-col gap-1 items-end">
-                <p class="text-lg text-black"><span th:text="${order.orderTotal}"></span>đ</p>
-                <span th:class="${'px-3 py-1 text-sm rounded-full ' + order.status}"
-                      th:text="${#strings.capitalize(order.status)}">Status</span>
-            </div>
+    <!-- Orders List Section -->
+    <section th:unless="${noOrders}" class="flex flex-col gap-4">
+        <!-- Message for empty orders list -->
+        <div th:if="${#lists.isEmpty(orders)}"
+             class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
+            <i class="ti ti-shopping-cart text-5xl text-gray-300"></i>
+            <p class="mt-4 text-lg text-gray-600">You don't have any order history yet.</p>
+            <a href="/" class="inline-block mt-4 px-4 py-2 text-white bg-black rounded-lg">Start Shopping</a>
         </div>
-        <footer
-                class="flex justify-between items-center pt-4 text-sm text-gray-600 border-t border-solid max-sm:flex-col max-sm:gap-2"
+
+        <!-- Order Items -->
+        <article
+                th:each="order : ${orders}"
+                class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:p-4"
         >
-            <div class="flex gap-2 items-center">
-                <!-- Payment Method Icon -->
-                <i th:class="${'ti ' + (order.paymentMethod == 'card' ? 'ti-credit-card' : (order.paymentMethod == 'paypal' ? 'ti-brand-paypal' : 'ti-cash'))} + ' text-base'"></i>
-                <span th:text="${#strings.capitalize(order.paymentMethod ?: 'Unknown')}">Payment Method</span>
-
-                <!-- Address Icon and Info -->
-                <i class="ti ti-map-pin text-base ml-2"></i>
-                <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
-            </div>
-            <a
-                    th:href="@{'/purchase-history?viewOrderId=' + ${order.id}}"
-                    class="flex gap-2 items-center text-base text-black cursor-pointer"
-            >
-                <span>View Details</span>
-                <i class="ti ti-arrow-right"></i>
-            </a>
-        </footer>
-    </article>
-</section>
-
-<!-- Improved Pagination Section -->
-<!-- Pagination Section -->
-<nav th:if="${orders != null and !#lists.isEmpty(orders)}" class="flex gap-2 justify-center mx-0 my-6 max-sm:flex-wrap"
-     id="paginationNav">
-    <!-- Previous Page Button -->
-    <a th:if="${currentPage > 1}"
-       th:href="@{/purchase-history(page=${currentPage - 1})}"
-       class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
-       id="prevPageBtn">
-        <i class="ti ti-chevron-left"></i>
-    </a>
-    <span th:unless="${currentPage > 1}"
-          class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
-        <i class="ti ti-chevron-left"></i>
-    </span>
-
-    <!-- First page -->
-    <a th:href="@{/purchase-history(page=1)}"
-       th:class="${1 == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
-       th:text="1"></a>
-
-    <!-- Show ellipsis if needed -->
-    <span th:if="${currentPage > 4}" class="flex justify-center items-center px-2">...</span>
-
-    <!-- Show pages around current page -->
-    <th:block th:with="startPage=${currentPage > 2 ? currentPage - 1 : 2},
-                       endPage=${currentPage + 1 < totalPages ? currentPage + 1 : totalPages - 1}">
-        <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i > 1 && i < totalPages}"
-               th:href="@{/purchase-history(page=${i})}"
-               th:class="${i == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
-               th:text="${i}"></a>
-        </th:block>
-    </th:block>
-
-    <!-- Show ellipsis if needed -->
-    <span th:if="${currentPage < totalPages - 3}" class="flex justify-center items-center px-2">...</span>
-
-    <!-- Always show last page if there's more than one page -->
-    <a th:if="${totalPages > 1}"
-       th:href="@{/purchase-history(page=${totalPages})}"
-       th:class="${totalPages == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
-       th:text="${totalPages}"></a>
-
-    <!-- Next Page Button -->
-    <a th:if="${currentPage < totalPages}"
-       th:href="@{/purchase-history(page=${currentPage + 1})}"
-       class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
-       id="nextPageBtn">
-        <i class="ti ti-chevron-right"></i>
-    </a>
-    <span th:unless="${currentPage < totalPages}"
-          class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
-        <i class="ti ti-chevron-right"></i>
-    </span>
-</nav>
-
-<!-- JavaScript for Keyboard Navigation -->
-
-
-<!-- Order Details Section (only shown when viewOrderId is provided) -->
-<section th:if="${showOrderDetails}" class="p-6 bg-gray-50 mt-8">
-    <!-- Back Button and Order Summary -->
-    <div
-            class="flex gap-4 items-center p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:flex-wrap max-sm:gap-2"
-    >
-        <a th:href="@{/purchase-history}" class="cursor-pointer">
-            <i class="ti ti-arrow-left text-base"></i>
-        </a>
-        <span>Order #<span th:text="${orderDetails.id}"></span></span>
-        <span th:class="${'px-3 py-1 text-sm rounded-full ' + orderDetails.status}"
-              th:text="${#strings.capitalize(orderDetails.status)}">Status</span>
-        <button
-                class="flex gap-2 items-center px-4 py-2 ml-auto text-white bg-black rounded-lg cursor-pointer border-[none] max-sm:justify-center max-sm:mt-2 max-sm:w-full"
-        >
-            <i class="ti ti-download text-base"></i>
-            <span>Download Invoice</span>
-        </button>
-    </div>
-
-    <!-- Details Container -->
-    <div class="flex gap-6 max-md:flex-col">
-        <!-- Order Details Box -->
-        <section
-                class="flex-1 p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
-        >
-            <h2 class="mb-6 text-xl text-black">Order Details</h2>
-            <div class="flex flex-col gap-4">
-                <!-- Product Items -->
-                <article th:each="item : ${orderItems}"
-                         class="flex gap-4 pb-4 border-b border-solid max-sm:flex-col"
-                >
-                    <div th:if="${item.product != null && item.product.imageUrl != null}" class="w-20 h-20">
-                        <img th:src="${item.product.imageUrl}" alt="Product image"
-                             class="object-cover w-20 h-20 rounded-lg"/>
+            <div class="flex justify-between max-sm:flex-col">
+                <div class="flex gap-4 mb-4">
+                    <!-- Show first product image if available, otherwise show placeholder -->
+                    <div th:if="${order.firstProductImageUrl != null}" class="w-16 h-16">
+                        <img th:src="${order.firstProductImageUrl}" alt="Product image"
+                             class="object-cover w-16 h-16 rounded-lg"/>
                     </div>
-                    <div th:unless="${item.product != null && item.product.imageUrl != null}"
-                         class="flex justify-center items-center object-cover w-20 h-20 rounded-lg bg-gray-200">
+                    <div th:unless="${order.firstProductImageUrl != null}"
+                         class="flex justify-center items-center object-cover w-16 h-16 rounded-lg bg-gray-200">
                         <i class="ti ti-coffee text-2xl text-gray-400"></i>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="text-base text-black"
-                            th:text="${item.product != null ? item.product.name : 'Product'}">Product name</h3>
-                        <div class="customizations">
-                            <div th:if="${item.sizeInfo}">
-                                Size: <span
-                                    th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getSizeName(item.sizeInfo)}">Regular</span>
-                            </div>
-                            <div th:if="${item.toppingsInfo}">
-                                Toppings: <span
-                                    th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}">None</span>
-                            </div>
-                        </div>
+                    <div class="flex flex-col gap-1">
+                        <h3 class="text-lg text-black">Order #<span th:text="${order.id}"></span></h3>
+                        <p class="text-base text-gray-500"
+                           th:text="${#temporals.format(order.orderDate, 'MMMM d, yyyy')}">
+                            Order Date</p>
                     </div>
-                    <div class="text-right max-sm:text-left">
-                        <span th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT')}">$0.00</span> đ
-                        <p class="text-base text-gray-500">Qty: <span th:text="${item.quantity}">1</span></p>
-                    </div>
-                </article>
-
-                <!-- Order Summary -->
-                <div class="mt-4">
-                    <div class="flex justify-between mb-2 text-base text-gray-600">
-                        <span>Subtotal</span>
-                        <span><span
-                                th:text="${#numbers.formatDecimal(orderDetails.orderTotal, 0, 'COMMA', 0, 'POINT')}">0</span> đ</span>
-
-                    </div>
-                    <div class="flex justify-between mb-2 text-base text-gray-600">
-                        <span>Tax</span>
-                        <span><span>0</span>đ</span>
-                    </div>
-                    <div class="flex justify-between mb-2 text-base text-gray-600">
-                        <span>Shipping</span>
-                        <span>Free</span>
-                    </div>
-                    <div
-                            class="flex justify-between pt-2 text-lg text-black border-t border-solid"
-                    >
-                        <span>Total</span>
-                        <span><span
-                                th:text="${#numbers.formatDecimal(orderDetails.orderTotal, 0, 'COMMA', 0, 'POINT')}">0</span> đ</span>
-
-                    </div>
+                </div>
+                <div class="flex flex-col gap-1 items-end">
+                    <p class="text-lg text-black"><span th:text="${order.orderTotal}"></span>đ</p>
+                    <span th:class="${'px-3 py-1 text-sm rounded-full ' + order.status}"
+                          th:text="${#strings.capitalize(order.status)}">Status</span>
                 </div>
             </div>
-        </section>
-
-        <!-- Info Sidebar - Updated to use more fields from Order model -->
-        <aside class="w-[448px] max-md:w-full">
-            <!-- Delivery Information - Updated -->
-            <section
-                    class="p-6 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+            <footer
+                    class="flex justify-between items-center pt-4 text-sm text-gray-600 border-t border-solid max-sm:flex-col max-sm:gap-2"
             >
-                <h2 class="mb-6 text-xl text-black">Delivery Information</h2>
-                <div class="mb-4">
-                    <h3 class="mb-1 text-base text-gray-500">Name</h3>
-                    <p class="text-base text-black" th:text="${orderDetails.customerName ?: 'No name provided'}">
-                        Customer Name</p>
-                </div>
-                <div class="mb-4">
-                    <h3 class="mb-1 text-base text-gray-500">Delivery Address</h3>
-                    <p class="text-base text-black"
-                       th:text="${orderDetails.shippingAddress ?: (orderDetails.customerAddress ?: 'No address provided')}">
-                        Address</p>
-                </div>
-                <div class="mb-4">
-                    <h3 class="mb-1 text-base text-gray-500">Phone Number</h3>
-                    <p class="text-base text-black" th:text="${orderDetails.customerPhone ?: 'No phone provided'}">
-                        Phone</p>
-                </div>
-                <div class="mb-4">
-                    <h3 class="mb-1 text-base text-gray-500">Email</h3>
-                    <p class="text-base text-black" th:text="${orderDetails.customerEmail ?: 'No email provided'}">
-                        Email</p>
-                </div>
-            </section>
+                <div class="flex gap-2 items-center">
+                    <!-- Payment Method Icon -->
+                    <i th:class="${'ti ' + (order.paymentMethod == 'card' ? 'ti-credit-card' : (order.paymentMethod == 'paypal' ? 'ti-brand-paypal' : 'ti-cash'))} + ' text-base'"></i>
+                    <span th:text="${#strings.capitalize(order.paymentMethod ?: 'Unknown')}">Payment Method</span>
 
-            <!-- Payment Information -->
-            <section
-                    class="p-6 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                    <!-- Address Icon and Info -->
+                    <i class="ti ti-map-pin text-base ml-2"></i>
+                    <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
+                </div>
+                <a
+                        th:href="@{'/purchase-history?viewOrderId=' + ${order.id}}"
+                        class="flex gap-2 items-center text-base text-black cursor-pointer"
+                >
+                    <span>View Details</span>
+                    <i class="ti ti-arrow-right"></i>
+                </a>
+            </footer>
+        </article>
+    </section>
+
+    <!-- Improved Pagination Section -->
+    <!-- Pagination Section -->
+    <nav th:if="${orders != null and !#lists.isEmpty(orders)}"
+         class="flex gap-2 justify-center mx-0 my-6 max-sm:flex-wrap"
+         id="paginationNav">
+        <!-- Previous Page Button -->
+        <a th:if="${currentPage > 1}"
+           th:href="@{/purchase-history(page=${currentPage - 1})}"
+           class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
+           id="prevPageBtn">
+            <i class="ti ti-chevron-left"></i>
+        </a>
+        <span th:unless="${currentPage > 1}"
+              class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
+        <i class="ti ti-chevron-left"></i>
+    </span>
+
+        <!-- First page -->
+        <a th:href="@{/purchase-history(page=1)}"
+           th:class="${1 == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+           th:text="1"></a>
+
+        <!-- Show ellipsis if needed -->
+        <span th:if="${currentPage > 4}" class="flex justify-center items-center px-2">...</span>
+
+        <!-- Show pages around current page -->
+        <th:block th:with="startPage=${currentPage > 2 ? currentPage - 1 : 2},
+                       endPage=${currentPage + 1 < totalPages ? currentPage + 1 : totalPages - 1}">
+            <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                <a th:if="${i > 1 && i < totalPages}"
+                   th:href="@{/purchase-history(page=${i})}"
+                   th:class="${i == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+                   th:text="${i}"></a>
+            </th:block>
+        </th:block>
+
+        <!-- Show ellipsis if needed -->
+        <span th:if="${currentPage < totalPages - 3}" class="flex justify-center items-center px-2">...</span>
+
+        <!-- Always show last page if there's more than one page -->
+        <a th:if="${totalPages > 1}"
+           th:href="@{/purchase-history(page=${totalPages})}"
+           th:class="${totalPages == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+           th:text="${totalPages}"></a>
+
+        <!-- Next Page Button -->
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/purchase-history(page=${currentPage + 1})}"
+           class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
+           id="nextPageBtn">
+            <i class="ti ti-chevron-right"></i>
+        </a>
+        <span th:unless="${currentPage < totalPages}"
+              class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
+        <i class="ti ti-chevron-right"></i>
+    </span>
+    </nav>
+
+    <!-- JavaScript for Keyboard Navigation -->
+
+
+    <!-- Order Details Section (only shown when viewOrderId is provided) -->
+    <section th:if="${showOrderDetails}" class="p-6 bg-gray-50 mt-8">
+        <!-- Back Button and Order Summary -->
+        <div
+                class="flex gap-4 items-center p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:flex-wrap max-sm:gap-2"
+        >
+            <a th:href="@{/purchase-history}" class="cursor-pointer">
+                <i class="ti ti-arrow-left text-base"></i>
+            </a>
+            <span>Order #<span th:text="${orderDetails.id}"></span></span>
+            <span th:class="${'px-3 py-1 text-sm rounded-full ' + orderDetails.status}"
+                  th:text="${#strings.capitalize(orderDetails.status)}">Status</span>
+            <button
+                    class="flex gap-2 items-center px-4 py-2 ml-auto text-white bg-black rounded-lg cursor-pointer border-[none] max-sm:justify-center max-sm:mt-2 max-sm:w-full"
             >
-                <h2 class="mb-6 text-xl text-black">Payment Information</h2>
-                <div class="mb-4 flex items-center gap-3">
-                    <i th:class="${'ti ' + (orderDetails.paymentMethod == 'card' ? 'ti-credit-card' : (orderDetails.paymentMethod == 'paypal' ? 'ti-brand-paypal' : 'ti-cash'))}"></i>
-                    <div class="flex flex-col">
-                        <p class="text-base text-black"
-                           th:text="${#strings.capitalize(orderDetails.paymentMethod ?: 'Unknown payment method')}">
-                            Payment Method</p>
+                <i class="ti ti-download text-base"></i>
+                <span>Download Invoice</span>
+            </button>
+        </div>
+
+        <!-- Details Container -->
+        <div class="flex gap-6 max-md:flex-col">
+            <!-- Order Details Box -->
+            <section
+                    class="flex-1 p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+            >
+                <h2 class="mb-6 text-xl text-black">Order Details</h2>
+                <div class="flex flex-col gap-4">
+                    <!-- Product Items -->
+                    <article th:each="item : ${orderItems}"
+                             class="flex gap-4 pb-4 border-b border-solid max-sm:flex-col"
+                    >
+                        <div th:if="${item.product != null && item.product.imageUrl != null}" class="w-20 h-20">
+                            <img th:src="${item.product.imageUrl}" alt="Product image"
+                                 class="object-cover w-20 h-20 rounded-lg"/>
+                        </div>
+                        <div th:unless="${item.product != null && item.product.imageUrl != null}"
+                             class="flex justify-center items-center object-cover w-20 h-20 rounded-lg bg-gray-200">
+                            <i class="ti ti-coffee text-2xl text-gray-400"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-base text-black"
+                                th:text="${item.product != null ? item.product.name : 'Product'}">Product name</h3>
+                            <div class="customizations">
+                                <div th:if="${item.sizeInfo}">
+                                    Size: <span
+                                        th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getSizeName(item.sizeInfo)}">Regular</span>
+                                </div>
+                                <div th:if="${item.toppingsInfo}">
+                                    Toppings: <span
+                                        th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}">None</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right max-sm:text-left">
+                            <span th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
+                            đ
+                            <p class="text-base text-gray-500">Qty: <span th:text="${item.quantity}">1</span></p>
+                        </div>
+                    </article>
+
+                    <!-- Order Summary -->
+                    <div class="mt-4">
+                        <div class="flex justify-between mb-2 text-base text-gray-600">
+                            <span>Subtotal</span>
+                            <span><span
+                                    th:text="${#numbers.formatDecimal(orderDetails.orderTotal, 0, 'COMMA', 0, 'POINT')}">0</span> đ</span>
+
+                        </div>
+                        <div class="flex justify-between mb-2 text-base text-gray-600">
+                            <span>Tax</span>
+                            <span><span>0</span>đ</span>
+                        </div>
+                        <div class="flex justify-between mb-2 text-base text-gray-600">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div
+                                class="flex justify-between pt-2 text-lg text-black border-t border-solid"
+                        >
+                            <span>Total</span>
+                            <span><span
+                                    th:text="${#numbers.formatDecimal(orderDetails.orderTotal, 0, 'COMMA', 0, 'POINT')}">0</span> đ</span>
+
+                        </div>
                     </div>
                 </div>
-                <div class="mb-4">
-                    <h3 class="mb-1 text-base text-gray-500">Billing Address</h3>
-                    <p class="text-base text-black">Same as delivery address</p>
-                </div>
             </section>
-        </aside>
-    </div>
-</section>
+
+            <!-- Info Sidebar - Updated to use more fields from Order model -->
+            <aside class="w-[448px] max-md:w-full">
+                <!-- Delivery Information - Updated -->
+                <section
+                        class="p-6 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                >
+                    <h2 class="mb-6 text-xl text-black">Delivery Information</h2>
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-base text-gray-500">Name</h3>
+                        <p class="text-base text-black" th:text="${orderDetails.customerName ?: 'No name provided'}">
+                            Customer Name</p>
+                    </div>
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-base text-gray-500">Delivery Address</h3>
+                        <p class="text-base text-black"
+                           th:text="${orderDetails.shippingAddress ?: (orderDetails.customerAddress ?: 'No address provided')}">
+                            Address</p>
+                    </div>
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-base text-gray-500">Phone Number</h3>
+                        <p class="text-base text-black" th:text="${orderDetails.customerPhone ?: 'No phone provided'}">
+                            Phone</p>
+                    </div>
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-base text-gray-500">Email</h3>
+                        <p class="text-base text-black" th:text="${orderDetails.customerEmail ?: 'No email provided'}">
+                            Email</p>
+                    </div>
+                </section>
+
+                <!-- Payment Information -->
+                <section
+                        class="p-6 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                >
+                    <h2 class="mb-6 text-xl text-black">Payment Information</h2>
+                    <div class="mb-4 flex items-center gap-3">
+                        <i th:class="${'ti ' + (orderDetails.paymentMethod == 'card' ? 'ti-credit-card' : (orderDetails.paymentMethod == 'paypal' ? 'ti-brand-paypal' : 'ti-cash'))}"></i>
+                        <div class="flex flex-col">
+                            <p class="text-base text-black"
+                               th:text="${#strings.capitalize(orderDetails.paymentMethod ?: 'Unknown payment method')}">
+                                Payment Method</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h3 class="mb-1 text-base text-gray-500">Billing Address</h3>
+                        <p class="text-base text-black">Same as delivery address</p>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </section>
+</div>
+<div th:replace="~{/footer-template :: footer-template}"></div>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
         // Get current page and total pages from Thymeleaf
@@ -393,6 +434,46 @@
             });
         }
     });
+</script>
+<script>
+    function logout() {
+        fetch('/auth/logout', {
+            method: 'POST', // Gọi API với phương thức POST
+            credentials: 'include' // Đảm bảo cookie được gửi kèm
+        })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: "Đăng xuất thành công!",
+                        icon: "success",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 3000);
+                } else {
+                    Swal.fire({
+                        title: "Lỗi",
+                        text: "Đăng xuất không thành công!",
+                        icon: "error",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                    icon: "error",
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            });
+    }
 </script>
 </body>
 </html>

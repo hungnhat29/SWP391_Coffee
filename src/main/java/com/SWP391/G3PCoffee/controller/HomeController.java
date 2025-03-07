@@ -24,7 +24,7 @@ public class HomeController {
         return "home"; // Tên file HTML trong thư mục templates
     }
     
-    @GetMapping("/")
+    @GetMapping("/admin/dashboard")
     public String dashboard() {
         return "dashboard"; // Tên file HTML trong thư mục templates
     }
