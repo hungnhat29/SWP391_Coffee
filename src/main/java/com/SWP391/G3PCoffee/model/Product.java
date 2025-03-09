@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -41,7 +41,7 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public Product(Long id, String name, String description, BigDecimal basePrice, Category category, String imageUrl,
+    public Product(Integer id, String name, String description, BigDecimal basePrice, Category category, String imageUrl,
                    String sizes, String toppings) {
         this.id = id;
         this.name = name;

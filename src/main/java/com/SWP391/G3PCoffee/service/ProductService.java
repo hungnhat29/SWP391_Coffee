@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     public Optional<ProductDTO> getProductById(Integer id) {
-        return productRepository.findById(Long.valueOf(id)).map(this::convertToDTO);
+        return productRepository.findById(id).map(this::convertToDTO);
     }
 
     public ProductDTO convertToDTO(Product product) {
@@ -39,16 +39,16 @@ public class ProductService {
             // Parse sizes JSON
             JsonNode sizesRoot = objectMapper.readTree(product.getSizes());
             List<ProductDTO.SizeOption> sizes = objectMapper.convertValue(
-                sizesRoot.get("sizes"),
-                new TypeReference<List<ProductDTO.SizeOption>>() {}
+                    sizesRoot.get("sizes"),
+                    new TypeReference<List<ProductDTO.SizeOption>>() {}
             );
             dto.setSizes(sizes);
 
             // Parse toppings JSON
             JsonNode toppingsRoot = objectMapper.readTree(product.getToppings());
             List<ProductDTO.ToppingOption> toppings = objectMapper.convertValue(
-                toppingsRoot.get("toppings"),
-                new TypeReference<List<ProductDTO.ToppingOption>>() {}
+                    toppingsRoot.get("toppings"),
+                    new TypeReference<List<ProductDTO.ToppingOption>>() {}
             );
             dto.setToppings(toppings);
 
@@ -59,32 +59,5 @@ public class ProductService {
         }
 
         return dto;
-    }
-    public List<Product> findAllProducts() {
-        List<Product> products = productRepository.findAll();
-        System.out.println("findAllProducts: " + products);
-        return products;
-    }
-
-    public Product getProductById(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
-        System.out.println("getProductById(" + id + "): " + product);
-        return product;
-    }
-
-    public Product saveProduct(Product product) {
-        Product savedProduct = productRepository.save(product);
-        System.out.println("saveProduct: " + savedProduct);
-        return savedProduct;
-    }
-
-    public boolean deleteProduct(Long id) {
-        if (productRepository.existsById(id)) {
-            productRepository.deleteById(id);
-            System.out.println("deleteProduct(" + id + "): Success");
-            return true;
-        }
-        System.out.println("deleteProduct(" + id + "): Not found");
-        return false;
     }
 }
