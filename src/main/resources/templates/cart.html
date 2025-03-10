@@ -5,139 +5,812 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - G3P Coffee</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <!-- bootstrap css -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-    <!-- style css -->
     <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
     <style>
-        .profile-item {
-            position: relative;
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #fff;
         }
 
-        .logout-menu {
+        .cart {
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #252525;
+            padding: 22px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 37px;
+            width: 179px;
+            object-fit: contain;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 88px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 23px;
+            color: #fff;
+            font-size: 18px;
+            align-items: center;
+        }
+
+        .menu-item {
+            color: #f76d37;
+        }
+
+        .help-link {
+            color: #f76d37;
+        }
+
+        .icon-group {
+            display: flex;
+            gap: 13px;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .content-wrapper {
+            max-width: 1263px;
+            margin: 46px auto;
+            padding: 0 20px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 500;
+            color: #22262a;
+        }
+
+        .order-columns {
+            display: flex;
+            gap: 100px;
+            justify-content: space-between;
+            width: 50%;
+        }
+
+        .divider {
+            height: 2px;
+            background-color: #f6f7f8;
+            margin: 23px 0;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 19px 0;
+            align-items: center;
+        }
+
+        .item-details {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            width: 50%;
+        }
+
+        .item-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .item-name {
+            font-size: 18px;
+            color: #262626;
+        }
+
+        .item-options {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .item-pricing {
+            display: flex;
+            align-items: center;
+            gap: 72px;
+            font-size: 18px;
+            width: 50%;
+            justify-content: space-between;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+        .qty-btn {
+            border: none;
+            background: none;
+            color: #262626;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .qty-value {
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .voucher-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 90px;
+        }
+
+        .voucher-input {
+            display: flex;
+            gap: 20px;
+            width: 369px;
+        }
+
+        .voucher-field {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+
+        .redeem-btn {
+            background-color: #f76d37;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .order-summary {
+            display: flex;
+            gap: 100px;
+        }
+
+        .summary-labels,
+        .summary-values {
+            display: flex;
+            flex-direction: column;
+            gap: 23px;
+            font-size: 18px;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 100px;
+            font-size: 30px;
+            font-weight: 500;
+            margin: 28px 0 24px;
+            padding-right: 20px;
+        }
+
+        .checkout-btn {
+            width: auto;
+            min-width: 374px;
+            padding: 17px;
+            background-color: #f76d37;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        .remove-btn {
+            color: #f76d37;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 5rem;
+            color: #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-text {
+            font-size: 20px;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            background-color: #f76d37;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Custom styles for dropdowns */
+        .option-label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .custom-select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background-color: #fff;
+            min-width: 120px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .custom-select:focus {
+            border-color: #f76d37;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(247, 109, 55, 0.2);
+        }
+
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .dropdown-toggle {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background-color: #fff;
+            min-width: 120px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-toggle:after {
+            content: "\e91e";
+            font-family: "tabler-icons";
+            margin-left: 8px;
+            font-size: 14px;
+        }
+
+        .dropdown-menu {
             display: none;
             position: absolute;
-            top: 100%; /* Hiển thị bên dưới icon */
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            top: 100%;
+            margin-top: 4px;
             background-color: #fff;
-            color: #000;
-            padding: 8px 12px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            white-space: nowrap;
-            z-index: 10;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            z-index: 20;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .profile-item:hover .logout-menu {
+        .dropdown-menu.show {
             display: block;
         }
 
-        .logout-link {
-            text-decoration: none;
-            color: #000;
-            font-weight: bold;
+        .dropdown-option {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .dropdown-option:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-option.selected {
+            background-color: #fef3f2;
+            color: #f76d37;
+        }
+
+        .selected-options {
+            font-size: 14px;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 991px) {
+            .nav-container {
+                gap: 40px;
+            }
+
+            .order-columns {
+                gap: 60px;
+            }
+
+            .item-pricing {
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .content-wrapper {
+                margin: 20px auto;
+            }
+
+            .order-header {
+                font-size: 16px;
+            }
+
+            .order-columns {
+                width: 70%;
+                gap: 20px;
+            }
+
+            .order-item {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .item-details {
+                width: 100%;
+            }
+
+            .item-pricing {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .voucher-section {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .voucher-input {
+                width: 100%;
+            }
+
+            .order-summary {
+                justify-content: space-between;
+                gap: 60px;
+            }
+
+            .total-section {
+                justify-content: space-between;
+                gap: 40px;
+                padding-right: 0;
+            }
+
+            .checkout-btn {
+                width: 100%;
+                min-width: unset;
+                margin: 0;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body>
+<div class="cart">
+    <div th:replace="~{/header_template :: header_template}"></div>
 
-<div th:replace="~{/header_template :: header_template}"></div>
+    <main class="content-wrapper">
+        <h1 class="text-3xl font-bold mb-8">Your Cart</h1>
 
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Your Cart</h1>
-
-    <!-- Empty cart message -->
-    <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-8">
-        <i class="fas fa-shopping-cart text-gray-400 text-5xl mb-4"></i>
-        <p class="text-gray-500">Your cart is empty</p>
-        <a href="/shop" class="inline-block mt-4 px-6 py-2 bg-brown-600 text-white rounded hover:bg-brown-700">
-            Continue Shopping
-        </a>
-    </div>
-
-    <!-- Cart items -->
-    <div th:unless="${#lists.isEmpty(cartItems)}" class="bg-white rounded-lg shadow-md">
-        <!-- Cart items list -->
-        <div class="divide-y divide-gray-200">
-            <div th:each="item : ${cartItems}" class="p-6 flex items-center">
-                <!-- Product image -->
-                <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}"
-                     class="w-24 h-24 object-cover rounded">
-
-                <!-- Product details -->
-                <div class="flex-1 ml-6">
-                    <h3 th:text="${item.product.name}" class="text-lg font-semibold"></h3>
-
-                    <!-- Size info if available -->
-                    <div th:if="${item.sizeInfo != null and item.sizeInfo != ''}" class="text-sm text-gray-600">
-                        <span>Size: </span>
-                        <span th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getSizeName(item.sizeInfo)}"></span>
-                    </div>
-
-                    <!-- Toppings if available -->
-                    <div th:if="${item.toppingsInfo != null and item.toppingsInfo != ''}" class="text-sm text-gray-600">
-                        <span>Toppings: </span>
-                        <span th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}"></span>
-                    </div>
-
-                    <!-- Sub-total -->
-                    <div class="text-sm font-medium mt-2">
-                        <span>Sub-total: </span>
-                        <span th:id="'subtotal-' + ${item.id}"
-                              th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT') + 'đ'}"></span>
-                    </div>
-                </div>
-
-                <!-- Quantity controls -->
-                <div class="flex items-center mx-6">
-                    <button th:onclick="'updateQuantity(' + ${item.id} + ', -1)'"
-                            class="px-3 py-1 border rounded-l hover:bg-gray-100">-
-                    </button>
-                    <input type="number" th:id="'quantity-' + ${item.id}" th:value="${item.quantity}"
-                           class="w-16 text-center border-t border-b" readonly>
-                    <button th:onclick="'updateQuantity(' + ${item.id} + ', 1)'"
-                            class="px-3 py-1 border rounded-r hover:bg-gray-100">+
-                    </button>
-                </div>
-
-                <!-- Remove button -->
-                <button th:onclick="'removeItem(' + ${item.id} + ')'"
-                        class="text-red-500 hover:text-red-700">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
+        <!-- Empty cart message -->
+        <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart">
+            <i class="ti ti-shopping-cart empty-cart-icon"></i>
+            <p class="empty-cart-text">Your cart is empty</p>
+            <a href="/shop" class="continue-shopping">
+                Continue Shopping
+            </a>
         </div>
 
-        <!-- Cart summary -->
-        <div class="p-6 bg-gray-50 rounded-b-lg">
-            <div class="flex justify-between items-center">
-                <span class="text-lg font-semibold">Total:</span>
-                <span id="totalAmount" class="text-2xl font-bold text-brown-600">
-                            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}"></span>đ
-                        </span>
+        <!-- Cart items -->
+        <div th:unless="${#lists.isEmpty(cartItems)}">
+            <div class="order-header">
+                <div>Order</div>
+                <div class="order-columns">
+                    <div>PRICE</div>
+                    <div>QTY</div>
+                    <div>SUB-TOTAL</div>
+                </div>
+            </div>
+            <div class="divider"></div>
+
+            <!-- Cart items list -->
+            <div th:each="item : ${cartItems}">
+                <div class="order-item">
+                    <div class="item-details">
+                        <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" class="item-image">
+                        <div>
+                            <div class="item-name" th:text="${item.product.name}"></div>
+
+                            <!-- Size options -->
+                            <div class="item-options">
+                                <div th:id="'size-options-' + ${item.id}">
+                                    <span class="option-label">Size:</span>
+                                    <select th:id="'size-select-' + ${item.id}" class="custom-select" onchange="updateItemOptions(this)">
+                                        <option value="">-- Select --</option>
+                                        <!-- Product sizes will be populated via JavaScript -->
+                                    </select>
+                                </div>
+
+                                <!-- Toppings options -->
+                                <div th:id="'toppings-options-' + ${item.id}">
+                                    <span class="option-label">Toppings:</span>
+                                    <div class="dropdown-container">
+                                        <div th:id="'toppings-toggle-' + ${item.id}" class="dropdown-toggle" onclick="toggleToppingsDropdown(this)">
+                                            <span th:id="'selected-toppings-' + ${item.id}" class="selected-options">-- Select --</span>
+                                        </div>
+                                        <div th:id="'toppings-menu-' + ${item.id}" class="dropdown-menu">
+                                            <!-- Product toppings will be populated via JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden data for JavaScript -->
+                            <div th:id="'product-data-' + ${item.id}" style="display: none;"
+                                 th:data-product-id="${item.product.id}"
+                                 th:data-current-size="${item.sizeInfo}"
+                                 th:data-current-toppings="${item.toppingsInfo}"
+                                 th:data-cart-id="${item.id}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-pricing">
+                        <div th:id="'price-' + ${item.id}">
+                            <span th:if="${item.product.basePrice}" th:text="${#numbers.formatDecimal(item.product.basePrice, 0, 'COMMA', 0, 'POINT') + ' đ'}"></span>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" th:onclick="'updateQuantity(' + ${item.id} + ', -1)'">-</button>
+                            <div class="qty-value" th:id="'quantity-' + ${item.id}" th:text="${item.quantity}"></div>
+                            <button class="qty-btn" th:onclick="'updateQuantity(' + ${item.id} + ', 1)'">+</button>
+                        </div>
+                        <div th:id="'subtotal-' + ${item.id}" th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
+                        <button class="remove-btn" th:onclick="'removeItem(' + ${item.id} + ')'">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="divider"></div>
             </div>
 
-            <!-- Action buttons -->
-            <div class="mt-6 flex justify-end space-x-4">
-                <a href="/shop" class="px-6 py-2 border border-gray-300 rounded hover:bg-gray-100">
-                    Continue Shopping
-                </a>
-                <button onclick="checkout()"
-                        class="px-6 py-2 bg-brown-600 text-black-50 rounded hover:bg-brown-700">
-                    Checkout
-                </button>
+            <!-- Voucher and summary section -->
+            <div class="voucher-section">
+                <form class="voucher-input">
+                    <input type="text" placeholder="Voucher code" class="voucher-field">
+                    <button type="submit" class="redeem-btn">Redeem</button>
+                </form>
+                <div class="order-summary">
+                    <div class="summary-labels">
+                        <div>Shipping fee</div>
+                        <div>Coupon</div>
+                    </div>
+                    <div class="summary-values">
+                        <div>Free</div>
+                        <div>No</div>
+                    </div>
+                </div>
             </div>
+
+            <div class="divider"></div>
+
+            <!-- Total and checkout -->
+            <div class="total-section">
+                <div>TOTAL</div>
+                <div id="totalAmount">
+                    <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}"></span> đ
+                </div>
+            </div>
+            <button onclick="checkout()" class="checkout-btn">Check out</button>
         </div>
-    </div>
+    </main>
+
+    <div th:replace="~{/footer-template :: footer-template}"></div>
 </div>
-
-<div th:replace="~{/footer-template :: footer-template}"></div>
 
 <!-- JavaScript for cart operations -->
 <script>
+    // Global map to store product data (sizes and toppings)
+    const productData = {};
+    // Global map to store selected toppings for each cart item
+    const selectedToppings = {};
+
+    // Load product details from the server
+    async function loadProductDetails(productId) {
+        if (productData[productId]) {
+            return productData[productId];
+        }
+
+        try {
+            const response = await fetch(`/api/products/${productId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load product details');
+            }
+
+            const data = await response.json();
+            productData[productId] = data;
+            return data;
+        } catch (error) {
+            console.error('Error loading product details:', error);
+            return null;
+        }
+    }
+
+    // Initialize cart item options
+    async function initializeCartItemOptions(cartId) {
+        const productDataElement = document.getElementById(`product-data-${cartId}`);
+        if (!productDataElement) return;
+
+        const productId = productDataElement.getAttribute('data-product-id');
+        const currentSizeInfo = productDataElement.getAttribute('data-current-size');
+        const currentToppingsInfo = productDataElement.getAttribute('data-current-toppings');
+
+        const sizeSelect = document.getElementById(`size-select-${cartId}`);
+        const toppingsMenu = document.getElementById(`toppings-menu-${cartId}`);
+        const selectedToppingsDisplay = document.getElementById(`selected-toppings-${cartId}`);
+
+        if (!sizeSelect || !toppingsMenu || !selectedToppingsDisplay) return;
+
+        // Load product details
+        const product = await loadProductDetails(productId);
+        if (!product) return;
+
+        // Parse current size and toppings
+        let currentSize = null;
+        let currentToppings = [];
+
+        try {
+            if (currentSizeInfo && currentSizeInfo !== 'null') {
+                currentSize = JSON.parse(currentSizeInfo);
+            }
+
+            if (currentToppingsInfo && currentToppingsInfo !== 'null') {
+                currentToppings = JSON.parse(currentToppingsInfo);
+            }
+        } catch (error) {
+            console.error('Error parsing size or toppings info:', error);
+        }
+
+        // Initialize selected toppings for this cart item
+        selectedToppings[cartId] = currentToppings.map(t => JSON.stringify(t));
+
+        // Populate size options
+        if (product.sizes && product.sizes.length > 0) {
+            sizeSelect.innerHTML = '<option value="">-- Select --</option>';
+
+            product.sizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(size);
+                option.textContent = `${size.name} (+${formatCurrency(size.price)}đ)`;
+
+                if (currentSize && currentSize.name === size.name) {
+                    option.selected = true;
+                }
+
+                sizeSelect.appendChild(option);
+            });
+        } else {
+            document.getElementById(`size-options-${cartId}`).style.display = 'none';
+        }
+
+        // Populate topping options
+        if (product.toppings && product.toppings.length > 0) {
+            toppingsMenu.innerHTML = '';
+
+            product.toppings.forEach(topping => {
+                const option = document.createElement('div');
+                option.className = 'dropdown-option';
+                option.setAttribute('data-value', JSON.stringify(topping));
+                option.textContent = `${topping.name} (+${formatCurrency(topping.price)}đ)`;
+
+                if (currentToppings.some(t => t.name === topping.name)) {
+                    option.classList.add('selected');
+                }
+
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleToppingSelection(this, cartId);
+                });
+
+                toppingsMenu.appendChild(option);
+            });
+
+            // Update the selected toppings display
+            updateSelectedToppingsDisplay(cartId);
+        } else {
+            document.getElementById(`toppings-options-${cartId}`).style.display = 'none';
+        }
+    }
+
+    // Toggle toppings dropdown
+    function toggleToppingsDropdown(element) {
+        const cartId = element.closest('.item-options').querySelector('[id^="toppings-options-"]').id.replace('toppings-options-', '');
+        const menu = document.getElementById(`toppings-menu-${cartId}`);
+
+        // Close all other dropdown menus first
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu.id !== `toppings-menu-${cartId}`) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // Toggle this menu
+        menu.classList.toggle('show');
+
+        // Add click event to document to close dropdown when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdowns);
+        }, 0);
+    }
+
+    // Close all dropdowns when clicking outside
+    function closeDropdowns(e) {
+        if (!e.target.closest('.dropdown-container')) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            document.removeEventListener('click', closeDropdowns);
+        }
+    }
+
+    // Toggle topping selection
+    function toggleToppingSelection(option, cartId) {
+        option.classList.toggle('selected');
+
+        // Update selected toppings array
+        const toppingValue = option.getAttribute('data-value');
+        if (!selectedToppings[cartId]) {
+            selectedToppings[cartId] = [];
+        }
+
+        if (option.classList.contains('selected')) {
+            if (!selectedToppings[cartId].includes(toppingValue)) {
+                selectedToppings[cartId].push(toppingValue);
+            }
+        } else {
+            const index = selectedToppings[cartId].indexOf(toppingValue);
+            if (index !== -1) {
+                selectedToppings[cartId].splice(index, 1);
+            }
+        }
+
+        // Update the selected toppings display
+        updateSelectedToppingsDisplay(cartId);
+
+        // Update cart options automatically
+        updateItemOptions(null, cartId);
+    }
+
+    // Update selected toppings display
+    function updateSelectedToppingsDisplay(cartId) {
+        const selectedToppingsDisplay = document.getElementById(`selected-toppings-${cartId}`);
+
+        if (!selectedToppingsDisplay) return;
+
+        if (!selectedToppings[cartId] || selectedToppings[cartId].length === 0) {
+            selectedToppingsDisplay.textContent = '-- Select --';
+            return;
+        }
+
+        const toppingsText = selectedToppings[cartId].map(t => {
+            try {
+                return JSON.parse(t).name;
+            } catch (e) {
+                return '';
+            }
+        }).join(', ');
+
+        selectedToppingsDisplay.textContent = toppingsText || '-- Select --';
+    }
+
+    // Update item options (size and toppings)
+    async function updateItemOptions(element, cartIdParam) {
+        let cartId;
+
+        if (element) {
+            // Called from size dropdown change
+            cartId = element.id.replace('size-select-', '');
+        } else if (cartIdParam) {
+            // Called from topping selection
+            cartId = cartIdParam;
+        } else {
+            console.error('Missing cart ID for update');
+            return;
+        }
+
+        const sizeSelect = document.getElementById(`size-select-${cartId}`);
+        const quantityElement = document.getElementById(`quantity-${cartId}`);
+
+        if (!sizeSelect || !quantityElement) {
+            console.error(`Required elements not found for cart ID: ${cartId}`);
+            return;
+        }
+
+        const sizeInfo = sizeSelect.value ? sizeSelect.value : null;
+
+        // Get selected toppings from the global map
+        const toppingsInfo = selectedToppings[cartId] && selectedToppings[cartId].length > 0 ?
+            JSON.stringify(selectedToppings[cartId].map(t => JSON.parse(t))) : null;
+
+        const quantity = parseInt(quantityElement.textContent) || 1;
+
+        try {
+            const response = await fetch(`/api/cart/${cartId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    quantity: quantity,
+                    sizeInfo: sizeInfo,
+                    toppingsInfo: toppingsInfo
+                }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update cart options');
+            }
+
+            const data = await response.json();
+
+            // Update subtotal
+            const subtotalElement = document.getElementById(`subtotal-${cartId}`);
+            if (subtotalElement && data.subTotal) {
+                subtotalElement.textContent = formatCurrency(data.subTotal) + ' đ';
+            }
+
+            // Update total
+            updateTotalAmount();
+        } catch (error) {
+            console.error('Error updating cart options:', error);
+        }
+    }
+
     function updateQuantity(cartId, change) {
         const quantityElement = document.getElementById(`quantity-${cartId}`);
         if (!quantityElement) {
@@ -145,13 +818,13 @@
             return;
         }
 
-        const currentQuantity = parseInt(quantityElement.value) || 1;
+        const currentQuantity = parseInt(quantityElement.textContent) || 1;
         let newQuantity = currentQuantity + change;
         if (newQuantity < 1)
             newQuantity = 1;
 
-        // Cập nhật hiển thị tạm thời cho số lượng
-        quantityElement.value = newQuantity;
+        // Update display temporarily
+        quantityElement.textContent = newQuantity;
 
         fetch(`/api/cart/${cartId}`, {
             method: 'PUT',
@@ -168,17 +841,17 @@
                 return response.json();
             })
             .then(data => {
-                // Cập nhật lại phần subtotal nếu có trả về từ server
+                // Update subtotal if returned from server
                 const subtotalElement = document.getElementById(`subtotal-${cartId}`);
                 if (subtotalElement && data.subTotal) {
-                    subtotalElement.textContent = formatCurrency(data.subTotal) + 'đ';
+                    subtotalElement.textContent = formatCurrency(data.subTotal) + ' đ';
                 }
                 updateTotalAmount();
             })
             .catch(error => {
                 console.error('Error updating quantity:', error);
-                // Khôi phục số lượng ban đầu nếu có lỗi
-                quantityElement.value = currentQuantity;
+                // Restore original quantity if error
+                quantityElement.textContent = currentQuantity;
             });
     }
 
@@ -188,9 +861,13 @@
             const subtotalText = element.textContent.replace(/[^\d]/g, '');
             total += parseInt(subtotalText) || 0;
         });
+
+        // Add shipping fee (20,000₫)
+        total += 0;
+
         const totalAmountElement = document.getElementById('totalAmount');
         if (totalAmountElement) {
-            totalAmountElement.textContent = formatCurrency(total) + 'đ';
+            totalAmountElement.textContent = formatCurrency(total) + ' đ';
         }
     }
 
@@ -216,46 +893,18 @@
     function checkout() {
         window.location.href = '/checkout';
     }
-</script>
-<script>
-    function logout() {
-        fetch('/auth/logout', {
-            method: 'POST', // Gọi API với phương thức POST
-            credentials: 'include' // Đảm bảo cookie được gửi kèm
-        })
-            .then(response => {
-                if (response.ok) {
-                    Swal.fire({
-                        title: "Thành công",
-                        text: "Đăng xuất thành công!",
-                        icon: "success",
-                        timer: 3000,
-                        showConfirmButton: false
-                    });
-                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
-                    setTimeout(() => {
-                        window.location.href = "/login";
-                    }, 3000);
-                } else {
-                    Swal.fire({
-                        title: "Lỗi",
-                        text: "Đăng xuất không thành công!",
-                        icon: "error",
-                        timer: 5000,
-                        showConfirmButton: false
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire({
-                    title: "Lỗi",
-                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
-                    icon: "error",
-                    timer: 5000,
-                    showConfirmButton: false
-                });
-            });
-    }
+
+    // Initialize all cart items when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all cart items and initialize their options
+        document.querySelectorAll('[id^="product-data-"]').forEach(element => {
+            const cartId = element.id.replace('product-data-', '');
+            initializeCartItemOptions(cartId);
+        });
+
+        // Update the total amount (including shipping)
+        updateTotalAmount();
+    });
 </script>
 </body>
 </html>
