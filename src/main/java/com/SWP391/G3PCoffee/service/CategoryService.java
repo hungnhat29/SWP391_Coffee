@@ -34,6 +34,11 @@ public class CategoryService {
         return categoryOptional.orElse(null);
     }
 
+    public Integer getCategoryByIdInt(Long categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        return categoryOptional.map(category -> Math.toIntExact(category.getId())).orElse(null);
+    }
+
     @Transactional
     public Map<String, String> updateCategory(Category categoryUpdate) {
         Map<String, String> response = new HashMap<>();

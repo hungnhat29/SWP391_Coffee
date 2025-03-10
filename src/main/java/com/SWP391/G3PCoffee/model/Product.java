@@ -22,7 +22,7 @@ public class Product {
 
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
-    
+
     @Column(name = "category_id")
     private Integer categoryId;
 
@@ -41,5 +41,4 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 }
-
 

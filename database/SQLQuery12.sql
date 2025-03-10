@@ -131,6 +131,8 @@ INSERT INTO Categories (id, name, description, image_url) VALUES
 SET IDENTITY_INSERT Categories off;
 GO
 
+DROP TABLE IF EXISTS Products;
+GO
 CREATE TABLE Products (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
@@ -171,9 +173,15 @@ DECLARE @Toppings NVARCHAR(MAX) = N'{
 }';
 SET IDENTITY_INSERT products ON;
 INSERT INTO Products (id, name, description, base_price, category_id, image_url, sizes, toppings)
+<<<<<<< HEAD
 VALUES
 (1, 'Trà Xanh Espresso Marble', 'Cho ngày thêm tươi, tỉnh, êm, mượt với Trà Xanh Espresso Marble. Đây là sự mai mối bất ngờ giữa trà xanh Tây Bắc vị mộc và cà phê Arabica Đà Lạt. Muốn ngày thêm chút highlight, nhớ tìm đến sự bất ngờ này bạn nhé!', 49000, 1, 'https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc.png', @Sizes, @Toppings),
 (2, 'Bơ Arabica', 'Bơ sáp Đắk Lắk dẻo quẹo hòa quyện cùng Cà phê Arabica Cầu Đất êm mượt. Khuấy đều để thưởng thức hương vị tươi tỉnh, đầy mới lạ!', 49000, 2, 'https://product.hstatic.net/1000075078/product/1737357055_bo-arabica_b64556656a7d479bbe641ab7cff99605.png', @Sizes, @Toppings),
+=======
+VALUES 
+(1, N'Trà Xanh Espresso Marble', N'Cho ngày thêm tươi, tỉnh, êm, mượt với Trà Xanh Espresso Marble. Đây là sự mai mối bất ngờ giữa trà xanh Tây Bắc vị mộc và cà phê Arabica Đà Lạt. Muốn ngày thêm chút highlight, nhớ tìm đến sự bất ngờ này bạn nhé!', 49000, 1, 'https://product.hstatic.net/1000075078/product/1737355620_tx-espresso-marble_3942abe277644167a391b0a3bcfc52fc.png', @Sizes, @Toppings),
+(2, N'Bơ Arabica', N'Bơ sáp Đắk Lắk dẻo quẹo hòa quyện cùng Cà phê Arabica Cầu Đất êm mượt. Khuấy đều để thưởng thức hương vị tươi tỉnh, đầy mới lạ!', 49000, 2, 'https://product.hstatic.net/1000075078/product/1737357055_bo-arabica_b64556656a7d479bbe641ab7cff99605.png', @Sizes, @Toppings),
+>>>>>>> feature/KienLL
 (3, 'Đường Đen Sữa Đá', 'Đường đen thơm ngọt hòa quyện cùng sữa đặc và đá viên, tạo nên một thức uống mát lạnh, sảng khoái cho ngày dài.', 45000, 2, 'https://product.hstatic.net/1000075078/product/1737357048_uong-den-sua-da_979b4b23b19f429b9dedb3491743c016.png', @Sizes, @Toppings),
 (4, 'G3P Sữa Đá', 'Cà phê đậm đà kết hợp với sữa đặc và đá viên, mang đến hương vị truyền thống nhưng không kém phần hiện đại.', 39000, 2, 'https://product.hstatic.net/1000075078/product/1737357037_tch-sua-da_5802e6e0dcb14c76b36bb45333996d33.png', @Sizes, @Toppings),
 (5, 'Bạc Xỉu', 'Bạc xỉu với vị cà phê nhẹ nhàng, hòa quyện cùng sữa đặc, tạo nên một thức uống thơm ngon, phù hợp cho những ai yêu thích vị ngọt dịu.', 29000, 2, 'https://product.hstatic.net/1000075078/product/1737357020_bac-xiu-da_b59fbf30268c40deadd2aab42df34821.png', @Sizes, @Toppings),
@@ -337,72 +345,83 @@ GO
 --(9, 'Caramel Syrup', 'liters', 8.50, 15, GETDATE(), GETDATE()),
 --(10, 'Butter', 'kg', 3.00, 40, GETDATE(), GETDATE());
 --GO
-
+DROP TABLE IF EXISTS Orders;
+GO
 
 CREATE TABLE Orders
 (
     id               INT PRIMARY KEY IDENTITY(1,1),
-    user_id          INT NOT NULL,
+    user_id          INT NULL,
+    session_id       VARCHAR(100) NULL,
     order_date       DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    status           VARCHAR(50),
-    total_price      DECIMAL(10, 2),
+    status           VARCHAR(50) DEFAULT 'pending',
+    order_total      DECIMAL(10, 0) NOT NULL, 
     payment_method   VARCHAR(50),
-    shipping_address TEXT,
+    shipping_address TEXT NULL,
     created_at       DATETIME DEFAULT (CURRENT_TIMESTAMP),
     updated_at       DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    FOREIGN KEY (user_id) REFERENCES Users (id)
+    FOREIGN KEY (user_id) REFERENCES Users (id),
+    CONSTRAINT CHK_Order_User CHECK (
+        (user_id IS NOT NULL AND session_id IS NULL) OR 
+        (user_id IS NULL AND session_id IS NOT NULL)
+    )
 );
 GO
 
-INSERT INTO Orders ( user_id, order_date, status, total_price, payment_method, shipping_address, created_at, updated_at)
-VALUES
-( 1, GETDATE(), 'completed', 7.50, 'credit_card', '123 Brew St', GETDATE(), GETDATE()),
-( 4, GETDATE(), 'pending', 5.00, 'cash', '321 Mocha Ct', GETDATE(), GETDATE()),
-( 5, GETDATE(), 'completed', 10.00, 'credit_card', '654 Cappuccino Rd', GETDATE(), GETDATE());
+
+
+DROP TABLE IF EXISTS Order_Items;
 GO
 
 CREATE TABLE Order_Items
 (
-    id           INT PRIMARY KEY IDENTITY(1,1),
-    order_id     INT NOT NULL,
-    product_id   INT NOT NULL,
-    size         VARCHAR(50),
-    topping_name VARCHAR(255),
-    quantity     INT NOT NULL,
-    price        DECIMAL(10, 2),
+    id             INT PRIMARY KEY IDENTITY(1,1),
+    order_id       INT NOT NULL,
+    product_id     INT NOT NULL,
+    quantity       INT NOT NULL,
+    size_info      NVARCHAR(MAX),  -- {"name": "Nhỏ", "price": 0}
+    toppings_info  NVARCHAR(MAX),  -- JSON array of selected toppings
+    sub_total      DECIMAL(10,0) NOT NULL, -- Tổng giá của sản phẩm này trong order
+    created_at     DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    updated_at     DATETIME DEFAULT (CURRENT_TIMESTAMP),
     FOREIGN KEY (order_id) REFERENCES Orders (id),
     FOREIGN KEY (product_id) REFERENCES Products (id)
 );
 GO
-INSERT INTO Order_Items (order_id, product_id, size, topping_name, quantity, price)
-VALUES
-( 1, 1, 'Small', NULL, 2, 5.00),
-( 1, 5, NULL, NULL, 1, 2.50),
-( 2, 2, 'Medium', 'Vanilla', 1, 3.50),
-( 2, 4, 'Large', NULL, 1, 2.00);
+
+
+
+DROP TABLE IF EXISTS Cart;
 GO
 
 CREATE TABLE Cart
 (
     id           INT PRIMARY KEY IDENTITY(1,1),
-    user_id      INT NOT NULL,
+    user_id      INT,
+    session_id   VARCHAR(100),
     product_id   INT NOT NULL,
     quantity     INT NOT NULL,
-    size         VARCHAR(50),
-    topping_name VARCHAR(255),
+    size_info    NVARCHAR(MAX),  -- Store as JSON: {"name": "Nhỏ", "price": 0}
+    toppings_info NVARCHAR(MAX), -- Store as JSON array of selected toppings
+    sub_total    DECIMAL(10,0) NOT NULL, -- Calculated total price
     created_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
     updated_at   DATETIME DEFAULT (CURRENT_TIMESTAMP),
     FOREIGN KEY (user_id) REFERENCES Users (id),
-    FOREIGN KEY (product_id) REFERENCES Products (id)
+    FOREIGN KEY (product_id) REFERENCES Products (id),
+    CONSTRAINT CHK_Cart_User CHECK (
+        (user_id IS NOT NULL AND session_id IS NULL) OR 
+        (user_id IS NULL AND session_id IS NOT NULL)
+    )
 );
 GO
-
+/*DROP TABLE IF EXISTS Payment;
+GO
 CREATE TABLE Payment
 (
     id                INT PRIMARY KEY IDENTITY(1,1),
     order_id          INT NOT NULL,
     member_id         INT NOT NULL,
-    money             DECIMAL(10, 2),
+    money             DECIMAL(10, 0),
     note              TEXT,
     vnp_response_code VARCHAR(50),
     vnp_code          VARCHAR(50),
@@ -411,7 +430,7 @@ CREATE TABLE Payment
     FOREIGN KEY (order_id) REFERENCES Orders (id),
     FOREIGN KEY (member_id) REFERENCES Users (id)
 );
-GO
+GO*/
 DROP TABLE if exists Promotions;
 CREATE TABLE Promotions
 (
