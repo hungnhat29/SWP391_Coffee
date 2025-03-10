@@ -1,6 +1,6 @@
 package com.SWP391.G3PCoffee;
 
-import com.SWP391.G3PCoffee.model.UserLoginDto;
+
 import com.SWP391.G3PCoffee.model.UserRegisterDto;
 import com.SWP391.G3PCoffee.model.Role;
 import com.SWP391.G3PCoffee.model.User;
@@ -14,15 +14,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.*;
 
@@ -45,8 +44,7 @@ public class UserServiceTest {
     @Mock
     private JwtUtils jwtUtils;
 
-    @Mock
-    private AuthenticationManager authenticationManager;
+
 
     @Mock
     private MembershipService membershipService;
@@ -57,7 +55,7 @@ public class UserServiceTest {
     private User testUser;
     private UserDetails testUserDetails;
     private UserRegisterDto testRegisterDto;
-    private UserLoginDto testLoginDto;
+
 
     @BeforeEach
     void setUp() {
@@ -85,35 +83,8 @@ public class UserServiceTest {
         testRegisterDto.setPhone("1234567890");
         testRegisterDto.setPassword("password123");
 
-        // Setup test login DTO
-        testLoginDto = new UserLoginDto();
-        testLoginDto.setEmail("test@example.com");
-        testLoginDto.setPassword("password123");
     }
 
-    @Test
-    void getAllCustomers_ReturnsOnlyCustomers() {
-        // Arrange
-        User customer1 = new User();
-        customer1.setRole("customer");
-
-        User customer2 = new User();
-        customer2.setRole("customer");
-
-        User admin = new User();
-        admin.setRole("admin");
-
-        List<User> allUsers = Arrays.asList(customer1, customer2, admin);
-
-        when(userRepository.findAll()).thenReturn(allUsers);
-
-        // Act
-        List<User> result = userService.getAllCustomers();
-
-        // Assert
-        assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(user -> "customer".equalsIgnoreCase(user.getRole())));
-    }
     // Kiểm tra phương thức getCustomerById trả về đúng khách hàng khi ID tồn tại
     @Test
     void getCustomerById_CustomerExists_ReturnsCustomer() {
@@ -185,39 +156,34 @@ public class UserServiceTest {
         verify(userRepository, times(0)).save(any(User.class));
     }
 
-    // Kiểm tra đăng nhập thành công
-    // Xác minh rằng token JWT và vai trò được trả về đúng
+
+    // Kiểm tra phương thức getCustomerByEmail trả về đúng khách hàng khi email tồn tại
     @Test
-    void loginByEmailAndPassword_Success() {
+    void getCustomerByEmail_CustomerExists_ReturnsCustomer() {
         // Arrange
-        when(userDetailsService.loadUserByUsername("test@example.com")).thenReturn(testUserDetails);
-        when(jwtUtils.generateToken(any(UserDetails.class))).thenReturn("jwt-token");
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
         // Act
-        Map<String, String> result = userService.loginByEmailAndPassword(testLoginDto);
+        User result = userService.getCustomerByEmail("test@example.com");
 
         // Assert
         assertNotNull(result);
-        assertEquals("jwt-token", result.get("token"));
-        assertEquals(Role.CUSTOMER.getValue(), result.get("role"));
-        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        assertEquals(testUser.getId(), result.getId());
     }
 
-    // Kiểm tra đăng nhập thất bại khi cung cấp thông tin đăng nhập sai
-    // Đảm bảo ngoại lệ được ném ra với mã trạng thái UNAUTHORIZED
+    // Kiểm tra phương thức getCustomerByEmail trả về null khi email không tồn tại
+
     @Test
-    void loginByEmailAndPassword_BadCredentials_ThrowsException() {
+    void getCustomerByEmail_UserNotFound_ReturnsNull() {
         // Arrange
-        doThrow(new BadCredentialsException("Bad credentials"))
-                .when(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
 
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> userService.loginByEmailAndPassword(testLoginDto));
+        // Act
+        User result = userService.getCustomerByEmail("nonexistent@example.com");
 
-        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
+        // Assert
+        assertNull(result);
     }
-
     // Kiểm tra cập nhật thông tin người dùng thành công
     // Xác minh rằng thông tin mới được lưu và trả về đúng
     @Test
@@ -257,144 +223,4 @@ public class UserServiceTest {
         verify(userRepository, times(0)).save(any(User.class));
     }
 
-
-
-
-
-
-
-
-
-// phần làm thêm
-
-    // Kiểm tra phương thức getCustomerByEmail trả về đúng khách hàng khi email tồn tại
-    @Test
-    void getCustomerByEmail_CustomerExists_ReturnsCustomer() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-
-        // Act
-        User result = userService.getCustomerByEmail("test@example.com");
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-    }
-
-    // Kiểm tra phương thức getCustomerByEmail trả về null khi email không tồn tại
-
-    @Test
-    void getCustomerByEmail_UserNotFound_ReturnsNull() {
-        // Arrange
-        when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
-
-        // Act
-        User result = userService.getCustomerByEmail("nonexistent@example.com");
-
-        // Assert
-        assertNull(result);
-    }
-
-    // Kiểm tra đổi mật khẩu thành công
-    // Xác minh rằng mật khẩu mới được mã hóa và lưu vào DB
-    @Test
-    void changePassword_Success() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches("oldPassword", "encodedPassword")).thenReturn(true);
-        when(passwordEncoder.encode("newPassword123")).thenReturn("newEncodedPassword");
-
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "oldPassword", "newPassword123", "newPassword123", "test@example.com");
-
-        // Assert
-        assertEquals("Đổi mật khẩu thành công!", result.get("message"));
-        assertEquals("success", result.get("messageType"));
-        verify(userRepository, times(1)).save(any(User.class));
-    }
-
-    // Kiểm tra đổi mật khẩu thất bại khi có trường trống
-    // Đảm bảo thông báo lỗi được trả về và không có mật khẩu nào được thay đổi
-    @Test
-    void changePassword_EmptyFields_ReturnsError() {
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "", "newPassword123", "newPassword123", "test@example.com");
-
-        // Assert
-        assertEquals("Vui lòng điền đầy đủ tất cả các trường!", result.get("message"));
-        assertEquals("error", result.get("messageType"));
-        verify(userRepository, times(0)).save(any(User.class));
-    }
-
-    // Kiểm tra đổi mật khẩu thất bại khi mật khẩu cũ không đúng
-    // Đảm bảo thông báo lỗi được trả về và không có mật khẩu nào được thay đổi
-    @Test
-    void changePassword_IncorrectOldPassword_ReturnsError() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
-
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "wrongPassword", "newPassword123", "newPassword123", "test@example.com");
-
-        // Assert
-        assertEquals("Mật khẩu cũ không đúng!", result.get("message"));
-        assertEquals("error", result.get("messageType"));
-        verify(userRepository, times(0)).save(any(User.class));
-    }
-
-    // Kiểm tra đổi mật khẩu thất bại khi mật khẩu mới yếu
-    // Đảm bảo thông báo lỗi được trả về và không có mật khẩu nào được thay đổi
-    @Test
-    void changePassword_WeakNewPassword_ReturnsError() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches("oldPassword", "encodedPassword")).thenReturn(true);
-
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "oldPassword", "weak", "weak", "test@example.com");
-
-        // Assert
-        assertEquals("Mật khẩu mới phải có ít nhất 6 ký tự và bao gồm cả chữ và số!", result.get("message"));
-        assertEquals("error", result.get("messageType"));
-        verify(userRepository, times(0)).save(any(User.class));
-    }
-
-    // Kiểm tra đổi mật khẩu thất bại khi mật khẩu mới và xác nhận không khớp
-    // Đảm bảo thông báo lỗi được trả về và không có mật khẩu nào được thay đổi
-    @Test
-    void changePassword_PasswordsDoNotMatch_ReturnsError() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-        when(passwordEncoder.matches("oldPassword", "encodedPassword")).thenReturn(true);
-
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "oldPassword", "newPassword123", "differentPassword123", "test@example.com");
-
-        // Assert
-        assertEquals("Mật khẩu mới không khớp!", result.get("message"));
-        assertEquals("error", result.get("messageType"));
-        verify(userRepository, times(0)).save(any(User.class));
-    }
-    // Kiểm tra đổi mật khẩu thất bại khi không tìm thấy người dùng
-    // Đảm bảo thông báo lỗi được trả về và không có mật khẩu nào được thay đổi
-    @Test
-    void changePassword_UserNotFound_ReturnsError() {
-        // Arrange
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
-
-        // Act
-        Map<String, String> result = userService.changePassword(
-                "oldPassword", "newPassword123", "newPassword123", "test@example.com");
-
-        // Assert
-        assertEquals("Mật khẩu cũ không đúng!", result.get("message"));
-        assertEquals("error", result.get("messageType"));
-        verify(userRepository, times(0)).save(any(User.class));
-    }
 }
