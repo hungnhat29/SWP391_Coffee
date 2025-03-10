@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,12 +53,30 @@ public class PurchaseHistoryController {
             HttpSession session,
             Authentication authentication,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(value = "viewOrderId", required = false) Integer viewOrderId) {
+            @RequestParam(value = "viewOrderId", required = false) Integer viewOrderId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String timeFilter) {
 
         // Convert page to zero-based index for Spring Pageable
         int pageIndex = page - 1;
         int pageSize = 5; // 5 orders per page
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
+
+        // Apply time filter
+        LocalDateTime startDate = null;
+        if (timeFilter != null) {
+            switch (timeFilter) {
+                case "1 day ago":
+                    startDate = LocalDateTime.now().minusDays(1);
+                    break;
+                case "1 week ago":
+                    startDate = LocalDateTime.now().minusWeeks(1);
+                    break;
+                default:
+                    // "All Time" - no filter needed
+                    break;
+            }
+        }
 
         Page<Order> orderPage;
         boolean isLoggedIn = false;
@@ -68,8 +87,25 @@ public class PurchaseHistoryController {
             User user = userService.getCustomerByEmail(email);
 
             if (user != null) {
-                // Get paginated orders for authenticated user
-                orderPage = orderService.getPagedOrdersByUserId(user.getId().intValue(), pageable);
+                // Apply search and time filters for authenticated users
+                if (search != null && !search.trim().isEmpty()) {
+                    try {
+                        // Try parsing as order ID
+                        Long orderId = Long.parseLong(search.trim());
+                        orderPage = orderService.findByUserAndOrderId(user, orderId, startDate, pageable);
+                    } catch (NumberFormatException e) {
+                        // If not a number, search by status
+                        orderPage = orderService.findByUserAndStatus(user, search.trim().toLowerCase(), startDate, pageable);
+                    }
+                } else {
+                    // No search, just time filter if applicable
+                    if (startDate != null) {
+                        orderPage = orderService.findByUserAndDate(user, startDate, pageable);
+                    } else {
+                        // No filters, get all orders
+                        orderPage = orderService.getPagedOrdersByUserId(user.getId().intValue(), pageable);
+                    }
+                }
                 isLoggedIn = true;
             } else {
                 // Authentication exists but user not found (shouldn't normally happen)
@@ -100,6 +136,9 @@ public class PurchaseHistoryController {
         model.addAttribute("totalPages", orderPage.getTotalPages());
         model.addAttribute("totalItems", orderPage.getTotalElements());
         model.addAttribute("isLoggedIn", isLoggedIn);
+        // Add search and time filter to model for maintaining state in view
+        model.addAttribute("search", search);
+        model.addAttribute("timeFilter", timeFilter);
 
         if (orderPage.isEmpty()) {
             model.addAttribute("noOrders", true);

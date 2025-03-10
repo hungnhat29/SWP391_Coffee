@@ -82,6 +82,40 @@
             color: #000;
             font-weight: bold;
         }
+
+        .time-filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .time-filter-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 160px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 10;
+            margin-top: 4px;
+        }
+
+        .time-filter-content.show {
+            display: block;
+        }
+
+        .time-filter-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .time-filter-content a:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -96,21 +130,33 @@
         >
             <h1 class="text-2xl text-gray-800 max-sm:text-xl">Purchase History</h1>
             <div class="flex gap-4 max-sm:w-full">
-                <div
+                <form
+                        id="searchForm"
+                        th:action="@{/purchase-history}"
+                        method="get"
                         class="flex items-center px-4 py-0 bg-white rounded-lg border border-solid w-[373px] max-sm:w-full"
                 >
                     <i class="ti ti-search text-gray-500"></i>
                     <input
                             type="text"
+                            name="search"
+                            th:value="${param.search}"
                             placeholder="Search orders..."
                             class="p-2 w-full text-base text-gray-400 border-[none]"
                     />
-                </div>
-                <div
-                        class="flex gap-2 items-center px-3 py-0 bg-white rounded-lg border border-solid cursor-pointer"
-                >
-                    <span class="text-base text-black">All Time</span>
-                    <i class="ti ti-chevron-down"></i>
+                    <input type="hidden" name="timeFilter" th:value="${param.timeFilter}"/>
+                    <input type="hidden" name="page" value="1"/>
+                </form>
+                <div class="time-filter-dropdown flex gap-2 items-center px-3 py-2 bg-white rounded-lg border border-solid cursor-pointer"
+                     onclick="toggleTimeFilter()">
+                    <span class="text-base text-black" id="selectedTimeFilter"
+                          th:text="${param.timeFilter != null ? param.timeFilter : 'All Time'}">All Time</span>
+                    <i class="ti ti-chevron-down" id="dropdownIcon"></i>
+                    <div class="time-filter-content" id="timeFilterDropdown">
+                        <a href="#" onclick="applyTimeFilter('All Time')">All Time</a>
+                        <a href="#" onclick="applyTimeFilter('1 day ago')">1 day ago</a>
+                        <a href="#" onclick="applyTimeFilter('1 week ago')">1 week ago</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,7 +221,7 @@
                     <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
                 </div>
                 <a
-                        th:href="@{'/purchase-history?viewOrderId=' + ${order.id}}"
+                        th:href="@{/purchase-history(viewOrderId=${order.id}, page=${currentPage}, search=${param.search}, timeFilter=${param.timeFilter})}"
                         class="flex gap-2 items-center text-base text-black cursor-pointer"
                 >
                     <span>View Details</span>
@@ -393,11 +439,23 @@
         // Get current page and total pages from Thymeleaf
         const currentPage = [[${currentPage}]];
         const totalPages = [[${totalPages}]];
+        const searchQuery = [[${param.search}]];
+        const timeFilter = [[${param.timeFilter}]];
 
         // Function to navigate to a specific page
         function navigateToPage(pageNum) {
             if (pageNum >= 1 && pageNum <= totalPages) {
-                window.location.href = '/purchase-history?page=' + pageNum;
+                let url = '/purchase-history?page=' + pageNum;
+
+                if (searchQuery) {
+                    url += '&search=' + encodeURIComponent(searchQuery);
+                }
+
+                if (timeFilter) {
+                    url += '&timeFilter=' + encodeURIComponent(timeFilter);
+                }
+
+                window.location.href = url;
             }
         }
 
@@ -432,6 +490,66 @@
                 event.preventDefault();
                 navigateToPage(currentPage + 1);
             });
+        }
+
+        // Search functionality - submit form on enter key press
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById('searchForm').submit();
+                }
+            });
+        }
+    });
+
+    // Time filter dropdown functionality
+    function toggleTimeFilter() {
+        const dropdown = document.getElementById("timeFilterDropdown");
+        const icon = document.getElementById("dropdownIcon");
+
+        dropdown.classList.toggle("show");
+
+        // Rotate arrow icon when dropdown is open
+        if (dropdown.classList.contains("show")) {
+            icon.classList.remove("ti-chevron-down");
+            icon.classList.add("ti-chevron-up");
+        } else {
+            icon.classList.remove("ti-chevron-up");
+            icon.classList.add("ti-chevron-down");
+        }
+    }
+
+    function applyTimeFilter(filter) {
+        // Update the hidden field in the search form
+        const timeFilterInput = document.querySelector('input[name="timeFilter"]');
+        timeFilterInput.value = filter;
+
+        // Update the displayed text
+        document.getElementById('selectedTimeFilter').textContent = filter;
+
+        // Submit the form
+        document.getElementById('searchForm').submit();
+
+        // Hide dropdown and restore icon
+        document.getElementById("timeFilterDropdown").classList.remove("show");
+        document.getElementById("dropdownIcon").classList.remove("ti-chevron-up");
+        document.getElementById("dropdownIcon").classList.add("ti-chevron-down");
+    }
+
+    // Close the dropdown if clicked outside
+    window.addEventListener('click', function (event) {
+        const dropdown = document.querySelector('.time-filter-dropdown');
+        const icon = document.getElementById("dropdownIcon");
+
+        if (!dropdown.contains(event.target)) {
+            const dropdownContent = document.getElementById("timeFilterDropdown");
+            if (dropdownContent.classList.contains('show')) {
+                dropdownContent.classList.remove('show');
+                icon.classList.remove("ti-chevron-up");
+                icon.classList.add("ti-chevron-down");
+            }
         }
     });
 </script>

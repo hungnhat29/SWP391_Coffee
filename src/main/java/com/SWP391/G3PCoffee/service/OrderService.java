@@ -3,6 +3,7 @@ package com.SWP391.G3PCoffee.service;
 import com.SWP391.G3PCoffee.model.Cart;
 import com.SWP391.G3PCoffee.model.Order;
 import com.SWP391.G3PCoffee.model.OrderItem;
+import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.repository.OrderRepository;
 import com.SWP391.G3PCoffee.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,8 @@ public class OrderService {
     
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+
     
     @Transactional
     public Order createOrder(
@@ -123,5 +127,29 @@ public class OrderService {
 
     public Order getMostRecentOrderBySessionId(String sessionId) {
         return orderRepository.findFirstBySessionIdOrderByOrderDateDesc(sessionId);
+    }
+
+    public Page<Order> findByUserAndOrderId(User user, Long orderId, LocalDateTime startDate, Pageable pageable) {
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndIdAndOrderDateAfter(user.getId(), orderId, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndId(user.getId(), orderId, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndStatus(User user, String status, LocalDateTime startDate, Pageable pageable) {
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCaseAndOrderDateAfter(user.getId(), status, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCase(user.getId(), status, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndDate(User user, LocalDateTime startDate, Pageable pageable) {
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndOrderDateAfter(user.getId(), startDate, pageable);
+        } else {
+            return orderRepository.findByUserId(user.getId(), pageable);
+        }
     }
 }
