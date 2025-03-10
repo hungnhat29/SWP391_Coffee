@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -13,7 +14,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
     @Column(columnDefinition = "NTEXT")
@@ -22,44 +23,22 @@ public class Product {
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @Column(name = "category_id")
+    private Integer categoryId;
 
-    @Column(name = "image_url", length = 255)
+    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
-    private String sizes;
+    @Column(name = "sizes", columnDefinition = "NVARCHAR(MAX)")
+    private String sizes; // JSON String
 
-    @Column(columnDefinition = "NVARCHAR(MAX)")
-    private String toppings;
+    @Column(name = "toppings", columnDefinition = "NVARCHAR(MAX)")
+    private String toppings; // JSON String
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    public Product(Integer id, String name, String description, BigDecimal basePrice, Category category, String imageUrl,
-                   String sizes, String toppings) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.basePrice = basePrice;
-        this.category = category;
-        this.imageUrl = imageUrl;
-        this.sizes = sizes;
-        this.toppings = toppings;
-    }
-
-    public Product() {
-
-    }
-
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }
+
