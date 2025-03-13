@@ -113,7 +113,7 @@ public class ProductAdminController {
             product.setName(name);
             product.setDescription(description);
             product.setBasePrice(new BigDecimal(basePrice.trim()));
-            product.setCategory(category);
+//            product.setCategory(category);
             product.setImageUrl(imageUrl);
             product.setSizes(sizes); // Lưu chuỗi JSON trực tiếp
             product.setToppings(toppings); // Lưu chuỗi JSON trực tiếp

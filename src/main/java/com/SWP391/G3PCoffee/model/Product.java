@@ -22,7 +22,7 @@ public class Product {
 
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
-
+    
     @Column(name = "category_id")
     private Integer categoryId;
 
@@ -40,5 +40,24 @@ public class Product {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public Product() {
+
+    }
+
+    public Product(String name, Integer id, String description, BigDecimal basePrice, String imageUrl, Integer categoryId,
+                   String sizes, String toppings, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.name = name;
+        this.id = id;
+        this.description = description;
+        this.basePrice = basePrice;
+        this.imageUrl = imageUrl;
+        this.categoryId = categoryId;
+        this.sizes = sizes;
+        this.toppings = toppings;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
+
 
