@@ -1,7 +1,9 @@
 package com.SWP391.G3PCoffee.model;
 
+import com.SWP391.G3PCoffee.constant.TypeOrder;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -12,36 +14,40 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @Column(name = "user_id")
     private Integer userId;
-    
+
     @Column(name = "session_id")
     private String sessionId;
-    
+
     @Column(name = "order_date")
     private LocalDateTime orderDate;
-    
+
     private String status;
-    
+
     @Column(name = "order_total")
     private BigDecimal orderTotal;
-    
+
     @Column(name = "payment_method")
     private String paymentMethod;
-    
+
     @Column(name = "shipping_address")
     private String shippingAddress;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     private String customerName;
     private String customerEmail;
     private String customerPhone;
     private String customerAddress;
+
+    @Enumerated(EnumType.STRING)
+    private TypeOrder typeOrder;
+
     @PrePersist
     protected void onCreate() {
         orderDate = LocalDateTime.now();
@@ -51,7 +57,7 @@ public class Order {
             status = "pending";
         }
     }
-    
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
