@@ -19,7 +19,7 @@ public class CategoryService {
         return categories;
     }
 
-    public Category getCategoryById(Long id) {
+    public Category getCategoryById(Integer id) {
         Category category = categoryRepository.findById(Math.toIntExact(id)).orElse(null);
         System.out.println("getCategoryById(" + id + "): " + category);
         return category;

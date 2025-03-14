@@ -209,33 +209,32 @@
             background-color: #ECE1C8;
         }
 
-        /* Pagination Styles (Previous, Next, và số trang) */
         .dataTables_paginate .paginate_button {
             padding: 5px 10px;
             margin: 0 5px;
-            border-radius: 4px; /* Điều chỉnh để giống hình ảnh */
-            background: #FDF6E3; /* Kem nhạt */
-            color: #3C2F2F !important; /* Chữ nâu đậm */
-            border: 1px solid #6F4E37; /* Viền nâu cà phê */
+            border-radius: 4px;
+            background: #FDF6E3;
+            color: #3C2F2F !important;
+            border: 1px solid #6F4E37;
             font-size: 14px;
             transition: all 0.3s ease;
         }
 
         .dataTables_paginate .paginate_button:hover {
-            background: #ECE1C8; /* Kem đậm hơn khi hover */
+            background: #ECE1C8;
             color: #3C2F2F !important;
             border-color: #6F4E37;
         }
 
         .dataTables_paginate .paginate_button.current {
-            background: #6F4E37 !important; /* Nâu cà phê cho trang hiện tại */
-            color: #FFF8E7 !important; /* Chữ kem nhạt */
+            background: #6F4E37 !important;
+            color: #FFF8E7 !important;
             border-color: #6F4E37 !important;
         }
 
         .dataTables_paginate .paginate_button.previous,
         .dataTables_paginate .paginate_button.next {
-            background: #8B5A2B; /* Nâu cà phê nhạt cho Previous và Next */
+            background: #8B5A2B;
             color: #FFF8E7 !important;
             border: 1px solid #704214;
             font-weight: 500;
@@ -243,7 +242,7 @@
 
         .dataTables_paginate .paginate_button.previous:hover,
         .dataTables_paginate .paginate_button.next:hover {
-            background: #704214; /* Nâu đậm hơn khi hover */
+            background: #704214;
             color: #FFF8E7 !important;
             border-color: #704214;
         }
@@ -700,15 +699,20 @@
                 },
                 { data: 'name' },
                 { data: 'basePrice' },
-                { data: 'category.name', defaultContent: 'N/A' },
+                {
+                    data: 'category',
+                    render: function(data) {
+                        return data && data.name ? data.name : 'N/A';
+                    }
+                },
                 {
                     data: null,
                     render: function(data) {
                         return `
-                                <button class="btn btn-sm btn-primary view-btn" data-id="${data.id}">View</button>
-                                <button class="btn btn-sm btn-warning edit-btn" data-id="${data.id}">Edit</button>
-                                <button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>
-                            `;
+                            <button class="btn btn-sm btn-primary view-btn" data-id="${data.id}">View</button>
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${data.id}">Edit</button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>
+                        `;
                     }
                 }
             ],
@@ -716,7 +720,10 @@
             searching: true,
             ordering: true,
             pageLength: 5,
-            responsive: true
+            lengthChange: true,
+            lengthMenu: [5, 10, 25, 50,100],
+            responsive: true,
+            dom: 'lfrtip'
         });
 
         $(document).on('click', '.view-btn', function() {
@@ -732,7 +739,7 @@
                     document.getElementById('viewProductName').textContent = data.name || 'N/A';
                     document.getElementById('viewProductDescription').textContent = data.description || 'N/A';
                     document.getElementById('viewProductBasePrice').textContent = data.basePrice || 'N/A';
-                    document.getElementById('viewProductCategory').textContent = data.category ? data.category.name : 'N/A';
+                    document.getElementById('viewProductCategory').textContent = data.category && data.category.name ? data.category.name : 'N/A';
                     document.getElementById('viewProductImage').src = data.imageUrl || '';
 
                     let sizes = [];
@@ -743,17 +750,20 @@
                         console.error('Error parsing sizes:', e, 'Raw sizes:', data.sizes);
                         sizes = [];
                     }
-                    document.getElementById('viewProductSizes').innerHTML = sizes.length > 0 ? sizes.map(s => `<li class="list-group-item">${s.name} - $${s.price}</li>`).join('') : 'No sizes available';
+                    document.getElementById('viewProductSizes').innerHTML = sizes.length > 0 ? sizes.map(s =>
+                        `<li class="list-group-item">${s.name} - ${s.price}VND</li>`).join('') : 'No sizes available';
 
                     let toppings = [];
                     try {
-                        const toppingsObj = data.toppings && typeof data.toppings === 'string' && data.sizes.trim() !== '' ? JSON.parse(data.toppings) : {};
+                        const toppingsObj = data.toppings && typeof data.toppings === 'string' && data.toppings.trim() !== ''
+                            ? JSON.parse(data.toppings) : {};
                         toppings = toppingsObj.toppings && Array.isArray(toppingsObj.toppings) ? toppingsObj.toppings : [];
                     } catch (e) {
                         console.error('Error parsing toppings:', e, 'Raw toppings:', data.toppings);
                         toppings = [];
                     }
-                    document.getElementById('viewProductToppings').innerHTML = toppings.length > 0 ? toppings.map(t => `<li class="list-group-item">${t.name} - $${t.price}</li>`).join('') : 'No toppings available';
+                    document.getElementById('viewProductToppings').innerHTML = toppings.length > 0 ? toppings.map(t =>
+                        `<li class="list-group-item">${t.name} - ${t.price}VND</li>`).join('') : 'No toppings available';
 
                     $('#viewProductModal').modal('show');
                 })
@@ -782,7 +792,8 @@
 
                     editSelectedSizes = [];
                     try {
-                        const sizesObj = data.sizes && typeof data.sizes === 'string' && data.sizes.trim() !== '' ? JSON.parse(data.sizes) : {};
+                        const sizesObj = data.sizes && typeof data.sizes === 'string' && data.sizes.trim() !== ''
+                            ? JSON.parse(data.sizes) : {};
                         editSelectedSizes = sizesObj.sizes && Array.isArray(sizesObj.sizes) ? sizesObj.sizes : [];
                     } catch (e) {
                         console.error('Error parsing sizes for edit:', e, 'Raw sizes:', data.sizes);
@@ -805,7 +816,7 @@
                         const box = document.createElement('span');
                         box.className = 'option-box' + (isSelected ? ' selected' : '');
                         box.setAttribute('data-value', JSON.stringify(size));
-                        box.textContent = `${size.name} - $${size.price}`;
+                        box.textContent = `${size.name} - ${size.price}VND`;
                         editSizesContainer.appendChild(box);
                     });
 
@@ -816,7 +827,7 @@
                         const box = document.createElement('span');
                         box.className = 'option-box' + (isSelected ? ' selected' : '');
                         box.setAttribute('data-value', JSON.stringify(topping));
-                        box.textContent = `${topping.name} - $${topping.price}`;
+                        box.textContent = `${topping.name} - ${topping.price}VND`;
                         editToppingsContainer.appendChild(box);
                     });
 
@@ -1023,7 +1034,7 @@
                 const box = document.createElement('span');
                 box.className = 'option-box';
                 box.setAttribute('data-value', JSON.stringify(size));
-                box.textContent = `${size.name} - $${size.price}`;
+                box.textContent = `${size.name} - ${size.price}VND`;
                 addSizesContainer.appendChild(box);
             });
             const addToppingsContainer = document.getElementById('addToppingsContainer');
@@ -1032,7 +1043,7 @@
                 const box = document.createElement('span');
                 box.className = 'option-box';
                 box.setAttribute('data-value', JSON.stringify(topping));
-                box.textContent = `${topping.name} - $${topping.price}`;
+                box.textContent = `${topping.name} - ${topping.price}VND`;
                 addToppingsContainer.appendChild(box);
             });
             toggleSelection('addSizesContainer', allSizes, addSelectedSizes);
