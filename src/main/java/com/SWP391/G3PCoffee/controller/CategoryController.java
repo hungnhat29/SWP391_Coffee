@@ -65,13 +65,18 @@ public class CategoryController {
 
     @DeleteMapping("/delete-category")
     public ResponseEntity<?> deleteCategory(@RequestParam Long categoryId) {
-        if (categoryId == null) {
-            return ResponseEntity.badRequest().body("Thiếu categoryId cần xóa.");
-        }
+        try{
+            if (categoryId == null) {
+                return ResponseEntity.badRequest().body("Thiếu categoryId cần xóa.");
+            }
 
-        boolean deleteSuccess = categoryService.deleteCategory(categoryId);
-        return deleteSuccess
-                ? ResponseEntity.ok("Xóa danh mục thành công!")
-                : ResponseEntity.badRequest().body("Không tìm thấy danh mục để xóa.");
+            Map<String, String> response = categoryService.deleteCategory(categoryId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Lỗi hệ thống: " + e.getMessage());
+            errorResponse.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }

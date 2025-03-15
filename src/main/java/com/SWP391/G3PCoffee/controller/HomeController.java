@@ -38,8 +38,12 @@ public class HomeController {
     public String categoriesList() {
         return "categories-list"; // Tên file HTML trong thư mục templates
     }
-    
-    
+
+    @GetMapping("/forgot-password")
+    public String getPage() {
+        return "forgot-password";
+    }
+
     @GetMapping("/users/customers/{customerId}/details")
     public String customerDetails(@PathVariable("customerId") String customerId, HttpServletRequest request) {
         // Đặt customerId vào request scope để sử dụng trong file HTML

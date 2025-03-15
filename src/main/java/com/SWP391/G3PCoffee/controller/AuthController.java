@@ -6,11 +6,13 @@ import com.SWP391.G3PCoffee.model.UserRegisterDto;
 import com.SWP391.G3PCoffee.security.JwtAuthenticationFilter;
 import com.SWP391.G3PCoffee.security.JwtUtils;
 import com.SWP391.G3PCoffee.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -113,8 +115,47 @@ public class AuthController {
         String password = request.get("password");
         String newPassword = request.get("newPassword");
         String confirmPassword = request.get("cfPassword");
-        logger.info("Attempting to change password for user: {}", password);
         Map<String, String> response = userService.changePassword(password, newPassword, confirmPassword, email);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        try {
+            Map<String, String> response = userService.sendOtp(email);
+            return ResponseEntity.ok(response);
+        } catch (MessagingException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Lỗi khi gửi email. Vui lòng thử lại sau!");
+            errorResponse.put("messageType", "error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<Map<String, String>> verifyOtp(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
+
+        Map<String, String> response = userService.verifyOtp(email, otp);
+        if ("error".equals(response.get("messageType"))) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+        // Đặt lại mật khẩu
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String newPassword = request.get("newPassword");
+        String confirmPassword = request.get("confirmPassword");
+
+        Map<String, String> response = userService.resetPassword(email, newPassword, confirmPassword);
+        if ("error".equals(response.get("messageType"))) {
+            return ResponseEntity.badRequest().body(response);
+        }
         return ResponseEntity.ok(response);
     }
 

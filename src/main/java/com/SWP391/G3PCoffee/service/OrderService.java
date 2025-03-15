@@ -213,8 +213,8 @@ public class OrderService {
         return response;
     }
 
-    public Page<Order> getAllOrderAdmin(Pageable pageable) {
-        return orderRepository.getAllOrderAdmin(pageable);
+    public List<Order> getAllOrderAdmin() {
+        return orderRepository.getAllOrderAdmin();
     }
 
     public Page<Order> getPageOrderAdminByType(TypeOrder typeOrder, Pageable pageable) {
@@ -228,7 +228,8 @@ public class OrderService {
 
         OrderStatus status = OrderStatus.valueOf(order.getStatus());
         TypeOrder typeOrder = order.getTypeOrder();
-        String nextStatus = status.getNextStatus(typeOrder).name();
+        String payment = order.getPaymentMethod();
+        String nextStatus = status.getNextStatus(typeOrder, payment).name();
         order.setStatus(nextStatus);
         order.setUpdatedAt(LocalDateTime.now());
         orderRepository.save(order);

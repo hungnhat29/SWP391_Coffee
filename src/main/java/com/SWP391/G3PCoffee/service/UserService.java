@@ -10,12 +10,10 @@ package com.SWP391.G3PCoffee.service;
  */
 //import com.SWP391.G3PCoffee.dto.UserDTO;
 
-import com.SWP391.G3PCoffee.model.UserLoginDto;
-import com.SWP391.G3PCoffee.model.UserRegisterDto;
-import com.SWP391.G3PCoffee.model.Role;
-import com.SWP391.G3PCoffee.model.User;
+import com.SWP391.G3PCoffee.model.*;
 import com.SWP391.G3PCoffee.repository.UserRepository;
 import com.SWP391.G3PCoffee.security.JwtUtils;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,10 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -42,15 +41,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
+    private final EmailContactService emailContactService;
     private final AuthenticationManager authenticationManager;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private Map<String, String> otpCache = new ConcurrentHashMap<>();
+    private final Map<String, Long> otpExpiry = new HashMap<>();
+    private final Set<String> verifiedEmails = new HashSet<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils,
-                       UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
+                       UserDetailsService userDetailsService, EmailContactService emailContactService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtUtils = jwtUtils;
+        this.emailContactService = emailContactService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -172,4 +177,116 @@ public class UserService {
                 .filter(user -> "customer".equalsIgnoreCase(user.getRole()))
                 .toList();
     }
+
+    // Gửi OTP qua email
+    public Map<String, String> sendOtp(String email) throws MessagingException {
+        Map<String, String> response = new HashMap<>();
+        User user = getCustomerByEmail(email);
+
+        log.info("Fetching user with email: {}", user);
+
+        if (user == null) {
+            response.put("message", "Thông tin không tồn tại trong hệ thống.");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Tạo OTP ngẫu nhiên (6 chữ số)
+        String otp = String.format("%06d", new Random().nextInt(999999));
+
+        // Lưu OTP và thời gian hết hạn (10 phút)
+        otpCache.put(email, otp);
+        otpExpiry.put(email, System.currentTimeMillis() + (10 * 60 * 1000)); // 10 phút
+
+        // Xóa OTP sau 10 phút
+        scheduler.schedule(() -> {
+            otpCache.remove(email);
+            otpExpiry.remove(email);
+        }, 10, TimeUnit.MINUTES);
+
+        String body = "<p>Chào bạn,</p>"
+                + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
+                + "<p>Mã OTP có hiệu lực trong 10 phút. Vui lòng không cung cấp otp cho bất kì ai!</p>"
+                + "<br/><p>Trân trọng,</p>";
+
+        // Gửi email
+        ContactRequest request = new ContactRequest();
+        request.setEmail(email);
+        request.setSubject("Mã OTP đặt lại mật khẩu");
+        request.setMessage(body);
+        emailContactService.SendMail(request);
+
+        response.put("message", "Mã OTP đã được gửi tới email của bạn. Hãy kiểm tra hộp thư!");
+        response.put("messageType", "success");
+        return response;
+    }
+
+    // Xác minh OTP
+    public Map<String, String> verifyOtp(String email, String otp) {
+        Map<String, String> response = new HashMap<>();
+        if (otpCache.containsKey(email) &&
+                otpCache.get(email).equals(otp) &&
+                System.currentTimeMillis() <= otpExpiry.getOrDefault(email, 0L)) {
+
+            verifiedEmails.add(email); // Đánh dấu email đã xác minh
+            response.put("message", "OTP hợp lệ. Bạn có thể đặt lại mật khẩu.");
+            response.put("messageType", "success");
+        } else {
+            response.put("message", "OTP không hợp lệ hoặc đã hết hạn!");
+            response.put("messageType", "error");
+        }
+        return response;
+    }
+
+    // Đặt lại mật khẩu
+    public Map<String, String> resetPassword(String email, String newPassword, String confirmPassword) {
+        Map<String, String> response = new HashMap<>();
+        User user = getCustomerByEmail(email);
+
+        if (user == null) {
+            response.put("message", "Thông tin không tồn tại trong hệ thống.");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Kiểm tra email đã xác minh OTP chưa
+        if (!verifiedEmails.contains(email)) {
+            response.put("message", "Bạn chưa xác minh OTP!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Kiểm tra độ mạnh của mật khẩu mới
+        if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")) {
+            response.put("message", "Mật khẩu mới phải có ít nhất 6 ký tự và bao gồm cả chữ và số!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Kiểm tra xác nhận mật khẩu
+        if (!newPassword.equals(confirmPassword)) {
+            response.put("message", "Mật khẩu mới không khớp!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            response.put("message", "Mật khẩu mới không được trùng với mật khẩu cũ!");
+            response.put("messageType", "error");
+            return response;
+        }
+
+        // Cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Xóa trạng thái xác minh
+        verifiedEmails.remove(email);
+
+        response.put("message", "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.");
+        response.put("messageType", "success");
+        return response;
+    }
+
 }

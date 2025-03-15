@@ -4,103 +4,43 @@
     <title>Categories List</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/akar-icons-fonts"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0"/>
 </head>
-<body >
-<style>
-    body {
-    background-color: #b8a890;
-    font-family: Arial, sans-serif;
-}
-
-.container {
-    background-color: #a89c86;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-h2 {
-    color: white;
-}
-
-table {
-    background-color: #a89c86;
-    border-collapse: collapse;
-    width: 100%;
-    color: white;
-}
-
-thead {
-    background-color: #80725f;
-    color: white;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #9c8c72;
-}
-
-tr:nth-child(even) {
-    background-color: #9c8c72;
-}
-
-.btn-primary {
-    background-color: #5a4a3f;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #3e322a;
-}
-
-.btn-danger {
-    background-color: #d66a4d;
-    border: none;
-}
-
-.btn-danger:hover {
-    background-color: #b8543e;
-}
-
-</style>
+<body>
 <style>
     * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     body {
-        margin: 0;
-        background-color: #C0B8AB !important;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: 30%;
-        height: 100vh;
-        font-family: "Euclid Circular A";
+        background: linear-gradient(135deg, #3C2F2F 0%, #6F4E37 100%);
+        font-family: "Poppins", sans-serif;
+        min-height: 100vh;
+        display: flex;
     }
 
-    button,
-    label {
-        background: transparent;
-        border: 0;
-        padding: 0;
-        cursor: pointer;
-        text-align: left;
-    }
-
+    /* Sidebar Styles */
     .sidebar {
         position: fixed;
         top: 24px;
         left: 24px;
         bottom: 44px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
         width: 260px;
-        border-radius: 16px;
+        border-radius: 12px;
         padding: 0 16px;
         background: rgb(0 0 0 / 32%);
         backdrop-filter: blur(30px);
-        transition: width 0.4s;
+        overflow-y: auto;
     }
 
     .sidebar header {
@@ -108,129 +48,320 @@ tr:nth-child(even) {
         align-items: center;
         height: 72px;
         padding-top: 10px;
-        border-bottom: 1px solid rgb(255 255 255 / 8%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
     }
 
     .logo-text {
-        font-size: 24px;
-        font-weight: bold;
-        color: #F76D37;
-        margin: 0;
-        padding: 0;
-        font-family: "Euclid Circular A", sans-serif;
+        font-size: 28px;
+        font-weight: 600;
+        color: #E8D5B5;
+        letter-spacing: 1px;
     }
 
     .sidebar input {
-        scale: 0;
-        position: absolute;
-    }
-
-    .sidebar input#settings:checked ~ div {
-        height: 150px;
-    }
-
-    .sidebar input#create:checked ~ div {
-        height: 200px;
-    }
-
-    .sidebar input#profile:checked ~ div {
-        height: 100px;
+        display: none;
     }
 
     .sidebar :is(button, label) {
-        position: relative;
         display: flex;
         gap: 16px;
         align-items: center;
         height: 50px;
         width: 100%;
-        border-radius: 6px;
-        font-family: inherit;
+        border-radius: 8px;
         font-size: 16px;
-        font-weight: 400;
-        line-height: 1;
+        font-weight: 500;
         padding: 0 16px;
-        color: rgb(255 255 255 / 95%);
+        color: #E8D5B5;
+        transition: background 0.3s ease;
     }
 
-    .sidebar label p:nth-child(2) {
-        flex: 1 1 auto;
-    }
-
-    .sidebar input:checked ~ label {
-        background: #1960f3;
-    }
-
-    .sidebar label i {
-        transition: 0.3s;
-    }
-
-    .sidebar input:checked ~ label > i:nth-child(3) {
-        rotate: -180deg;
-    }
-
-    .sidebar input:not(:checked) ~ label:hover,
-    .sidebar button:hover {
-        background: rgb(0 0 0 / 15%);
+    .sidebar label:hover, .sidebar button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #D4A017;
     }
 
     .sidebar ul {
-        display: grid;
         list-style: none;
         padding: 0;
-        margin: 0;
-        width: 100%;
     }
 
     .sub-menu {
         position: relative;
         overflow: hidden;
         height: 0;
-        transition: 0.5s;
     }
 
     .sub-menu ul {
         position: absolute;
         top: 0;
         left: 0;
-        display: grid;
     }
 
     .sub-menu button {
         padding-left: 52px;
+        font-size: 15px;
+        color: #D4A017;
     }
 
     .sub-menu button::before {
         content: "";
         position: absolute;
         top: 50%;
-        left: 24px;
+        left: 30px;
         translate: 0 -50%;
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background-color: rgb(255 255 255 / 35%);
-    }
-
-    .sidebar .material-symbols-outlined {
-        font-size: 16px;
+        background-color: #D4A017;
     }
 
     .sidebar i {
         font-size: 20px;
-        width: 20px;
-        max-width: 20px;
-        min-width: 20px;
+        color: #E8D5B5;
     }
 
-    .content {
-        margin-left: 300px;
+    /* Main Content Styles */
+    .container {
+        margin: 30px 30px 30px 300px;
+        flex: 1;
+        background: #FFF8E7;
         padding: 20px;
-        width: calc(100% - 300px);
-        background-color: #a89c86;
-        border-radius: 10px;
-     }
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #E8D5B5;
+    }
 
+    h2 {
+        color: #3C2F2F;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .btn-primary {
+        background-color: #6F4E37;
+        border: none;
+        padding: 8px 16px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #5A3E2B;
+    }
+
+    .btn-danger {
+        background-color: #A0522D;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #8B4513;
+    }
+
+    .btn-warning {
+        background-color: #D4A017;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 6px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-warning:hover {
+        background-color: #B8860B;
+    }
+
+    table.dataTable {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #E8D5B5;
+        font-size: 14px;
+    }
+
+    table.dataTable thead th {
+        background-color: #6F4E37;
+        color: #FFF8E7;
+        font-weight: 500;
+        padding: 10px;
+        border-bottom: 2px solid #5A3E2B;
+    }
+
+    table.dataTable tbody tr {
+        transition: background 0.3s ease;
+    }
+
+    table.dataTable tbody tr:nth-child(even) {
+        background-color: #FDF6E3;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: #ECE1C8;
+    }
+
+    /* Pagination Styles (Previous, Next, và số trang) */
+    .dataTables_paginate .paginate_button {
+        padding: 5px 10px;
+        margin: 0 5px;
+        border-radius: 4px; /* Điều chỉnh để giống hình ảnh */
+        background: #FDF6E3; /* Kem nhạt */
+        color: #3C2F2F !important; /* Chữ nâu đậm */
+        border: 1px solid #6F4E37; /* Viền nâu cà phê */
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .dataTables_paginate .paginate_button:hover {
+        background: #ECE1C8; /* Kem đậm hơn khi hover */
+        color: #3C2F2F !important;
+        border-color: #6F4E37;
+    }
+
+    .dataTables_paginate .paginate_button.current {
+        background: #6F4E37 !important; /* Nâu cà phê cho trang hiện tại */
+        color: #FFF8E7 !important; /* Chữ kem nhạt */
+        border-color: #6F4E37 !important;
+    }
+
+    .dataTables_paginate .paginate_button.previous,
+    .dataTables_paginate .paginate_button.next {
+        background: #8B5A2B; /* Nâu cà phê nhạt cho Previous và Next */
+        color: #FFF8E7 !important;
+        border: 1px solid #704214;
+        font-weight: 500;
+    }
+
+    .dataTables_paginate .paginate_button.previous:hover,
+    .dataTables_paginate .paginate_button.next:hover {
+        background: #704214; /* Nâu đậm hơn khi hover */
+        color: #FFF8E7 !important;
+        border-color: #704214;
+    }
+
+    .dataTables_paginate .paginate_button.disabled {
+        background: #8B5A2B;
+        color: #E8D5B5 !important;
+        border-color: #8B5A2B;
+        opacity: 0.6;
+    }
+
+    .modal-content {
+        border-radius: 12px;
+        background: #FFF8E7;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        border: none;
+    }
+
+    .modal-header {
+        background-color: #6F4E37;
+        color: #FFF8E7;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        padding: 15px 20px;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding: 15px 20px;
+    }
+
+    .btn-secondary {
+        background-color: #8B5A2B;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #704214;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #E8D5B5;
+        padding: 8px;
+        background: #FDF6E3;
+        transition: border-color 0.3s ease;
+        font-size: 14px;
+    }
+
+    .form-control:focus {
+        border-color: #6F4E37;
+        box-shadow: 0 0 5px rgba(111, 78, 55, 0.3);
+    }
+
+    .option-box {
+        background-color: #FFF8E7;
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin: 5px;
+        font-size: 13px;
+        border: 1px solid #E8D5B5;
+        display: inline-block;
+        width: 120px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .option-box.selected {
+        background-color: #6F4E37;
+        color: #FFF8E7;
+        border-color: #6F4E37;
+    }
+
+    .option-box:hover {
+        background-color: #D4A017;
+        color: #FFF8E7;
+        border-color: #D4A017;
+    }
+
+    .dataTables_filter input {
+        border-radius: 8px;
+        border: 1px solid #E8D5B5;
+        padding: 8px;
+        background: #FDF6E3;
+        transition: border-color 0.3s ease;
+        font-size: 14px;
+        outline: none;
+    }
+
+    /* Thay đổi viền khi focus vào ô tìm kiếm */
+    .dataTables_filter input:focus {
+        border-color: #D4A373; /* Màu viền khi focus */
+        box-shadow: 0 0 5px rgba(212, 163, 115, 0.5);
+    }
+
+    /* Tùy chỉnh phần chứa ô tìm kiếm */
+    .dataTables_filter {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    /* Tăng khoảng cách giữa chữ "Search:" và ô input */
+    .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: bold;
+        color: #5A4637;
+    }
 </style>
 
 <aside class="sidebar">
@@ -240,14 +371,14 @@ tr:nth-child(even) {
 
     <ul>
         <li>
-            <input type="radio" id="dashboard" name="sidebar" />
+            <input type="radio" id="dashboard" name="sidebar"/>
             <label for="dashboard">
                 <i class="ai-dashboard"></i>
                 <p>Dashboard</p>
             </label>
         </li>
         <li>
-            <input type="radio" id="settings" name="sidebar" />
+            <input type="radio" id="settings" name="sidebar"/>
             <label for="settings">
                 <i class="ai-gear"></i>
                 <p>Customers</p>
@@ -265,7 +396,7 @@ tr:nth-child(even) {
             </div>
         </li>
         <li>
-            <input type="radio" id="create" name="sidebar" />
+            <input type="radio" id="create" name="sidebar"/>
             <label for="create">
                 <i class="ai-folder-add"></i>
                 <p>Categories</p>
@@ -274,13 +405,14 @@ tr:nth-child(even) {
             <div class="sub-menu !h-[50px]">
                 <ul>
                     <li>
-                        <button type="button" onclick="window.location.href='/categories'"><a >Categories List</a></button>
+                        <button type="button" onclick="window.location.href='/categories'"><a>Categories List</a>
+                        </button>
                     </li>
                 </ul>
             </div>
         </li>
         <li>
-            <input type="radio" id="profile" name="sidebar" />
+            <input type="radio" id="profile" name="sidebar"/>
             <label for="profile">
                 <i class="ai-person"></i>
                 <p>Profile</p>
@@ -298,21 +430,21 @@ tr:nth-child(even) {
             </div>
         </li>
         <li>
-            <input type="radio" id="notifications" name="sidebar" />
+            <input type="radio" id="notifications" name="sidebar"/>
             <label for="notifications">
                 <i class="ai-bell"></i>
                 <p>Notifications</p>
             </label>
         </li>
         <li>
-            <input type="radio" id="products" name="sidebar" />
+            <input type="radio" id="products" name="sidebar"/>
             <label for="products">
                 <i class="ai-cart"></i>
                 <p>Products</p>
             </label>
         </li>
         <li>
-            <input type="radio" id="account" name="sidebar" />
+            <input type="radio" id="account" name="sidebar"/>
             <label for="account">
                 <i class="ai-lock-on"></i>
                 <p>Account</p>
@@ -320,7 +452,7 @@ tr:nth-child(even) {
         </li>
     </ul>
 </aside>
-<div class="content mt-5">
+<div class="container mt-5">
     <h2 class="text-2xl">Categories List</h2>
     <button class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
     <table id="categoryTable" class="table table-bordered table-striped">
@@ -377,7 +509,7 @@ tr:nth-child(even) {
                     <div class="mb-3">
                         <label for="addCategoryDescription" class="form-label">Description</label>
                         <textarea class="form-control" id="addCategoryDescription"
-                                  placeholder="Enter category description"></textarea>
+                                  placeholder="Enter category description" maxlength="500"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="addCategoryImage" class="form-label">Image</label>
@@ -411,12 +543,13 @@ tr:nth-child(even) {
                     <div class="mb-3">
                         <label for="editCategoryDescription" class="form-label">Description</label>
                         <textarea class="form-control" id="editCategoryDescription"
-                                  placeholder="Enter category description"></textarea>
+                                  placeholder="Enter category description" maxlength="500"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="editCategoryImage" class="form-label">Image</label>
                         <input type="text" class="form-control" id="editCategoryImage" placeholder="Enter link image..">
-                        <img id="editCategoryImagePreview" src="" alt="Category Image" style="max-width: 100px; display: none;">
+                        <img id="editCategoryImagePreview" src="" alt="Category Image"
+                             style="max-width: 100px; display: none;">
                     </div>
                 </form>
             </div>
@@ -459,6 +592,7 @@ tr:nth-child(even) {
                 { "data": "id" },
                 {
                     "data": "imageUrl",
+                    "width": "100px",
                     "render": function(data, type, row) {
                         if (data) {
                             return `<img src="${data}?t=${new Date().getTime()}" alt="Category Image" class="img-thumbnail" width="100">`;
@@ -468,7 +602,13 @@ tr:nth-child(even) {
                     }
                 },
                 { "data": "name" },
-                { "data": "description" },
+                {
+                    "data": "description",
+                    "width": "300px",
+                    "render": function(data, type, row) {
+                        return `<div>${data}</div>`;
+                    }
+                },
                 {
                     "data": null,
                     "render": function(data, type, row) {
@@ -538,6 +678,11 @@ tr:nth-child(even) {
                 }
            });
 
+           if (categoryDescription.length > 500) {
+                showMessage("Mô tả quá dài! Vui lòng nhập tối đa 500 ký tự", "error");
+                return;
+            }
+
             if (!categoryName || !categoryDescription) {
                 showMessage('Các trường không được để trống', "error");
                 return;
@@ -596,11 +741,12 @@ tr:nth-child(even) {
                     url: '/category/delete-category?categoryId=' + categoryId,
                     type: 'DELETE',
                     success: function (response) {
-                        showMessage(response, "success");
+                        showMessage(response.message, response.messageType);
                         $('#categoryTable').DataTable().ajax.reload(); // Reload the table
                     },
                     error: function (xhr) {
-                        showMessage('Xóa thất bại: ', "error");
+                        let errorResponse = JSON.parse(xhr.responseText);
+                        showMessage(errorResponse.message, errorResponse.messageType);
                     }
                 });
             }
@@ -631,6 +777,10 @@ tr:nth-child(even) {
     // var categoryImage = $('#addCategoryImage')[0].files[0];
     var categoryImage = $('#addCategoryImage').val();
 
+    if (categoryDescription.length > 500) {
+        showMessage("Mô tả quá dài! Vui lòng nhập tối đa 500 ký tự", "error");
+        return;
+    }
 
 
     if (!categoryName || !categoryDescription) {
@@ -670,47 +820,8 @@ tr:nth-child(even) {
         }
     });
 });
-
-
 });
-
-
 </script>
-<style>
-    /* Custom styling for DataTable pagination buttons */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        border-radius: 5px; /* Rounded corners */
-        margin: 0 5px; /* Space between buttons */
-        padding: 8px 15px; /* Padding inside the buttons */
-        color: #fff; /* Text color */
-        background-color: #007bff; /* Bootstrap primary color */
-        border: none; /* Remove border */
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-        cursor: pointer; /* Pointer on hover */
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:active {
-        background-color: #004085; /* Dark blue when clicked */
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        background-color: #e9ecef; /* Grey out disabled buttons */
-        color: #6c757d; /* Grey text */
-        cursor: not-allowed; /* Disable cursor */
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
-    .dataTables_wrapper .dataTables_paginate .paginate_button.next {
-        padding: 8px 20px; /* Adjust size for previous/next buttons */
-    }
-
-    #categoryTable {
-    --bs-table-bg: transparent !important;
-    }
-</style>
 </body>
 
 </html>

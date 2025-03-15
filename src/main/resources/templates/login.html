@@ -49,10 +49,10 @@
                 </i>
             </div>
             <div class="flex justify-between items-center mb-6">
-                <a class="text-sm text-gray-500" href="#">
+                <a class="text-sm text-gray-500" th:href="@{/forgot-password}">
                     Forgot password?
                 </a>
-                <a class="text-sm text-blue-500" href="#">
+                <a class="text-sm text-blue-500" th:href="@{/forgot-password}">
                     Click here
                 </a>
             </div>
@@ -91,9 +91,9 @@
                 data: JSON.stringify(loginData),
                 success: function (response) {
                     let role = response.role;
-                    if (role.toString().includes("admin")) {
+                    if (role.toString().includes("admin") || role.toString().includes("staff")) {
                         window.location.href = "/admin/dashboard";
-                    } else if (role.toString().includes("CUSTOMER")) {
+                    } else if (role.toString().includes("customer")) {
                         window.location.href = "/home";
                     } else {
                         window.location.href = "/home";

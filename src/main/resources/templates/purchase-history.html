@@ -18,6 +18,9 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/alert.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: "Poppins", sans-serif;
@@ -204,7 +207,13 @@
                 </div>
                 <div class="flex flex-col gap-1 items-end">
                     <p class="text-lg text-black"><span th:text="${order.orderTotal}"></span>đ</p>
-                    <span th:class="${'px-3 py-1 text-sm rounded-full ' + order.status}"
+                    <span th:class="${'px-3 py-1 text-sm rounded-full text-white ' +
+                      (order.status == 'paid' ? 'bg-blue-500' :
+                      (order.status == 'preparing' ? 'bg-yellow-500' :
+                      (order.status == 'ready_to_pickup' ? 'bg-purple-500' :
+                      (order.status == 'completed' ? 'bg-green-500' :
+                      (order.status == 'shipping' ? 'bg-orange-500' :
+                      (order.status == 'canceled' ? 'bg-red-500' : 'bg-gray-300')))))) }"
                           th:text="${#strings.capitalize(order.status)}">Status</span>
                 </div>
             </div>
@@ -219,14 +228,26 @@
                     <!-- Address Icon and Info -->
                     <i class="ti ti-map-pin text-base ml-2"></i>
                     <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
+
+                    <!-- Order Type  -->
+                    <i th:class="${order.orderType == 'PICKUP' ? 'ti ti-shopping-cart ' : 'ti ti-truck'} + ' text-base ml-2'"></i>
+                    <span th:text="${order.orderType ?: 'Unknown'}" th:class="${order.orderType == 'PICKUP' ? 'text-green-600' : 'text-orange-600'}">Order Type</span>
                 </div>
-                <a
-                        th:href="@{/purchase-history(viewOrderId=${order.id}, page=${currentPage}, search=${param.search}, timeFilter=${param.timeFilter})}"
-                        class="flex gap-2 items-center text-base text-black cursor-pointer"
-                >
-                    <span>View Details</span>
-                    <i class="ti ti-arrow-right"></i>
-                </a>
+                <div class="flex gap-2">
+                    <a
+                            th:href="@{/purchase-history(viewOrderId=${order.id}, page=${currentPage}, search=${param.search}, timeFilter=${param.timeFilter})}"
+                            class="flex gap-2 items-center text-base text-black cursor-pointer"
+                    >
+                        <span>View Details</span>
+                        <i class="ti ti-arrow-right"></i>
+                    </a>
+
+                    <button th:if="${order.status == 'pending'}"
+                            th:data-id="${order.id}"
+                            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cancelOrderBtn">
+                        Cancel
+                    </button>
+                </div>
             </footer>
         </article>
     </section>
@@ -552,6 +573,40 @@
             }
         }
     });
+
+    $(document).on('click', '.cancelOrderBtn', function () {
+        var orderId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to cancel this order?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gửi request hủy đơn hàng
+                $.ajax({
+                    url: '/canceled-order',
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { orderId: orderId },
+                    success: function (response) {
+                        showMessage(response.message, response.messageType);
+                        location.reload(); // Reload trang để cập nhật trạng thái đơn hàng
+                    },
+                    error: function (xhr) {
+                        let errorResponse = JSON.parse(xhr.responseText);
+                        showMessage(errorResponse.message, errorResponse.messageType);
+                    }
+                });
+            }
+        });
+    });
+
 </script>
 <script>
     function logout() {

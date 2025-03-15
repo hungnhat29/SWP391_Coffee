@@ -49,5 +49,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> getPageOrderByTypeAdmin(TypeOrder typeOrder, Pageable pageable);
 
     @Query("select o from Order o")
-    Page<Order> getAllOrderAdmin(Pageable pageable);
+    List<Order> getAllOrderAdmin();
 }

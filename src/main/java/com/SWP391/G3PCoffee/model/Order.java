@@ -40,12 +40,24 @@ public class Order {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "customer_name")
     private String customerName;
+
+    @Column(name = "customer_email")
     private String customerEmail;
+
+    @Column(name = "customer_phone")
     private String customerPhone;
+
+    @Column(name = "first_product_image_url")
+    private String firstProductImageUrl;
+
+    @Column(name = "customer_address")
     private String customerAddress;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_type")
     private TypeOrder typeOrder;
 
     @PrePersist
@@ -63,5 +75,5 @@ public class Order {
         updatedAt = LocalDateTime.now();
     }
 
-    private String firstProductImageUrl;
+
 }

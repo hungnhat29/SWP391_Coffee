@@ -42,6 +42,17 @@ public class EmailContactService {
         mailSender.send(message);
     }
 
+    public void SendMail(ContactRequest request) throws MessagingException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
+        helper.setTo(request.getEmail());
+        helper.setSubject(request.getSubject());
+        helper.setText(request.getMessage(), true); // `true` để hỗ trợ HTML trong email
+
+        mailSender.send(message);
+    }
+
     public void sendVerificationOtp(String email) throws MessagingException {
         String otp = generateOtp();
         // Lưu OTP vào cache
