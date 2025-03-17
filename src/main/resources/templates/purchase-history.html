@@ -230,8 +230,12 @@
                     <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
 
                     <!-- Order Type  -->
-                    <i th:class="${order.orderType == 'PICKUP' ? 'ti ti-shopping-cart ' : 'ti ti-truck'} + ' text-base ml-2'"></i>
-                    <span th:text="${order.orderType ?: 'Unknown'}" th:class="${order.orderType == 'PICKUP' ? 'text-green-600' : 'text-orange-600'}">Order Type</span>
+                    <i th:class="${order.typeOrder?.name() == 'PICKUP' ? 'ti ti-shopping-cart' : 'ti ti-truck'} + ' text-base ml-2'"></i>
+                    <span th:text="${order.typeOrder?.name() ?: 'Unknown'}"
+                          th:class="${order.typeOrder?.name() == 'PICKUP' ? 'text-green-600' : 'text-orange-600'}">
+                        Order Type
+                    </span>
+
                 </div>
                 <div class="flex gap-2">
                     <a
@@ -574,38 +578,6 @@
         }
     });
 
-    $(document).on('click', '.cancelOrderBtn', function () {
-        var orderId = $(this).data('id');
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to cancel this order?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, cancel it!',
-            cancelButtonText: 'No, keep it'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Gửi request hủy đơn hàng
-                $.ajax({
-                    url: '/canceled-order',
-                    type: 'POST',
-                    contentType: 'application/x-www-form-urlencoded',
-                    data: { orderId: orderId },
-                    success: function (response) {
-                        showMessage(response.message, response.messageType);
-                        location.reload(); // Reload trang để cập nhật trạng thái đơn hàng
-                    },
-                    error: function (xhr) {
-                        let errorResponse = JSON.parse(xhr.responseText);
-                        showMessage(errorResponse.message, errorResponse.messageType);
-                    }
-                });
-            }
-        });
-    });
 
 </script>
 <script>
@@ -647,6 +619,39 @@
                 });
             });
     }
+
+    $(document).on('click', '.cancelOrderBtn', function () {
+        var orderId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to cancel this order?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gửi request hủy đơn hàng
+                $.ajax({
+                    url: '/canceled-order',
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: { orderId: orderId },
+                    success: function (response) {
+                        showMessage(response.message, response.messageType);
+                        location.reload(); // Reload trang để cập nhật trạng thái đơn hàng
+                    },
+                    error: function (xhr) {
+                        let errorResponse = JSON.parse(xhr.responseText);
+                        showMessage(errorResponse.message, errorResponse.messageType);
+                    }
+                });
+            }
+        });
+    });
 </script>
 </body>
 </html>

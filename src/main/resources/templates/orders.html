@@ -540,7 +540,7 @@
                     render: function(data) {
                         let actionButtons = `<button class="btn btn-sm btn-primary view-btn" data-id="${data.id}">View</button>`;
 
-                        // Chỉ hiển thị nút "Update" và "Cancel" nếu user có role STAFF
+                        // Chỉ hiển thị nút "Update" và "Cancel" nếu user có role STAFF ROLE_staff
                         if (userRole.toString().includes("staff")) {
                             if (data.status !== "completed" && data.status !== "canceled") {
                                 actionButtons += `<button class="btn btn-sm btn-warning edit-btn" data-id="${data.id}">Update</button>`;

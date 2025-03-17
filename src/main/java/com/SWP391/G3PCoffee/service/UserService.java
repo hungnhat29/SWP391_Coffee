@@ -77,6 +77,11 @@ public class UserService {
             throw new RuntimeException("Email is already in use!");
         }
 
+        boolean verity = emailContactService.verifyOtp(userDTO.getEmail(), userDTO.getOtp());
+        if(!verity){
+            throw new RuntimeException("OTP không hợp lệ hoặc đã hết hạn!");
+        }
+
         User user = new User();
         user.setName(userDTO.getFullName());
         user.setPhone(userDTO.getPhone());
@@ -196,17 +201,17 @@ public class UserService {
 
         // Lưu OTP và thời gian hết hạn (10 phút)
         otpCache.put(email, otp);
-        otpExpiry.put(email, System.currentTimeMillis() + (10 * 60 * 1000)); // 10 phút
+        otpExpiry.put(email, System.currentTimeMillis() + (5 * 60 * 1000)); // 10 phút
 
         // Xóa OTP sau 10 phút
         scheduler.schedule(() -> {
             otpCache.remove(email);
             otpExpiry.remove(email);
-        }, 10, TimeUnit.MINUTES);
+        }, 5, TimeUnit.MINUTES);
 
         String body = "<p>Chào bạn,</p>"
                 + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
-                + "<p>Mã OTP có hiệu lực trong 10 phút. Vui lòng không cung cấp otp cho bất kì ai!</p>"
+                + "<p>Mã OTP có hiệu lực trong 5 phút. Vui lòng không cung cấp otp cho bất kì ai!</p>"
                 + "<br/><p>Trân trọng,</p>";
 
         // Gửi email
