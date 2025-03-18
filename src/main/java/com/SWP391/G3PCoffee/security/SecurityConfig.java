@@ -1,5 +1,6 @@
 package com.SWP391.G3PCoffee.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -68,9 +69,13 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/auth/login")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setHeader("Set-Cookie", "jwtToken=; Path=/; HttpOnly; Max-Age=0; Secure");
+                            response.sendRedirect("/auth/login");
+                        })
                         .permitAll()
                 )
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();

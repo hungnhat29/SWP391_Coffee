@@ -20,4 +20,5 @@ public class CheckoutRequest {
     private String customerEmail;
     private String customerPhone;
     private String customerAddress;
+    private String receiveType;
 }

@@ -236,6 +236,13 @@
                                         Toppings: <span
                                             th:text="${T(com.SWP391.G3PCoffee.model.JsonUtils).getToppingsNames(item.toppingsInfo)}">None</span>
                                     </div>
+                                    <div class="receive-type">
+                                        <span id="receiveType"
+                                              th:text="${item.receiveType == 'PICKUP' ? 'Dùng tại quán' : 'Giao hàng'}"
+                                              th:attr="data-receive=${item.receiveType}">
+                                        Giao hàng
+                                    </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="product-price">
@@ -373,7 +380,8 @@
             customerPhone: document.getElementById('customerPhone').value.trim(),
             shippingAddress: document.getElementById('shippingAddress').value.trim(),
             paymentMethod: selectedPaymentMethod,
-            returnUrl: window.location.origin + '/payment/vnpay-return'
+            returnUrl: window.location.origin + '/payment/vnpay-return',
+            receiveType: document.getElementById('receiveType').getAttribute('data-receive')
         };
 
         // Send API request

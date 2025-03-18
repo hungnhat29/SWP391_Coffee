@@ -36,6 +36,9 @@ public class Cart {
     @Column(name = "sub_total", precision = 10, scale = 0)
     private BigDecimal subTotal;
 
+    @Column(name = "receive_type")
+    private String receiveType;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

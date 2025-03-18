@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -41,7 +38,8 @@ public class OrderService {
             List<Cart> cartItems,
             String shippingAddress,
             String paymentMethod, String customerName, String customerEmail,
-            String customerPhone) {
+            String customerPhone,
+            String receiveType) {
 
         // Calculate order total
         BigDecimal orderTotal = cartItems.stream()
@@ -59,6 +57,7 @@ public class OrderService {
         order.setOrderTotal(orderTotal);
         order.setShippingAddress(shippingAddress);
         order.setPaymentMethod(paymentMethod);
+        order.setTypeOrder(Objects.equals(receiveType, "PICKUP") ? TypeOrder.PICKUP : TypeOrder.DELIVERY);
         order.setStatus("pending");
 
         // Save order to get order ID

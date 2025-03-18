@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,7 +43,7 @@ public class AuthController {
             String jwtToken = userService.registerUser(userDTO);
 
             Cookie cookie = new Cookie("jwtToken", jwtToken);
-            cookie.setHttpOnly(true);
+            cookie.setHttpOnly(false);
             cookie.setSecure(false);
             cookie.setPath("/");
             cookie.setMaxAge(24 * 60 * 60); // 1 ngày
@@ -69,7 +70,7 @@ public class AuthController {
 
             // Tạo cookie JWT
             Cookie cookie = new Cookie("jwtToken", jwtToken);
-            cookie.setHttpOnly(true);
+            cookie.setHttpOnly(false);
             cookie.setSecure(false);
             cookie.setPath("/");
             cookie.setMaxAge(24 * 60 * 60); // Cookie hết hạn sau 1 ngày
@@ -89,15 +90,21 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwtToken", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Xóa JWT cookie
+        Cookie cookie = new Cookie("jwtToken", "");
+        cookie.setHttpOnly(false);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+
+        // Xóa authentication context để tránh bị redirect
+        SecurityContextHolder.clearContext();
+
+        return ResponseEntity.ok("{\"message\": \"Logout successful\"}");
     }
+
 
     @GetMapping("/check-login")
     public ResponseEntity<Boolean> checkLogin(@AuthenticationPrincipal UserDetails userDetails,

@@ -231,7 +231,7 @@
 
                     <!-- Order Type  -->
                     <i th:class="${order.typeOrder?.name() == 'PICKUP' ? 'ti ti-shopping-cart' : 'ti ti-truck'} + ' text-base ml-2'"></i>
-                    <span th:text="${order.typeOrder?.name() ?: 'Unknown'}"
+                    <span th:text="${order.typeOrder?.name() == 'PICKUP' ? 'Dùng tại quán' : 'Giao hàng'}"
                           th:class="${order.typeOrder?.name() == 'PICKUP' ? 'text-green-600' : 'text-orange-600'}">
                         Order Type
                     </span>
