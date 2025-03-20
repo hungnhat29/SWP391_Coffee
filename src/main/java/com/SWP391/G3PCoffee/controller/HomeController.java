@@ -44,11 +44,6 @@ public class HomeController {
         return "forgot-password";
     }
 
-    @GetMapping("/change_password")
-    public String ChangePass() {
-        return "change_password";
-    }
-
     @GetMapping("/users/customers/{customerId}/details")
     public String customerDetails(@PathVariable("customerId") String customerId, HttpServletRequest request) {
         // Đặt customerId vào request scope để sử dụng trong file HTML

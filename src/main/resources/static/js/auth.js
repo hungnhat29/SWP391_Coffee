@@ -10,9 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!jwtToken) {
             // Ẩn nút Logout nếu không có token
             if (logoutLink) logoutMenu.style.display = "none";
-        } else {
-            // Hiển thị nút Logout nếu có token
-            if (logoutLink) logoutMenu.style.display = "block";
         }
     }
 
