@@ -158,6 +158,38 @@ public class OrderService {
         }
     }
 
+    public Page<Order> findByUserAndOrderIdExcludingStatuses(User user, Long orderId, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndIdAndStatusNotInAndOrderDateAfter(user.getId(), orderId, excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndIdAndStatusNotIn(user.getId(), orderId, excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndStatusExcludingStatuses(User user, String status, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCaseAndStatusNotInAndOrderDateAfter(user.getId(), status, excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCaseAndStatusNotIn(user.getId(), status, excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndDateExcludingStatuses(User user, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndStatusNotInAndOrderDateAfter(user.getId(), excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndStatusNotIn(user.getId(), excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> getPagedOrdersByUserIdExcludingStatuses(Integer userId, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        return orderRepository.findByUserIdAndStatusNotInOrderByOrderDateDesc(userId, excludedStatuses, pageable);
+    }
+
     public Page<Order> getOrderByType(TypeOrder typeOrder, String email, Pageable pageable) {
         User user = userService.getCustomerByEmail(email);
         if (user == null) {

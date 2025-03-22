@@ -50,4 +50,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("select o from Order o")
     List<Order> getAllOrderAdmin();
+
+    Page<Order> findByUserIdAndStatusNotInOrderByOrderDateDesc(Integer userId, List<String> excludedStatuses, Pageable pageable);
+
+    Page<Order> findByUserIdAndIdAndStatusNotInAndOrderDateAfter(Long userId, Long orderId, List<String> excludedStatuses, LocalDateTime startDate, Pageable pageable);
+    Page<Order> findByUserIdAndIdAndStatusNotIn(Long userId, Long orderId, List<String> excludedStatuses, Pageable pageable);
+
+    Page<Order> findByUserIdAndStatusContainingIgnoreCaseAndStatusNotInAndOrderDateAfter(Long userId, String status, List<String> excludedStatuses, LocalDateTime startDate, Pageable pageable);
+    Page<Order> findByUserIdAndStatusContainingIgnoreCaseAndStatusNotIn(Long userId, String status, List<String> excludedStatuses, Pageable pageable);
+
+    Page<Order> findByUserIdAndStatusNotInAndOrderDateAfter(Long userId, List<String> excludedStatuses, LocalDateTime startDate, Pageable pageable);
+    Page<Order> findByUserIdAndStatusNotIn(Long userId, List<String> excludedStatuses, Pageable pageable);
+
 }

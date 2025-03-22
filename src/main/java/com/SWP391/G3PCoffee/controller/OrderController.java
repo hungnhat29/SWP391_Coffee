@@ -1,5 +1,6 @@
 package com.SWP391.G3PCoffee.controller;
 
+import com.SWP391.G3PCoffee.model.JsonUtils;
 import com.SWP391.G3PCoffee.model.Order;
 import com.SWP391.G3PCoffee.model.OrderItem;
 import com.SWP391.G3PCoffee.model.User;
@@ -7,7 +8,6 @@ import com.SWP391.G3PCoffee.service.OrderItemService;
 import com.SWP391.G3PCoffee.service.OrderService;
 import com.SWP391.G3PCoffee.service.UserService;
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,18 +20,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
-public class PurchaseHistoryController {
+public class OrderController {
 
     @Autowired
     private OrderService orderService;
@@ -52,7 +48,7 @@ public class PurchaseHistoryController {
         return sessionId;
     }
 
-    @GetMapping("/purchase-history")
+    @GetMapping("/track-order")
     public String viewOrderHistory(
             Model model,
             HttpSession session,
@@ -97,18 +93,18 @@ public class PurchaseHistoryController {
                     try {
                         // Try parsing as order ID
                         Long orderId = Long.parseLong(search.trim());
-                        orderPage = orderService.findByUserAndOrderId(user, orderId, startDate, pageable);
+                        orderPage = orderService.findByUserAndOrderIdExcludingStatuses(user, orderId, startDate, pageable);
                     } catch (NumberFormatException e) {
                         // If not a number, search by status
-                        orderPage = orderService.findByUserAndStatus(user, search.trim().toLowerCase(), startDate, pageable);
+                        orderPage = orderService.findByUserAndStatusExcludingStatuses(user, search.trim().toLowerCase(), startDate, pageable);
                     }
                 } else {
                     // No search, just time filter if applicable
                     if (startDate != null) {
-                        orderPage = orderService.findByUserAndDate(user, startDate, pageable);
+                        orderPage = orderService.findByUserAndDateExcludingStatuses(user, startDate, pageable);
                     } else {
                         // No filters, get all orders
-                        orderPage = orderService.getPagedOrdersByUserId(user.getId().intValue(), pageable);
+                        orderPage = orderService.getPagedOrdersByUserIdExcludingStatuses(user.getId().intValue(), pageable);
                     }
                 }
                 isLoggedIn = true;
@@ -170,6 +166,29 @@ public class PurchaseHistoryController {
             }
         }
 
-        return "purchase-history";
+        return "track-order";
+    }
+
+    @PostMapping("/canceled-order")
+    public ResponseEntity<Map<String, Object>> cancelOrder(@AuthenticationPrincipal UserDetails userDetails,
+                                                           @RequestParam Integer orderId) {
+        String email = userDetails.getUsername();
+        return ResponseEntity.ok(orderService.cancelOrderByUser(email, orderId));
+    }
+
+    @GetMapping("/get-order-details")
+    public ResponseEntity<Map<String, Object>> getOrderDetails(@RequestParam Integer orderId) {
+        Order order = orderService.getOrderById(orderId);
+        List<OrderItem> orderItems = orderService.getOrderItems(orderId);
+        for (OrderItem item : orderItems) {
+            item.setSizeInfo(JsonUtils.getSizeName(item.getSizeInfo()));
+            item.setToppingsInfo(JsonUtils.getToppingsNames(item.getToppingsInfo()));
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("order", order);
+        response.put("orderItems", orderItems);
+
+        return ResponseEntity.ok(response);
     }
 }
