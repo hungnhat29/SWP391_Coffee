@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
 public class ProductAdminController {
-
 
     private ProductAdminService productAdminService;
 
@@ -38,32 +41,71 @@ public class ProductAdminController {
 
     @GetMapping("/get-list-products")
     @ResponseBody
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Map<String, Object>>> getAllProducts() {
         List<Product> products = productAdminService.findAllProducts();
-        System.out.println("Returning products list: " + products);
-        return ResponseEntity.ok(products);
+        List<Map<String, Object>> productList = new ArrayList<>();
+
+        for (Product product : products) {
+            Map<String, Object> productMap = new HashMap<>();
+            productMap.put("id", product.getId());
+            productMap.put("name", product.getName());
+            productMap.put("basePrice", product.getBasePrice());
+            productMap.put("description", product.getDescription());
+            productMap.put("imageUrl", product.getImageUrl());
+            productMap.put("sizes", product.getSizes());
+            productMap.put("toppings", product.getToppings());
+            productMap.put("createdAt", product.getCreatedAt());
+            productMap.put("updatedAt", product.getUpdatedAt());
+
+            // Fetch category name using categoryId
+            Integer categoryId = product.getCategoryId();
+            Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
+            productMap.put("category", category != null ? Map.of("id", category.getId(), "name", category.getName()) : null);
+
+            productList.add(productMap);
+        }
+
+        System.out.println("Returning products list: " + productList);
+        return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> getProductById(@PathVariable Integer id) {
         Product product = productAdminService.getProductById(id);
         if (product == null) {
             System.out.println("Product not found for ID: " + id);
             return ResponseEntity.status(404).body(null);
         }
-        System.out.println("Returning product: " + product);
-        return ResponseEntity.ok(product);
+
+        Map<String, Object> productMap = new HashMap<>();
+        productMap.put("id", product.getId());
+        productMap.put("name", product.getName());
+        productMap.put("basePrice", product.getBasePrice());
+        productMap.put("description", product.getDescription());
+        productMap.put("imageUrl", product.getImageUrl());
+        productMap.put("sizes", product.getSizes());
+        productMap.put("toppings", product.getToppings());
+        productMap.put("createdAt", product.getCreatedAt());
+        productMap.put("updatedAt", product.getUpdatedAt());
+
+        Integer categoryId = product.getCategoryId();
+        Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
+        productMap.put("category", category != null ? Map.of("id", category.getId(), "name", category.getName()) : null);
+
+        System.out.println("Returning product: " + productMap);
+        return ResponseEntity.ok(productMap);
     }
 
     @PostMapping("/update-product")
     @ResponseBody
     public ResponseEntity<String> updateProduct(
+            Model model,
             @RequestParam(value = "id", required = false) Integer id,
             @RequestParam("name") String name,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam("basePrice") String basePrice,
-            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("categoryId") Integer categoryId,
             @RequestParam(value = "imageUrl", required = false) String imageUrl,
             @RequestParam("sizes") String sizes,
             @RequestParam("toppings") String toppings) {
@@ -100,7 +142,7 @@ public class ProductAdminController {
                 return ResponseEntity.badRequest().body("Invalid JSON format for sizes or toppings");
             }
 
-            Integer category = categoryService.getCategoryByIdInt(categoryId);
+            Category category = categoryService.getCategoryById(Long.valueOf(categoryId));
             if (category == null) {
                 return ResponseEntity.badRequest().body("Category not found with ID: " + categoryId);
             }
@@ -113,7 +155,7 @@ public class ProductAdminController {
             product.setName(name);
             product.setDescription(description);
             product.setBasePrice(new BigDecimal(basePrice.trim()));
-            product.setCategoryId(category);
+            product.setCategoryId(categoryId); // Chỉ lưu categoryId
             product.setImageUrl(imageUrl);
             product.setSizes(sizes); // Lưu chuỗi JSON trực tiếp
             product.setToppings(toppings); // Lưu chuỗi JSON trực tiếp

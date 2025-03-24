@@ -22,6 +22,7 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
+
     @GetMapping("/shop")
     public String showShop(@RequestParam(value = "categoryId", required = false) Integer categoryId, Model model) {
         // Lấy danh sách danh mục

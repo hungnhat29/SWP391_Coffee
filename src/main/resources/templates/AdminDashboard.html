@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card { margin-bottom: 20px; }
+        canvas { max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">Admin Dashboard</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Total Sales</h3>
+                    <p th:text="${#numbers.formatDecimal(totalSales, 0, 'COMMA', 0, 'POINT')} + ' VND'"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Number of Orders</h3>
+                    <p th:text="${numberOfOrders}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Average Order Value</h3>
+                    <p th:text="${#numbers.formatDecimal(averageOrderValue, 0, 'COMMA', 0, 'POINT')} + ' VND'"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Selling Products -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Top Selling Products</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Total Quantity Sold</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${topSellingProducts}">
+                    <td th:text="${product.productName}"></td>
+                    <td th:text="${product.totalQuantity}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Daily Sales</h3>
+            <canvas id="dailySalesChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h3>Order Status Distribution</h3>
+            <canvas id="orderStatusChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Scripts -->
+<script th:inline="javascript">
+    // Daily Sales Chart
+    var dailySalesCtx = document.getElementById('dailySalesChart').getContext('2d');
+    var dailySalesData = /*[[${dailySales}]]*/ [];
+    var dailySalesLabels = dailySalesData.map(item => item.saleDate);
+    var dailySalesValues = dailySalesData.map(item => item.dailySales);
+    new Chart(dailySalesCtx, {
+        type: 'line',
+        data: {
+            labels: dailySalesLabels,
+            datasets: [{
+                label: 'Daily Sales (VND)',
+                data: dailySalesValues,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Order Status Distribution Chart
+    var orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+    var orderStatusData = /*[[${orderStatusDistribution}]]*/ {};
+    var orderStatusLabels = Object.keys(orderStatusData);
+    var orderStatusValues = Object.values(orderStatusData);
+    new Chart(orderStatusCtx, {
+        type: 'pie',
+        data: {
+            labels: orderStatusLabels,
+            datasets: [{
+                data: orderStatusValues,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+</body>
+</html>
