@@ -3,6 +3,7 @@ package com.SWP391.G3PCoffee.controller;
 import com.SWP391.G3PCoffee.model.Cart;
 import com.SWP391.G3PCoffee.model.User;
 import com.SWP391.G3PCoffee.service.CartService;
+import com.SWP391.G3PCoffee.service.PromotionService;
 import com.SWP391.G3PCoffee.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,9 @@ public class CartController {
 
     @Autowired
     private UserService userService; // Add a dependency to UserService
+
+    @Autowired
+    private PromotionService promotionService;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -321,4 +325,6 @@ public class CartController {
             return response;
         }
     }
+
+
 }

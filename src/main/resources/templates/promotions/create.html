@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Promotion | G3P Coffee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .rule-container, .action-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .promotion-type-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section-title {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .add-coupon-btn {
+            margin-bottom: 15px;
+        }
+
+        .coupon-code-container {
+            margin-bottom: 10px;
+        }
+
+        .submit-container {
+            margin-top: 30px;
+        }
+
+        .preview-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .hidden-initially {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="mb-4">Create New Promotion</h1>
+
+            <div class="alert alert-success d-none" id="success-alert">
+                Promotion created successfully!
+            </div>
+
+            <div class="alert alert-danger d-none" id="error-alert">
+                Error creating promotion. Please try again.
+            </div>
+
+            <form id="promotionForm" th:action="@{/promotions/create}" method="post">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Basic Information</h3>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Promotion Name*</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="promotionType" class="form-label">Promotion Type*</label>
+                            <select class="form-select" id="promotionType" name="promotionType" required>
+                                <option value="">Select Type</option>
+                                <option value="BUY_ONE_GET_ONE">Buy One Get One</option>
+                                <option value="BUY_X_GET_DISCOUNT">Buy X Get Discount</option>
+                                <option value="FLASH_SALE_ALL">Flash Sale (All Products)</option>
+                                <option value="FLASH_SALE_CATEGORY">Flash Sale (By Category)</option>
+                                <option value="AMOUNT_THRESHOLD_DISCOUNT">Amount Threshold Discount</option>
+                                <option value="ORDER_DISCOUNT">Order Discount</option>
+                            </select>
+                            <div id="promotionTypeDescription" class="promotion-type-description"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Start Date*</label>
+                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">End Date*</label>
+                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="priority" class="form-label">Priority</label>
+                            <input type="number" class="form-control" id="priority" name="priority" min="1" value="1">
+                            <small class="text-muted">Higher priority is applied first</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="usageLimit" class="form-label">Usage Limit</label>
+                            <input type="number" class="form-control" id="usageLimit" name="usageLimit" min="0">
+                            <small class="text-muted">Leave empty for unlimited</small>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="active" name="active" checked>
+                                <label class="form-check-label" for="active">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-check mb-3 ms-4">
+                                <input class="form-check-input" type="checkbox" id="stackable" name="stackable">
+                                <label class="form-check-label" for="stackable">
+                                    Stackable
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rules Section -->
+                <div class="form-section" id="rulesSection">
+                    <h3 class="form-section-title">Rules</h3>
+                    <p>Define the conditions for this promotion to be applied.</p>
+
+                    <div id="rulesContainer">
+                        <!-- Rules will be dynamically added here based on promotion type -->
+                    </div>
+                </div>
+
+                <!-- Actions Section -->
+                <div class="form-section" id="actionsSection">
+                    <h3 class="form-section-title">Actions</h3>
+                    <p>Define what happens when the promotion is applied.</p>
+
+                    <div id="actionsContainer">
+                        <!-- Actions will be dynamically added here based on promotion type -->
+                    </div>
+                </div>
+
+                <!-- Coupons Section -->
+                <div class="form-section" id="couponsSection">
+                    <h3 class="form-section-title">Coupon Codes (Optional)</h3>
+                    <p>If you want to make this promotion only available with coupon codes, add them here.</p>
+
+                    <button type="button" class="btn btn-outline-primary add-coupon-btn" id="addCouponBtn">
+                        <i class="fas fa-plus"></i> Add Coupon Code
+                    </button>
+
+                    <div id="couponCodesContainer">
+                        <!-- Coupon codes will be added here -->
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Preview</h3>
+                    <button type="button" class="btn btn-outline-secondary" id="previewBtn">
+                        <i class="fas fa-eye"></i> Preview Promotion
+                    </button>
+
+                    <div class="preview-container d-none" id="previewContainer">
+                        <h4 id="previewName"></h4>
+                        <p id="previewDescription"></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Type:</strong> <span id="previewType"></span></p>
+                                <p><strong>Duration:</strong> <span id="previewDuration"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Rules:</strong> <span id="previewRules"></span></p>
+                                <p><strong>Actions:</strong> <span id="previewActions"></span></p>
+                            </div>
+                        </div>
+                        <p><strong>Coupon Codes:</strong> <span id="previewCoupons"></span></p>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="submit-container">
+                    <button type="submit" class="btn btn-primary">Create Promotion</button>
+                    <a href="/promotions" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Templates for dynamic form elements -->
+<template id="product-rule-template">
+    <div class="rule-container" data-rule-type="PRODUCT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Product Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Product</label>
+            <select class="form-control product-select" name="rules[{index}].ruleData.productId" required>
+                <option value="">Select a product</option>
+                <!-- Products will be populated dynamically -->
+            </select>
+            <input type="hidden" name="rules[{index}].ruleType" value="PRODUCT">
+        </div>
+    </div>
+</template>
+
+<template id="category-rule-template">
+    <div class="rule-container" data-rule-type="CATEGORY">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Category Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Category</label>
+            <select class="form-control category-select" name="rules[{index}].ruleData.categoryId" required>
+                <option value="">Select a category</option>
+                <!-- Categories will be populated dynamically -->
+            </select>
+            <input type="hidden" name="rules[{index}].ruleType" value="CATEGORY">
+        </div>
+    </div>
+</template>
+
+<template id="cart-quantity-rule-template">
+    <div class="rule-container" data-rule-type="CART_QUANTITY">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Cart Quantity Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Minimum Quantity</label>
+            <input type="number" class="form-control" name="rules[{index}].ruleData.minQuantity" min="1" required>
+            <small class="text-muted">Minimum number of items in cart</small>
+            <input type="hidden" name="rules[{index}].ruleType" value="CART_QUANTITY">
+        </div>
+    </div>
+</template>
+
+<template id="cart-amount-rule-template">
+    <div class="rule-container" data-rule-type="CART_AMOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Cart Amount Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Minimum Amount</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" name="rules[{index}].ruleData.minAmount" min="0" step="0.01"
+                       required>
+            </div>
+            <small class="text-muted">Minimum cart subtotal amount</small>
+            <input type="hidden" name="rules[{index}].ruleType" value="CART_AMOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="percent-discount-action-template">
+    <div class="action-container" data-action-type="PERCENT_DISCOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Percentage Discount</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Discount Percentage</label>
+            <div class="input-group">
+                <input type="number" class="form-control" name="actions[{index}].actionData.percentDiscount" min="1"
+                       max="100" required>
+                <span class="input-group-text">%</span>
+            </div>
+            <input type="hidden" name="actions[{index}].actionType" value="PERCENT_DISCOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="fixed-discount-action-template">
+    <div class="action-container" data-action-type="FIXED_DISCOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Fixed Amount Discount</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Discount Amount</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" name="actions[{index}].actionData.fixedDiscount" min="0.01"
+                       step="0.01" required>
+            </div>
+            <input type="hidden" name="actions[{index}].actionType" value="FIXED_DISCOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="free-product-action-template">
+    <div class="action-container" data-action-type="FREE_PRODUCT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Free Product</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Product</label>
+            <select class="form-control product-select" name="actions[{index}].actionData.productId" required>
+                <option value="">Select a product</option>
+                <!-- Products will be populated dynamically -->
+            </select>
+            <input type="hidden" name="actions[{index}].actionType" value="FREE_PRODUCT">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" name="actions[{index}].actionData.quantity" min="1" value="1"
+                   required>
+        </div>
+    </div>
+</template>
+
+<template id="coupon-code-template">
+    <div class="coupon-code-container">
+        <div class="input-group">
+            <input type="text" class="form-control" name="couponCodes[]" placeholder="Enter coupon code">
+            <button type="button" class="btn btn-outline-danger remove-coupon-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Fetch products and categories for select boxes
+        fetchProducts();
+        fetchCategories();
+
+        // Promotion type descriptions
+        const promotionTypeDescriptions = {
+            'BUY_ONE_GET_ONE': 'Buy one product and get another one free.',
+            'BUY_X_GET_DISCOUNT': 'Buy a minimum number of products and get a discount on one item.',
+            'FLASH_SALE_ALL': 'Discount applied to all products for a limited time.',
+            'FLASH_SALE_CATEGORY': 'Discount applied to products in a specific category.',
+            'AMOUNT_THRESHOLD_DISCOUNT': 'Discount applied when cart subtotal exceeds a threshold.',
+            'ORDER_DISCOUNT': 'Discount applied to the entire order.'
+        };
+
+        // Rules configuration by promotion type
+        const promotionRules = {
+            'BUY_ONE_GET_ONE': ['PRODUCT'],
+            'BUY_X_GET_DISCOUNT': ['CART_QUANTITY'],
+            'FLASH_SALE_ALL': [],
+            'FLASH_SALE_CATEGORY': ['CATEGORY'],
+            'AMOUNT_THRESHOLD_DISCOUNT': ['CART_AMOUNT'],
+            'ORDER_DISCOUNT': []
+        };
+
+        // Actions configuration by promotion type
+        const promotionActions = {
+            'BUY_ONE_GET_ONE': ['FREE_PRODUCT'],
+            'BUY_X_GET_DISCOUNT': ['PERCENT_DISCOUNT'],
+            'FLASH_SALE_ALL': ['PERCENT_DISCOUNT'],
+            'FLASH_SALE_CATEGORY': ['PERCENT_DISCOUNT'],
+            'AMOUNT_THRESHOLD_DISCOUNT': ['PERCENT_DISCOUNT', 'FIXED_DISCOUNT'],
+            'ORDER_DISCOUNT': ['PERCENT_DISCOUNT', 'FIXED_DISCOUNT']
+        };
+
+        // Counter for rule and action indices
+        let ruleIndex = 0;
+        let actionIndex = 0;
+
+        // Show description when promotion type changes
+        $('#promotionType').change(function () {
+            const type = $(this).val();
+
+            if (type && promotionTypeDescriptions[type]) {
+                $('#promotionTypeDescription').text(promotionTypeDescriptions[type]);
+            } else {
+                $('#promotionTypeDescription').text('');
+            }
+
+            // Clear and populate rules and actions based on promotion type
+            $('#rulesContainer').empty();
+            $('#actionsContainer').empty();
+
+            if (type) {
+                // Add rules
+                promotionRules[type].forEach(ruleType => {
+                    addRule(ruleType);
+                });
+
+                // Add actions
+                const actionTypes = promotionActions[type];
+                if (actionTypes.length === 1) {
+                    // If only one action type is available, add it
+                    addAction(actionTypes[0]);
+                } else if (actionTypes.length > 1) {
+                    // If multiple action types are available, add a selector
+                    const actionSelector = `
+                            <div class="mb-3">
+                                <label class="form-label">Select Action Type</label>
+                                <select class="form-control" id="actionTypeSelector">
+                                    <option value="">Select an action type</option>
+                                    ${actionTypes.includes('PERCENT_DISCOUNT') ? '<option value="PERCENT_DISCOUNT">Percentage Discount</option>' : ''}
+                                    ${actionTypes.includes('FIXED_DISCOUNT') ? '<option value="FIXED_DISCOUNT">Fixed Amount Discount</option>' : ''}
+                                    ${actionTypes.includes('FREE_PRODUCT') ? '<option value="FREE_PRODUCT">Free Product</option>' : ''}
+                                </select>
+                            </div>
+                        `;
+                    $('#actionsContainer').append(actionSelector);
+
+                    // Add action when type is selected
+                    $('#actionTypeSelector').change(function () {
+                        const actionType = $(this).val();
+                        if (actionType) {
+                            // Remove selector after selection
+                            $(this).parent().remove();
+                            addAction(actionType);
+                        }
+                    });
+                }
+            }
+        });
+
+        // Add rule function
+        function addRule(ruleType) {
+            const templateId = `#${ruleType.toLowerCase().replace(/_/g, '-')}-rule-template`;
+            const template = $(templateId);
+
+            if (template.length === 0) {
+                console.error(`Template not found: ${templateId}`);
+                return;
+            }
+
+            // Get the template content and replace placeholders
+            let ruleHtml = template.html();
+            if (ruleHtml) {
+                ruleHtml = ruleHtml.replace(/{index}/g, ruleIndex++);
+                $('#rulesContainer').append(ruleHtml);
+
+                // Populate product or category select if needed
+                if (ruleType === 'PRODUCT') {
+                    populateProductSelect($('#rulesContainer .product-select').last());
+                } else if (ruleType === 'CATEGORY') {
+                    populateCategorySelect($('#rulesContainer .category-select').last());
+                }
+            } else {
+                console.error(`Template content is empty: ${templateId}`);
+            }
+        }
+
+        // Add action function
+        function addAction(actionType) {
+            // Convert the action type to lowercase and replace underscores with hyphens
+            const templateId = actionType.toLowerCase().replace(/_/g, '-');
+            const templateElement = document.getElementById(`${templateId}-action-template`);
+
+            if (!templateElement) {
+                console.error(`Template not found: #${templateId}-action-template`);
+                return;
+            }
+
+            // Get the template content and replace placeholders
+            const template = $(`#${templateId}-action-template`);
+            let actionHtml = template.html();
+
+            if (actionHtml) {
+                actionHtml = actionHtml.replace(/{index}/g, actionIndex++);
+                $('#actionsContainer').append(actionHtml);
+
+                // Populate product select if needed
+                if (actionType === 'FREE_PRODUCT') {
+                    populateProductSelect($('#actionsContainer .product-select').last());
+                }
+            } else {
+                console.error(`Template content is empty: #${templateId}-action-template`);
+            }
+        }
+
+        // Remove rule button click
+        $(document).on('click', '.remove-rule-btn', function () {
+            $(this).closest('.rule-container').remove();
+        });
+
+        // Remove action button click
+        $(document).on('click', '.remove-action-btn', function () {
+            $(this).closest('.action-container').remove();
+        });
+
+        // Add coupon code button click
+        $('#addCouponBtn').click(function () {
+            const couponTemplate = $('#coupon-code-template').html();
+            $('#couponCodesContainer').append(couponTemplate);
+        });
+
+        // Remove coupon code button click
+        $(document).on('click', '.remove-coupon-btn', function () {
+            $(this).closest('.coupon-code-container').remove();
+        });
+
+        // Fetch products from API
+        function fetchProducts() {
+            $.ajax({
+                url: '/api/products', // Assuming this endpoint exists
+                type: 'GET',
+                success: function (data) {
+                    window.productsList = data;
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching products:', error);
+                    // Fallback to sample data
+                    window.productsList = [
+                        {id: 1, name: 'Espresso'},
+                        {id: 2, name: 'Cappuccino'},
+                        {id: 3, name: 'Latte'},
+                        {id: 4, name: 'Americano'},
+                        {id: 5, name: 'Mocha'}
+                    ];
+                }
+            });
+        }
+
+        function fetchCategories() {
+            $.ajax({
+                url: '/category/get-list-category', // Assuming this endpoint exists
+                type: 'GET',
+                success: function (data) {
+                    window.categoriesList = data;
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching categories:', error);
+                    // Fallback to sample data
+                    window.categoriesList = [
+                        {id: 1, name: 'Coffee'},
+                        {id: 2, name: 'Tea'},
+                        {id: 3, name: 'Pastries'},
+                        {id: 4, name: 'Breakfast'}
+                    ];
+                }
+            });
+        }
+
+        // Populate product select
+        function populateProductSelect(selectElement) {
+            if (window.productsList) {
+                selectElement.find('option:not(:first)').remove();
+                window.productsList.forEach(product => {
+                    selectElement.append(`<option value="${product.id}">${product.name}</option>`);
+                });
+            }
+        }
+
+        // Populate category select
+        function populateCategorySelect(selectElement) {
+            if (window.categoriesList) {
+                selectElement.find('option:not(:first)').remove();
+                window.categoriesList.forEach(category => {
+                    selectElement.append(`<option value="${category.id}">${category.name}</option>`);
+                });
+            }
+        }
+
+        // Preview button click
+        $('#previewBtn').click(function () {
+            // Get form data
+            const formData = getFormData();
+
+            // Update preview container
+            $('#previewName').text(formData.name || 'No Name');
+            $('#previewDescription').text(formData.description || 'No Description');
+            $('#previewType').text(getPromotionTypeName(formData.promotionType));
+
+            const startDate = formData.startDate ? new Date(formData.startDate).toLocaleDateString() : 'Not set';
+            const endDate = formData.endDate ? new Date(formData.endDate).toLocaleDateString() : 'Not set';
+            $('#previewDuration').text(`${startDate} to ${endDate}`);
+
+            // Rules preview
+            let rulesText = '';
+            if (formData.rules && formData.rules.length > 0) {
+                formData.rules.forEach(rule => {
+                    if (rule.ruleType === 'PRODUCT') {
+                        const productName = getProductName(rule.ruleData.productId);
+                        rulesText += `Apply to product: ${productName}; `;
+                    } else if (rule.ruleType === 'CATEGORY') {
+                        const categoryName = getCategoryName(rule.ruleData.categoryId);
+                        rulesText += `Apply to category: ${categoryName}; `;
+                    } else if (rule.ruleType === 'CART_QUANTITY') {
+                        rulesText += `Minimum ${rule.ruleData.minQuantity} items in cart; `;
+                    } else if (rule.ruleType === 'CART_AMOUNT') {
+                        rulesText += `Minimum cart amount: $${rule.ruleData.minAmount}; `;
+                    }
+                });
+            } else {
+                rulesText = 'No rules defined';
+            }
+            $('#previewRules').text(rulesText);
+
+            // Actions preview
+            let actionsText = '';
+            if (formData.actions && formData.actions.length > 0) {
+                formData.actions.forEach(action => {
+                    if (action.actionType === 'PERCENT_DISCOUNT') {
+                        actionsText += `${action.actionData.percentDiscount}% discount; `;
+                    } else if (action.actionType === 'FIXED_DISCOUNT') {
+                        actionsText += `$${action.actionData.fixedDiscount} discount; `;
+                    } else if (action.actionType === 'FREE_PRODUCT') {
+                        const productName = getProductName(action.actionData.productId);
+                        actionsText += `Free product: ${productName} (${action.actionData.quantity}); `;
+                    }
+                });
+            } else {
+                actionsText = 'No actions defined';
+            }
+            $('#previewActions').text(actionsText);
+
+            // Coupons preview
+            let couponsText = '';
+            if (formData.couponCodes && formData.couponCodes.length > 0) {
+                couponsText = formData.couponCodes.join(', ');
+            } else {
+                couponsText = 'No coupon codes defined';
+            }
+            $('#previewCoupons').text(couponsText);
+
+            // Show preview container
+            $('#previewContainer').removeClass('d-none');
+        });
+
+        // Helper function to get promotion type name
+        function getPromotionTypeName(type) {
+            const typeNames = {
+                'BUY_ONE_GET_ONE': 'Buy One Get One',
+                'BUY_X_GET_DISCOUNT': 'Buy X Get Discount',
+                'FLASH_SALE_ALL': 'Flash Sale (All Products)',
+                'FLASH_SALE_CATEGORY': 'Flash Sale (By Category)',
+                'AMOUNT_THRESHOLD_DISCOUNT': 'Amount Threshold Discount',
+                'ORDER_DISCOUNT': 'Order Discount'
+            };
+            return typeNames[type] || type;
+        }
+
+        // Helper function to get product name by id
+        function getProductName(id) {
+            if (!window.productsList) return `Product #${id}`;
+            const product = window.productsList.find(p => p.id == id);
+            return product ? product.name : `Product #${id}`;
+        }
+
+        // Helper function to get category name by id
+        function getCategoryName(id) {
+            if (!window.categoriesList) return `Category #${id}`;
+            const category = window.categoriesList.find(c => c.id == id);
+            return category ? category.name : `Category #${id}`;
+        }
+
+        // Helper function to get form data as object
+        function getFormData() {
+            const formData = {
+                name: $('#name').val(),
+                description: $('#description').val(),
+                promotionType: $('#promotionType').val(),
+                startDate: $('#startDate').val(),
+                endDate: $('#endDate').val(),
+                priority: $('#priority').val(),
+                usageLimit: $('#usageLimit').val() || null,
+                active: $('#active').is(':checked'),
+                stackable: $('#stackable').is(':checked'),
+                rules: [],
+                actions: [],
+                couponCodes: []
+            };
+
+            // Get rules
+            $('.rule-container').each(function () {
+                const ruleType = $(this).data('rule-type');
+                const rule = {ruleType, ruleData: {}};
+
+                if (ruleType === 'PRODUCT') {
+                    rule.ruleData.productId = parseInt($(this).find('select').val());
+                } else if (ruleType === 'CATEGORY') {
+                    rule.ruleData.categoryId = parseInt($(this).find('select').val());
+                } else if (ruleType === 'CART_QUANTITY') {
+                    rule.ruleData.minQuantity = parseInt($(this).find('input[type="number"]').val());
+                } else if (ruleType === 'CART_AMOUNT') {
+                    rule.ruleData.minAmount = parseFloat($(this).find('input[type="number"]').val());
+                }
+
+                formData.rules.push(rule);
+            });
+
+            // Get actions
+            $('.action-container').each(function () {
+                const actionType = $(this).data('action-type');
+                const action = {actionType, actionData: {}};
+
+                if (actionType === 'PERCENT_DISCOUNT') {
+                    action.actionData.percentDiscount = parseFloat($(this).find('input[type="number"]').val());
+                } else if (actionType === 'FIXED_DISCOUNT') {
+                    action.actionData.fixedDiscount = parseFloat($(this).find('input[type="number"]').val());
+                } else if (actionType === 'FREE_PRODUCT') {
+                    action.actionData.productId = parseInt($(this).find('select').val());
+                    action.actionData.quantity = parseInt($(this).find('input[type="number"]').val());
+                }
+
+                formData.actions.push(action);
+            });
+
+            // Get coupon codes
+            $('#couponCodesContainer input[type="text"]').each(function () {
+                const code = $(this).val().trim();
+                if (code) {
+                    formData.couponCodes.push(code);
+                }
+            });
+
+            return formData;
+        }
+
+        // Form submit handler
+        $('#promotionForm').submit(function (e) {
+            e.preventDefault();
+
+            const formData = getFormData();
+
+            // Validate form data
+            if (!formData.name || !formData.promotionType || !formData.startDate || !formData.endDate) {
+                $('#error-alert').text('Please fill in all required fields.').removeClass('d-none');
+                return;
+            }
+
+            // Validate that there's at least one action
+            if (formData.actions.length === 0) {
+                $('#error-alert').text('Please add at least one action.').removeClass('d-none');
+                return;
+            }
+
+            // Send form data to server
+            <!-- AJAX submission URL update -->
+            $.ajax({
+                url: '/promotions/api/create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    $('#success-alert').removeClass('d-none');
+                    $('#error-alert').addClass('d-none');
+                    // Redirect to promotions list after a delay
+                    setTimeout(function () {
+                        window.location.href = '/promotions';
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    $('#error-alert').text('Error creating promotion: ' + (xhr.responseJSON?.message || error)).removeClass('d-none');
+                    $('#success-alert').addClass('d-none');
+                }
+            });
+        });
+
+        // Initialize the form with default values
+        function initForm() {
+            // Set default dates
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            // Format dates for datetime-local input
+            const formatDate = (date) => {
+                return date.toISOString().slice(0, 16);
+            };
+
+            $('#startDate').val(formatDate(now));
+            $('#endDate').val(formatDate(tomorrow));
+        }
+
+        // Initialize the form
+        initForm();
+    });
+</script>
+</body>
+</html>

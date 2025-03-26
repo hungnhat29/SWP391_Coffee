@@ -22,6 +22,19 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
+//    @GetMapping("/home")  // or wherever your home/landing page is
+//    public String showHomePage(Model model) {
+//        // Get a limited number of products (e.g., first 9)
+//        List<ProductDTO> products = productService.getAllProducts()
+//                .stream()
+//                .map(productService::convertToDTO)
+//                .limit(9)
+//                .collect(Collectors.toList());
+//
+//        model.addAttribute("products", products);
+//        return "home";  // Assuming this is your home page template
+//    }
+
     @GetMapping("/shop")
     public String showShop(@RequestParam(value = "categoryId", required = false) Integer categoryId, Model model) {
         // Lấy danh sách danh mục

@@ -1,13 +1,22 @@
 package com.SWP391.G3PCoffee.controller;
 
+import com.SWP391.G3PCoffee.model.ProductDTO;
+import com.SWP391.G3PCoffee.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest; // Import HttpServletRequest
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 public class HomeController {
+    @Autowired
+    private ProductService productService;
     
     @GetMapping("/home")
     public String home(HttpServletRequest request, Model model) {
@@ -20,6 +29,12 @@ public class HomeController {
                 }
             }
         }
+        List<ProductDTO> products = productService.getAllProducts().stream()
+                .map(productService::convertToDTO)
+                .filter(product -> product.getId() >= 1 && product.getId() <= 9)
+                .collect(Collectors.toList());
+
+        model.addAttribute("products", products);
         model.addAttribute("jwtToken", jwtToken);
         return "home"; // Tên file HTML trong thư mục templates
     }

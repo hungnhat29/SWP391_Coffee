@@ -293,7 +293,9 @@
 
 
     <!-- Order Details Section (only shown when viewOrderId is provided) -->
-    <section th:if="${showOrderDetails}" class="p-6 bg-gray-50 mt-8">
+    <section th:if="${showOrderDetails}"
+             id="orderDetailsSection"
+             class="p-6 bg-gray-50 mt-8">
         <!-- Back Button and Order Summary -->
         <div
                 class="flex gap-4 items-center p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:flex-wrap max-sm:gap-2"
@@ -442,6 +444,11 @@
         const searchQuery = [[${param.search}]];
         const timeFilter = [[${param.timeFilter}]];
 
+        const orderDetailsSection = document.getElementById('orderDetailsSection');
+        if (orderDetailsSection) {
+            orderDetailsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
         // Function to navigate to a specific page
         function navigateToPage(pageNum) {
             if (pageNum >= 1 && pageNum <= totalPages) {
@@ -552,6 +559,7 @@
             }
         }
     });
+
 </script>
 <script>
     function logout() {

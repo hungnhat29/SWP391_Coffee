@@ -30,40 +30,40 @@
 <body>
 <style>
     body {
-        background-color: #b8a890;
+        background-color: white;
         font-family: Arial, sans-serif;
     }
 
     .container {
-        background-color: #a89c86;
+        background-color: white;
         padding: 20px;
         border-radius: 8px;
     }
 
     h2 {
-        color: white;
+        color: black;
     }
 
     table {
-        background-color: #a89c86;
+        background-color: white;
         border-collapse: collapse;
         width: 100%;
-        color: white;
+        color: black;
     }
 
     thead {
-        background-color: #80725f;
-        color: white;
+        background-color: #f2f2f2;
+        color: black;
     }
 
     th, td {
         padding: 10px;
         text-align: left;
-        border: 1px solid #9c8c72;
+        border: 1px solid #ddd;
     }
 
     tr:nth-child(even) {
-        background-color: #9c8c72;
+        background-color: #f9f9f9;
     }
 
     .btn-primary {
@@ -92,7 +92,7 @@
 
     body {
         margin: 0;
-        background-color: #C0B8AB;
+        background-color: white;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: 30%;
@@ -120,7 +120,7 @@
         width: 260px;
         border-radius: 16px;
         padding: 0 16px;
-        background: rgb(0 0 0 / 32%);
+        background: rgba(0, 0, 0, 1);
         backdrop-filter: blur(30px);
         transition: width 0.4s;
     }
@@ -173,6 +173,11 @@
         line-height: 1;
         padding: 0 16px;
         color: rgb(255 255 255 / 95%);
+        transition: color 0.3s;
+    }
+
+    .sidebar :is(button, label):hover {
+        color: #F76D37;
     }
 
     .sidebar label p:nth-child(2) {
@@ -181,6 +186,10 @@
 
     .sidebar input:checked ~ label {
         background: #1960f3;
+    }
+
+    .sidebar input:checked ~ label:hover {
+        color: #F76D37;
     }
 
     .sidebar label i {
@@ -193,7 +202,8 @@
 
     .sidebar input:not(:checked) ~ label:hover,
     .sidebar button:hover {
-        background: rgb(0 0 0 / 15%);
+        background: rgba(50, 50, 50, 0.8);
+        color: #F76D37;
     }
 
     .sidebar ul {
@@ -234,6 +244,17 @@
         background-color: rgb(255 255 255 / 35%);
     }
 
+    .sidebar a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+    }
+
+    .sidebar a:hover {
+        color: #F76D37;
+    }
+
     .sidebar .material-symbols-outlined {
         font-size: 16px;
     }
@@ -262,7 +283,7 @@
 <div class="flex">
     <aside class="sidebar">
         <header>
-            <h1 class="logo-text">Admin Page</h1>
+            <h1 class="logo-text">G3P Coffee</h1>
         </header>
 
         <ul>
@@ -294,17 +315,17 @@
             <li>
                 <input type="radio" id="create" name="sidebar" />
                 <label for="create">
-                    <i class="ai-folder-add"></i>
+                    <i class="ai-cart"></i>
                     <p>Menu</p>
                     <i class="ai-chevron-down-small"></i>
                 </label>
                 <div class="sub-menu">
                     <ul>
                         <li>
-                            <button type="button" onclick="window.location.href='/categories'"><a >Categories List</a></button>
+                            <button type="button" onclick="window.location.href='/categories'"><a>Categories List</a></button>
                         </li>
                         <li>
-                            <button type="button" onclick="window.location.href='/products'"><a >Products List</a></button>
+                            <button type="button" onclick="window.location.href='/products'"><a>Products List</a></button>
                         </li>
                     </ul>
                 </div>

@@ -157,6 +157,7 @@ public class CheckoutController {
             String customerName = checkoutRequest.getCustomerName();
             String customerEmail = checkoutRequest.getCustomerEmail();
             String customerPhone = checkoutRequest.getCustomerPhone();
+            BigDecimal totalAmount = checkoutRequest.getTotalAmount();
 
             // Create order with items
             Order order = orderService.createOrder(
@@ -175,7 +176,7 @@ public class CheckoutController {
                 // Generate VNPAY payment URL
                 String paymentUrl = paymentService.createVnPayPaymentUrl(
                         order.getId(),
-                        order.getOrderTotal(),
+                        totalAmount,
                         checkoutRequest.getReturnUrl(),
                         session
                 );

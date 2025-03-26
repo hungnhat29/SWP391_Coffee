@@ -11,6 +11,8 @@ package com.SWP391.G3PCoffee.model;
  */
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class CheckoutRequest {
     private String shippingAddress;
@@ -20,4 +22,5 @@ public class CheckoutRequest {
     private String customerEmail;
     private String customerPhone;
     private String customerAddress;
+    private BigDecimal totalAmount;
 }

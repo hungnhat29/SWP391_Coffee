@@ -248,8 +248,7 @@
                     <div class="mt-4 pt-3 border-top">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
-                            đ
+                            <span class="text-primary total-amount">$0.00</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Shipping:</span>
@@ -257,9 +256,7 @@
                         </div>
                         <div class="d-flex justify-content-between font-weight-bold mt-3 pt-3 border-top">
                             <span>Total:</span>
-                            <span class="text-primary"
-                                  th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
-                            đ
+                            <span class="text-primary total-amount">$0.00</span>
                         </div>
                     </div>
 
@@ -276,6 +273,15 @@
 <div th:replace="~{/footer-template :: footer-template}"></div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedTotalAmount = sessionStorage.getItem('cartTotalAmount');
+        if (storedTotalAmount) {
+            const totalElements = document.querySelectorAll('.total-amount');
+            totalElements.forEach(element => {
+                element.textContent = new Intl.NumberFormat('vi-VN').format(storedTotalAmount) + ' đ';
+            });
+        }
+    });
     let selectedPaymentMethod = null;
 
     function selectPaymentMethod(method) {
@@ -363,6 +369,7 @@
 
         // Disable button to prevent multiple submissions
         const orderButton = document.getElementById('placeOrderBtn');
+        const totalAmount = sessionStorage.getItem('cartTotalAmount');
         orderButton.disabled = true;
         orderButton.textContent = 'Processing...';
 
@@ -373,7 +380,8 @@
             customerPhone: document.getElementById('customerPhone').value.trim(),
             shippingAddress: document.getElementById('shippingAddress').value.trim(),
             paymentMethod: selectedPaymentMethod,
-            returnUrl: window.location.origin + '/payment/vnpay-return'
+            returnUrl: window.location.origin + '/payment/vnpay-return',
+            totalAmount: totalAmount ? parseFloat(totalAmount) : null
         };
 
         // Send API request
