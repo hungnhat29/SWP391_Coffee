@@ -1,7 +1,6 @@
 package com.SWP391.G3PCoffee.repository;
 
 import com.SWP391.G3PCoffee.model.OrderItem;
-import com.SWP391.G3PCoffee.model.OrderItemDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

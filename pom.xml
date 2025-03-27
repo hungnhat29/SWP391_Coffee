@@ -122,6 +122,11 @@
             <version>7.11.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.crac</groupId>
+            <artifactId>crac</artifactId>
+            <version>1.5.0</version> <!-- Kiểm tra phiên bản mới nhất -->
+        </dependency>
 
     </dependencies>
 

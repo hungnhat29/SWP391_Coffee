@@ -1,27 +1,39 @@
 package com.SWP391.G3PCoffee.controller;
 
 import com.SWP391.G3PCoffee.service.DashboardService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/dashboard")
-@RequiredArgsConstructor
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+    @Autowired
+    private DashboardService dashboardService;
 
-    @GetMapping
+    @GetMapping("admin/dashboard")
     public String showDashboard(Model model) {
-        model.addAttribute("totalSales", dashboardService.getTotalSales());
-        model.addAttribute("numberOfOrders", dashboardService.getNumberOfOrders());
-        model.addAttribute("averageOrderValue", dashboardService.getAverageOrderValue());
-        model.addAttribute("topSellingProducts", dashboardService.getTopSellingProducts(5));
-        model.addAttribute("dailySales", dashboardService.getDailySales());
-        model.addAttribute("orderStatusDistribution", dashboardService.getOrderStatusDistribution());
-        return "admin/dashboard";
+        // Get all customers
+        model.addAttribute("customers", dashboardService.getAllCustomers());
+
+        // Get new customers count
+        model.addAttribute("newCustomersCount", dashboardService.getNewCustomersCount());
+
+        // Get revenue (daily, weekly, monthly)
+        model.addAttribute("dailyRevenue", dashboardService.getDailyRevenue());
+        model.addAttribute("weeklyRevenue", dashboardService.getWeeklyRevenue());
+        model.addAttribute("monthlyRevenue", dashboardService.getMonthlyRevenue());
+
+        // Get top selling products
+        model.addAttribute("topSellingProducts", dashboardService.getTopSellingProducts());
+
+        // Get orders for last 7 days
+        model.addAttribute("recentOrders", dashboardService.getOrdersForLast7Days());
+
+        return "AdminDashboard";
     }
 }
