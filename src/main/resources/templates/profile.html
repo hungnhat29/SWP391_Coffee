@@ -23,6 +23,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/js/alert.js"></script>
+    <script src="js/auth.js"></script>
 
     <style>
         .gradient-bg {
@@ -47,33 +48,33 @@
     </style>
     <style>
         .profile-item {
-    position: relative;
-}
+            position: relative;
+        }
 
-.logout-menu {
-    display: none;
-    position: absolute;
-    top: 100%; /* Hiển thị bên dưới icon */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #fff;
-    color: #000;
-    padding: 8px 12px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    white-space: nowrap;
-    z-index: 10;
-}
+        .logout-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Hiển thị bên dưới icon */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: 10;
+        }
 
-.profile-item:hover .logout-menu {
-    display: block;
-}
+        .profile-item:hover .logout-menu {
+            display: block;
+        }
 
-.logout-link {
-    text-decoration: none;
-    color: #000;
-    font-weight: bold;
-}
+        .logout-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
 
     </style>
 </head>
@@ -118,9 +119,9 @@
                 <i id="editIcon" class="fas fa-pen text-orange-500 absolute top-0 right-0 cursor-pointer">
                 </i>
             </div>
-<!--            <p class="text-sm text-gray-500">-->
-<!--                ID: <span th:text="${user.id}"></span>-->
-<!--            </p>-->
+            <!--            <p class="text-sm text-gray-500">-->
+            <!--                ID: <span th:text="${user.id}"></span>-->
+            <!--            </p>-->
             <h2 class="text-2xl font-semibold mb-2">
                 <span th:text="${user.name}"></span>
             </h2>
@@ -162,7 +163,12 @@
                     </a>
                 </li>
                 <li class="mb-1">
-                    <a href="#">
+                    <a th:href="@{/track-order}">
+                        Track Order
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a th:href="@{/purchase-history}">
                         Purchase History
                     </a>
                 </li>
@@ -225,20 +231,20 @@
             </div>
         </div>
 
-<!--        <div class="mt-4 text-center">-->
-<!--            <div class="flex items-center justify-center mb-2">-->
-<!--                <i class="fas fa-cogs text-lg mr-2"></i>-->
-<!--                <a href="#" class="text-orange-500">Point Management</a>-->
-<!--            </div>-->
-<!--            <div class="flex items-center justify-center mb-2">-->
-<!--                <i class="fas fa-gift text-lg mr-2"></i>-->
-<!--                <a href="#" class="text-orange-500">Membership Privileges</a>-->
-<!--            </div>-->
-<!--            <div class="flex items-center justify-center">-->
-<!--                <i class="fas fa-book text-lg mr-2"></i>-->
-<!--                <a href="#" class="text-orange-500">Rules</a>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        <div class="mt-4 text-center">-->
+        <!--            <div class="flex items-center justify-center mb-2">-->
+        <!--                <i class="fas fa-cogs text-lg mr-2"></i>-->
+        <!--                <a href="#" class="text-orange-500">Point Management</a>-->
+        <!--            </div>-->
+        <!--            <div class="flex items-center justify-center mb-2">-->
+        <!--                <i class="fas fa-gift text-lg mr-2"></i>-->
+        <!--                <a href="#" class="text-orange-500">Membership Privileges</a>-->
+        <!--            </div>-->
+        <!--            <div class="flex items-center justify-center">-->
+        <!--                <i class="fas fa-book text-lg mr-2"></i>-->
+        <!--                <a href="#" class="text-orange-500">Rules</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
 </div>
 

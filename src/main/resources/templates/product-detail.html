@@ -277,8 +277,8 @@
             </div>
 
             <div class="buttons-container">
-                <button class="btn btn-order" onclick="addToCart()">Đặt giao tận nơi</button>
-                <button class="btn btn-store" onclick="storeOrder()">Dùng tại quán</button>
+                <button class="btn btn-order" onclick="addToCart('DELIVERY')">Đặt giao tận nơi</button>
+                <button class="btn btn-store" onclick="addToCart('PICKUP')">Dùng tại quán</button>
             </div>
         </div>
     </div>
@@ -364,7 +364,7 @@
     }
 
     // Hàm gọi API thêm sản phẩm vào giỏ hàng
-    function addToCart() {
+    function addToCart(orderType) {
         // Kiểm tra chọn size nếu có yêu cầu
         const hasSizeOptions = document.querySelector('.size-option') !== null;
         if (hasSizeOptions && !document.querySelector('.size-option.selected')) {
@@ -407,7 +407,8 @@
             },
             quantity: 1,
             sizeInfo: sizeInfo,
-            toppingsInfo: toppingsInfo
+            toppingsInfo: toppingsInfo,
+            receiveType: orderType
         };
 
         console.log("Sending cart data:", JSON.stringify(cartItem, null, 2));

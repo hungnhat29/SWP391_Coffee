@@ -4,9 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Promotion | G3P Coffee</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Akar Icons -->
+    <script src="https://unpkg.com/akar-icons-fonts"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            bottom: 44px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 260px;
+            border-radius: 16px;
+            padding: 0 16px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(30px);
+            transition: width 0.4s;
+            z-index: 1000;
+        }
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            height: 72px;
+            padding-top: 10px;
+            border-bottom: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #F76D37;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar input {
+            scale: 0;
+            position: absolute;
+        }
+
+        .sidebar :is(button, label) {
+            position: relative;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            height: 50px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 16px;
+            color: rgb(255 255 255 / 95%);
+            transition: color 0.3s, background 0.3s;
+        }
+
+        .sidebar :is(button, label):hover {
+            color: #F76D37;
+            background: rgba(50, 50, 50, 0.8);
+        }
+
+        .sidebar input:checked ~ label {
+            background: #1960f3;
+        }
+
+        .sidebar input:checked ~ label:hover {
+            color: #F76D37;
+        }
+
+        .sidebar label i {
+            transition: 0.3s;
+        }
+
+        .sidebar input:checked ~ label > i:nth-child(3) {
+            rotate: -180deg;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .sub-menu {
+            position: relative;
+            overflow: hidden;
+            height: 0;
+            transition: 0.5s;
+        }
+
+        .sidebar input#settings:checked ~ div {
+            height: 150px;
+        }
+
+        .sidebar input#create:checked ~ div {
+            height: 200px;
+        }
+
+        .sidebar input#profile:checked ~ div {
+            height: 100px;
+        }
+
+        .sub-menu button {
+            padding-left: 52px;
+        }
+
+        .sub-menu button::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            translate: 0 -50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: rgb(255 255 255 / 35%);
+        }
+
+        .sidebar a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+
+        .sidebar a:hover {
+            color: #F76D37;
+        }
+
+        .sidebar i {
+            font-size: 20px;
+            width: 20px;
+            max-width: 20px;
+            min-width: 20px;
+        }
+
+        /* Main Content Styles */
+        .content {
+            margin-left: 300px;
+            padding: 40px;
+            width: calc(100% - 300px);
+            min-height: 100vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         .rule-container, .action-container {
             background-color: #f8f9fa;
             padding: 15px;
@@ -28,6 +196,8 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #dee2e6;
+            color: #333;
+            font-weight: 600;
         }
 
         .add-coupon-btn {
@@ -52,156 +222,253 @@
         .hidden-initially {
             display: none;
         }
+
+        .btn-primary {
+            background-color: #5a4a3f;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #3e322a;
+        }
+
+        .btn-outline-primary {
+            border-color: #5a4a3f;
+            color: #5a4a3f;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #5a4a3f;
+            color: #fff;
+        }
+
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-<div class="container my-5">
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="mb-4">Create New Promotion</h1>
-
-            <div class="alert alert-success d-none" id="success-alert">
-                Promotion created successfully!
+<!-- Sidebar -->
+<aside class="sidebar">
+    <header>
+        <h1 class="logo-text">G3P Coffee</h1>
+    </header>
+    <ul>
+        <li>
+            <input type="radio" id="dashboard" name="sidebar" />
+            <label for="dashboard">
+                <i class="ai-dashboard"></i>
+                <p>Dashboard</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="settings" name="sidebar" />
+            <label for="settings">
+                <i class="ai-gear"></i>
+                <p>Customers</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li><button type="button"><a href="/users/customers/list">Customers List</a></button></li>
+                    <li><button type="button" onclick="window.location.href='/membership'">Members List</button></li>
+                </ul>
             </div>
-
-            <div class="alert alert-danger d-none" id="error-alert">
-                Error creating promotion. Please try again.
+        </li>
+        <li>
+            <input type="radio" id="create" name="sidebar" />
+            <label for="create">
+                <i class="ai-cart"></i>
+                <p>Menu</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li><button type="button" onclick="window.location.href='/categories'"><a>Categories List</a></button></li>
+                    <li><button type="button" onclick="window.location.href='/products'"><a>Products List</a></button></li>
+                </ul>
             </div>
+        </li>
+        <li>
+            <input type="radio" id="profile" name="sidebar" />
+            <label for="profile">
+                <i class="ai-person"></i>
+                <p>Profile</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li><button type="button">Avatar</button></li>
+                    <li><button type="button">Theme</button></li>
+                </ul>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="notifications" name="sidebar" />
+            <label for="notifications">
+                <i class="ai-bell"></i>
+                <p>Notifications</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="products" name="sidebar" />
+            <label for="products">
+                <i class="ai-cart"></i>
+                <p>Products</p>
+            </label>
+        </li>
+        <li>
+            <input type="radio" id="account" name="sidebar" checked />
+            <label for="account">
+                <i class="ai-lock-on"></i>
+                <p>Promotions</p>
+                <i class="ai-chevron-down-small"></i>
+            </label>
+            <div class="sub-menu">
+                <ul>
+                    <li><button type="button" onclick="window.location.href='/promotions/create'"><a>Create New Promotion</a></button></li>
+                    <li><button type="button" onclick="window.location.href='/promotions'"><a>Promotions List</a></button></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</aside>
 
-            <form id="promotionForm" th:action="@{/promotions/create}" method="post">
-                <!-- Basic Information -->
-                <div class="form-section">
-                    <h3 class="form-section-title">Basic Information</h3>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="name" class="form-label">Promotion Name*</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="promotionType" class="form-label">Promotion Type*</label>
-                            <select class="form-select" id="promotionType" name="promotionType" required>
-                                <option value="">Select Type</option>
-                                <option value="BUY_ONE_GET_ONE">Buy One Get One</option>
-                                <option value="BUY_X_GET_DISCOUNT">Buy X Get Discount</option>
-                                <option value="FLASH_SALE_ALL">Flash Sale (All Products)</option>
-                                <option value="FLASH_SALE_CATEGORY">Flash Sale (By Category)</option>
-                                <option value="AMOUNT_THRESHOLD_DISCOUNT">Amount Threshold Discount</option>
-                                <option value="ORDER_DISCOUNT">Order Discount</option>
-                            </select>
-                            <div id="promotionTypeDescription" class="promotion-type-description"></div>
-                        </div>
-                    </div>
+<!-- Main Content -->
+<div class="content">
+    <h1 class="mb-4">Create New Promotion</h1>
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="startDate" class="form-label">Start Date*</label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="endDate" class="form-label">End Date*</label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="priority" class="form-label">Priority</label>
-                            <input type="number" class="form-control" id="priority" name="priority" min="1" value="1">
-                            <small class="text-muted">Higher priority is applied first</small>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="usageLimit" class="form-label">Usage Limit</label>
-                            <input type="number" class="form-control" id="usageLimit" name="usageLimit" min="0">
-                            <small class="text-muted">Leave empty for unlimited</small>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="active" name="active" checked>
-                                <label class="form-check-label" for="active">
-                                    Active
-                                </label>
-                            </div>
-                            <div class="form-check mb-3 ms-4">
-                                <input class="form-check-input" type="checkbox" id="stackable" name="stackable">
-                                <label class="form-check-label" for="stackable">
-                                    Stackable
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Rules Section -->
-                <div class="form-section" id="rulesSection">
-                    <h3 class="form-section-title">Rules</h3>
-                    <p>Define the conditions for this promotion to be applied.</p>
-
-                    <div id="rulesContainer">
-                        <!-- Rules will be dynamically added here based on promotion type -->
-                    </div>
-                </div>
-
-                <!-- Actions Section -->
-                <div class="form-section" id="actionsSection">
-                    <h3 class="form-section-title">Actions</h3>
-                    <p>Define what happens when the promotion is applied.</p>
-
-                    <div id="actionsContainer">
-                        <!-- Actions will be dynamically added here based on promotion type -->
-                    </div>
-                </div>
-
-                <!-- Coupons Section -->
-                <div class="form-section" id="couponsSection">
-                    <h3 class="form-section-title">Coupon Codes (Optional)</h3>
-                    <p>If you want to make this promotion only available with coupon codes, add them here.</p>
-
-                    <button type="button" class="btn btn-outline-primary add-coupon-btn" id="addCouponBtn">
-                        <i class="fas fa-plus"></i> Add Coupon Code
-                    </button>
-
-                    <div id="couponCodesContainer">
-                        <!-- Coupon codes will be added here -->
-                    </div>
-                </div>
-
-                <!-- Preview Section -->
-                <div class="form-section">
-                    <h3 class="form-section-title">Preview</h3>
-                    <button type="button" class="btn btn-outline-secondary" id="previewBtn">
-                        <i class="fas fa-eye"></i> Preview Promotion
-                    </button>
-
-                    <div class="preview-container d-none" id="previewContainer">
-                        <h4 id="previewName"></h4>
-                        <p id="previewDescription"></p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Type:</strong> <span id="previewType"></span></p>
-                                <p><strong>Duration:</strong> <span id="previewDuration"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Rules:</strong> <span id="previewRules"></span></p>
-                                <p><strong>Actions:</strong> <span id="previewActions"></span></p>
-                            </div>
-                        </div>
-                        <p><strong>Coupon Codes:</strong> <span id="previewCoupons"></span></p>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="submit-container">
-                    <button type="submit" class="btn btn-primary">Create Promotion</button>
-                    <a href="/promotions" class="btn btn-secondary ms-2">Cancel</a>
-                </div>
-            </form>
-        </div>
+    <div class="alert alert-success d-none" id="success-alert">
+        Promotion created successfully!
     </div>
+
+    <div class="alert alert-danger d-none" id="error-alert">
+        Error creating promotion. Please try again.
+    </div>
+
+    <form id="promotionForm" th:action="@{/promotions/create}" method="post">
+        <!-- Basic Information -->
+        <div class="form-section">
+            <h3 class="form-section-title">Basic Information</h3>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Promotion Name*</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="promotionType" class="form-label">Promotion Type*</label>
+                    <select class="form-select" id="promotionType" name="promotionType" required>
+                        <option value="">Select Type</option>
+                        <option value="BUY_ONE_GET_ONE">Buy One Get One</option>
+                        <option value="BUY_X_GET_DISCOUNT">Buy X Get Discount</option>
+                        <option value="FLASH_SALE_ALL">Flash Sale (All Products)</option>
+                        <option value="FLASH_SALE_CATEGORY">Flash Sale (By Category)</option>
+                        <option value="AMOUNT_THRESHOLD_DISCOUNT">Amount Threshold Discount</option>
+                        <option value="ORDER_DISCOUNT">Order Discount</option>
+                    </select>
+                    <div id="promotionTypeDescription" class="promotion-type-description"></div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="startDate" class="form-label">Start Date*</label>
+                    <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="endDate" class="form-label">End Date*</label>
+                    <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="priority" class="form-label">Priority</label>
+                    <input type="number" class="form-control" id="priority" name="priority" min="1" value="1">
+                    <small class="text-muted">Higher priority is applied first</small>
+                </div>
+                <div class="col-md-4">
+                    <label for="usageLimit" class="form-label">Usage Limit</label>
+                    <input type="number" class="form-control" id="usageLimit" name="usageLimit" min="0">
+                    <small class="text-muted">Leave empty for unlimited</small>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="active" name="active" checked>
+                        <label class="form-check-label" for="active">Active</label>
+                    </div>
+                    <div class="form-check mb-3 ms-4">
+                        <input class="form-check-input" type="checkbox" id="stackable" name="stackable">
+                        <label class="form-check-label" for="stackable">Stackable</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="form-section" id="rulesSection">
+            <h3 class="form-section-title">Rules</h3>
+            <p>Define the conditions for this promotion to be applied.</p>
+            <div id="rulesContainer"></div>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="form-section" id="actionsSection">
+            <h3 class="form-section-title">Actions</h3>
+            <p>Define what happens when the promotion is applied.</p>
+            <div id="actionsContainer"></div>
+        </div>
+
+        <!-- Coupons Section -->
+        <div class="form-section" id="couponsSection">
+            <h3 class="form-section-title">Coupon Codes (Optional)</h3>
+            <p>If you want to make this promotion only available with coupon codes, add them here.</p>
+            <button type="button" class="btn btn-outline-primary add-coupon-btn" id="addCouponBtn">
+                <i class="fas fa-plus"></i> Add Coupon Code
+            </button>
+            <div id="couponCodesContainer"></div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="form-section">
+            <h3 class="form-section-title">Preview</h3>
+            <button type="button" class="btn btn-outline-secondary" id="previewBtn">
+                <i class="fas fa-eye"></i> Preview Promotion
+            </button>
+            <div class="preview-container d-none" id="previewContainer">
+                <h4 id="previewName"></h4>
+                <p id="previewDescription"></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type:</strong> <span id="previewType"></span></p>
+                        <p><strong>Duration:</strong> <span id="previewDuration"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Rules:</strong> <span id="previewRules"></span></p>
+                        <p><strong>Actions:</strong> <span id="previewActions"></span></p>
+                    </div>
+                </div>
+                <p><strong>Coupon Codes:</strong> <span id="previewCoupons"></span></p>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-container">
+            <button type="submit" class="btn btn-primary">Create Promotion</button>
+            <a href="/promotions" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+    </form>
 </div>
 
 <!-- Templates for dynamic form elements -->
@@ -217,7 +484,6 @@
             <label class="form-label">Select Product</label>
             <select class="form-control product-select" name="rules[{index}].ruleData.productId" required>
                 <option value="">Select a product</option>
-                <!-- Products will be populated dynamically -->
             </select>
             <input type="hidden" name="rules[{index}].ruleType" value="PRODUCT">
         </div>
@@ -236,7 +502,6 @@
             <label class="form-label">Select Category</label>
             <select class="form-control category-select" name="rules[{index}].ruleData.categoryId" required>
                 <option value="">Select a category</option>
-                <!-- Categories will be populated dynamically -->
             </select>
             <input type="hidden" name="rules[{index}].ruleType" value="CATEGORY">
         </div>
@@ -272,8 +537,7 @@
             <label class="form-label">Minimum Amount</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="number" class="form-control" name="rules[{index}].ruleData.minAmount" min="0" step="0.01"
-                       required>
+                <input type="number" class="form-control" name="rules[{index}].ruleData.minAmount" min="0" step="0.01" required>
             </div>
             <small class="text-muted">Minimum cart subtotal amount</small>
             <input type="hidden" name="rules[{index}].ruleType" value="CART_AMOUNT">
@@ -292,8 +556,7 @@
         <div class="mb-3">
             <label class="form-label">Discount Percentage</label>
             <div class="input-group">
-                <input type="number" class="form-control" name="actions[{index}].actionData.percentDiscount" min="1"
-                       max="100" required>
+                <input type="number" class="form-control" name="actions[{index}].actionData.percentDiscount" min="1" max="100" required>
                 <span class="input-group-text">%</span>
             </div>
             <input type="hidden" name="actions[{index}].actionType" value="PERCENT_DISCOUNT">
@@ -313,8 +576,7 @@
             <label class="form-label">Discount Amount</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="number" class="form-control" name="actions[{index}].actionData.fixedDiscount" min="0.01"
-                       step="0.01" required>
+                <input type="number" class="form-control" name="actions[{index}].actionData.fixedDiscount" min="0.01" step="0.01" required>
             </div>
             <input type="hidden" name="actions[{index}].actionType" value="FIXED_DISCOUNT">
         </div>
@@ -333,14 +595,12 @@
             <label class="form-label">Select Product</label>
             <select class="form-control product-select" name="actions[{index}].actionData.productId" required>
                 <option value="">Select a product</option>
-                <!-- Products will be populated dynamically -->
             </select>
             <input type="hidden" name="actions[{index}].actionType" value="FREE_PRODUCT">
         </div>
         <div class="mb-3">
             <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" name="actions[{index}].actionData.quantity" min="1" value="1"
-                   required>
+            <input type="number" class="form-control" name="actions[{index}].actionData.quantity" min="1" value="1" required>
         </div>
     </div>
 </template>
@@ -356,8 +616,9 @@
     </div>
 </template>
 
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function () {
         // Fetch products and categories for select boxes
@@ -394,37 +655,21 @@
             'ORDER_DISCOUNT': ['PERCENT_DISCOUNT', 'FIXED_DISCOUNT']
         };
 
-        // Counter for rule and action indices
         let ruleIndex = 0;
         let actionIndex = 0;
 
-        // Show description when promotion type changes
         $('#promotionType').change(function () {
             const type = $(this).val();
-
-            if (type && promotionTypeDescriptions[type]) {
-                $('#promotionTypeDescription').text(promotionTypeDescriptions[type]);
-            } else {
-                $('#promotionTypeDescription').text('');
-            }
-
-            // Clear and populate rules and actions based on promotion type
+            $('#promotionTypeDescription').text(promotionTypeDescriptions[type] || '');
             $('#rulesContainer').empty();
             $('#actionsContainer').empty();
 
             if (type) {
-                // Add rules
-                promotionRules[type].forEach(ruleType => {
-                    addRule(ruleType);
-                });
-
-                // Add actions
+                promotionRules[type].forEach(ruleType => addRule(ruleType));
                 const actionTypes = promotionActions[type];
                 if (actionTypes.length === 1) {
-                    // If only one action type is available, add it
                     addAction(actionTypes[0]);
                 } else if (actionTypes.length > 1) {
-                    // If multiple action types are available, add a selector
                     const actionSelector = `
                             <div class="mb-3">
                                 <label class="form-label">Select Action Type</label>
@@ -437,12 +682,9 @@
                             </div>
                         `;
                     $('#actionsContainer').append(actionSelector);
-
-                    // Add action when type is selected
                     $('#actionTypeSelector').change(function () {
                         const actionType = $(this).val();
                         if (actionType) {
-                            // Remove selector after selection
                             $(this).parent().remove();
                             addAction(actionType);
                         }
@@ -451,99 +693,51 @@
             }
         });
 
-        // Add rule function
         function addRule(ruleType) {
-            const templateId = `#${ruleType.toLowerCase().replace(/_/g, '-')}-rule-template`;
-            const template = $(templateId);
-
-            if (template.length === 0) {
-                console.error(`Template not found: ${templateId}`);
-                return;
-            }
-
-            // Get the template content and replace placeholders
-            let ruleHtml = template.html();
-            if (ruleHtml) {
-                ruleHtml = ruleHtml.replace(/{index}/g, ruleIndex++);
+            const template = $(`#${ruleType.toLowerCase().replace(/_/g, '-')}-rule-template`).html();
+            if (template) {
+                const ruleHtml = template.replace(/{index}/g, ruleIndex++);
                 $('#rulesContainer').append(ruleHtml);
-
-                // Populate product or category select if needed
-                if (ruleType === 'PRODUCT') {
-                    populateProductSelect($('#rulesContainer .product-select').last());
-                } else if (ruleType === 'CATEGORY') {
-                    populateCategorySelect($('#rulesContainer .category-select').last());
-                }
-            } else {
-                console.error(`Template content is empty: ${templateId}`);
+                if (ruleType === 'PRODUCT') populateProductSelect($('#rulesContainer .product-select').last());
+                else if (ruleType === 'CATEGORY') populateCategorySelect($('#rulesContainer .category-select').last());
             }
         }
 
-        // Add action function
         function addAction(actionType) {
-            // Convert the action type to lowercase and replace underscores with hyphens
-            const templateId = actionType.toLowerCase().replace(/_/g, '-');
-            const templateElement = document.getElementById(`${templateId}-action-template`);
-
-            if (!templateElement) {
-                console.error(`Template not found: #${templateId}-action-template`);
-                return;
-            }
-
-            // Get the template content and replace placeholders
-            const template = $(`#${templateId}-action-template`);
-            let actionHtml = template.html();
-
-            if (actionHtml) {
-                actionHtml = actionHtml.replace(/{index}/g, actionIndex++);
+            const template = $(`#${actionType.toLowerCase().replace(/_/g, '-')}-action-template`).html();
+            if (template) {
+                const actionHtml = template.replace(/{index}/g, actionIndex++);
                 $('#actionsContainer').append(actionHtml);
-
-                // Populate product select if needed
-                if (actionType === 'FREE_PRODUCT') {
-                    populateProductSelect($('#actionsContainer .product-select').last());
-                }
-            } else {
-                console.error(`Template content is empty: #${templateId}-action-template`);
+                if (actionType === 'FREE_PRODUCT') populateProductSelect($('#actionsContainer .product-select').last());
             }
         }
 
-        // Remove rule button click
         $(document).on('click', '.remove-rule-btn', function () {
             $(this).closest('.rule-container').remove();
         });
 
-        // Remove action button click
         $(document).on('click', '.remove-action-btn', function () {
             $(this).closest('.action-container').remove();
         });
 
-        // Add coupon code button click
         $('#addCouponBtn').click(function () {
             const couponTemplate = $('#coupon-code-template').html();
             $('#couponCodesContainer').append(couponTemplate);
         });
 
-        // Remove coupon code button click
         $(document).on('click', '.remove-coupon-btn', function () {
             $(this).closest('.coupon-code-container').remove();
         });
 
-        // Fetch products from API
         function fetchProducts() {
             $.ajax({
-                url: '/api/products', // Assuming this endpoint exists
+                url: '/api/products',
                 type: 'GET',
-                success: function (data) {
-                    window.productsList = data;
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching products:', error);
-                    // Fallback to sample data
+                success: function (data) { window.productsList = data; },
+                error: function () {
                     window.productsList = [
-                        {id: 1, name: 'Espresso'},
-                        {id: 2, name: 'Cappuccino'},
-                        {id: 3, name: 'Latte'},
-                        {id: 4, name: 'Americano'},
-                        {id: 5, name: 'Mocha'}
+                        {id: 1, name: 'Espresso'}, {id: 2, name: 'Cappuccino'}, {id: 3, name: 'Latte'},
+                        {id: 4, name: 'Americano'}, {id: 5, name: 'Mocha'}
                     ];
                 }
             });
@@ -551,25 +745,17 @@
 
         function fetchCategories() {
             $.ajax({
-                url: '/category/get-list-category', // Assuming this endpoint exists
+                url: '/category/get-list-category',
                 type: 'GET',
-                success: function (data) {
-                    window.categoriesList = data;
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching categories:', error);
-                    // Fallback to sample data
+                success: function (data) { window.categoriesList = data; },
+                error: function () {
                     window.categoriesList = [
-                        {id: 1, name: 'Coffee'},
-                        {id: 2, name: 'Tea'},
-                        {id: 3, name: 'Pastries'},
-                        {id: 4, name: 'Breakfast'}
+                        {id: 1, name: 'Coffee'}, {id: 2, name: 'Tea'}, {id: 3, name: 'Pastries'}, {id: 4, name: 'Breakfast'}
                     ];
                 }
             });
         }
 
-        // Populate product select
         function populateProductSelect(selectElement) {
             if (window.productsList) {
                 selectElement.find('option:not(:first)').remove();
@@ -579,7 +765,6 @@
             }
         }
 
-        // Populate category select
         function populateCategorySelect(selectElement) {
             if (window.categoriesList) {
                 selectElement.find('option:not(:first)').remove();
@@ -589,100 +774,53 @@
             }
         }
 
-        // Preview button click
         $('#previewBtn').click(function () {
-            // Get form data
             const formData = getFormData();
-
-            // Update preview container
             $('#previewName').text(formData.name || 'No Name');
             $('#previewDescription').text(formData.description || 'No Description');
             $('#previewType').text(getPromotionTypeName(formData.promotionType));
-
             const startDate = formData.startDate ? new Date(formData.startDate).toLocaleDateString() : 'Not set';
             const endDate = formData.endDate ? new Date(formData.endDate).toLocaleDateString() : 'Not set';
             $('#previewDuration').text(`${startDate} to ${endDate}`);
 
-            // Rules preview
-            let rulesText = '';
-            if (formData.rules && formData.rules.length > 0) {
-                formData.rules.forEach(rule => {
-                    if (rule.ruleType === 'PRODUCT') {
-                        const productName = getProductName(rule.ruleData.productId);
-                        rulesText += `Apply to product: ${productName}; `;
-                    } else if (rule.ruleType === 'CATEGORY') {
-                        const categoryName = getCategoryName(rule.ruleData.categoryId);
-                        rulesText += `Apply to category: ${categoryName}; `;
-                    } else if (rule.ruleType === 'CART_QUANTITY') {
-                        rulesText += `Minimum ${rule.ruleData.minQuantity} items in cart; `;
-                    } else if (rule.ruleType === 'CART_AMOUNT') {
-                        rulesText += `Minimum cart amount: $${rule.ruleData.minAmount}; `;
-                    }
-                });
-            } else {
-                rulesText = 'No rules defined';
-            }
+            let rulesText = formData.rules.length > 0 ? formData.rules.map(rule => {
+                if (rule.ruleType === 'PRODUCT') return `Apply to product: ${getProductName(rule.ruleData.productId)}`;
+                if (rule.ruleType === 'CATEGORY') return `Apply to category: ${getCategoryName(rule.ruleData.categoryId)}`;
+                if (rule.ruleType === 'CART_QUANTITY') return `Minimum ${rule.ruleData.minQuantity} items in cart`;
+                if (rule.ruleType === 'CART_AMOUNT') return `Minimum cart amount: $${rule.ruleData.minAmount}`;
+            }).join('; ') : 'No rules defined';
             $('#previewRules').text(rulesText);
 
-            // Actions preview
-            let actionsText = '';
-            if (formData.actions && formData.actions.length > 0) {
-                formData.actions.forEach(action => {
-                    if (action.actionType === 'PERCENT_DISCOUNT') {
-                        actionsText += `${action.actionData.percentDiscount}% discount; `;
-                    } else if (action.actionType === 'FIXED_DISCOUNT') {
-                        actionsText += `$${action.actionData.fixedDiscount} discount; `;
-                    } else if (action.actionType === 'FREE_PRODUCT') {
-                        const productName = getProductName(action.actionData.productId);
-                        actionsText += `Free product: ${productName} (${action.actionData.quantity}); `;
-                    }
-                });
-            } else {
-                actionsText = 'No actions defined';
-            }
+            let actionsText = formData.actions.length > 0 ? formData.actions.map(action => {
+                if (action.actionType === 'PERCENT_DISCOUNT') return `${action.actionData.percentDiscount}% discount`;
+                if (action.actionType === 'FIXED_DISCOUNT') return `$${action.actionData.fixedDiscount} discount`;
+                if (action.actionType === 'FREE_PRODUCT') return `Free product: ${getProductName(action.actionData.productId)} (${action.actionData.quantity})`;
+            }).join('; ') : 'No actions defined';
             $('#previewActions').text(actionsText);
 
-            // Coupons preview
-            let couponsText = '';
-            if (formData.couponCodes && formData.couponCodes.length > 0) {
-                couponsText = formData.couponCodes.join(', ');
-            } else {
-                couponsText = 'No coupon codes defined';
-            }
-            $('#previewCoupons').text(couponsText);
-
-            // Show preview container
+            $('#previewCoupons').text(formData.couponCodes.length > 0 ? formData.couponCodes.join(', ') : 'No coupon codes defined');
             $('#previewContainer').removeClass('d-none');
         });
 
-        // Helper function to get promotion type name
         function getPromotionTypeName(type) {
             const typeNames = {
-                'BUY_ONE_GET_ONE': 'Buy One Get One',
-                'BUY_X_GET_DISCOUNT': 'Buy X Get Discount',
-                'FLASH_SALE_ALL': 'Flash Sale (All Products)',
-                'FLASH_SALE_CATEGORY': 'Flash Sale (By Category)',
-                'AMOUNT_THRESHOLD_DISCOUNT': 'Amount Threshold Discount',
-                'ORDER_DISCOUNT': 'Order Discount'
+                'BUY_ONE_GET_ONE': 'Buy One Get One', 'BUY_X_GET_DISCOUNT': 'Buy X Get Discount',
+                'FLASH_SALE_ALL': 'Flash Sale (All Products)', 'FLASH_SALE_CATEGORY': 'Flash Sale (By Category)',
+                'AMOUNT_THRESHOLD_DISCOUNT': 'Amount Threshold Discount', 'ORDER_DISCOUNT': 'Order Discount'
             };
             return typeNames[type] || type;
         }
 
-        // Helper function to get product name by id
         function getProductName(id) {
-            if (!window.productsList) return `Product #${id}`;
-            const product = window.productsList.find(p => p.id == id);
+            const product = window.productsList?.find(p => p.id == id);
             return product ? product.name : `Product #${id}`;
         }
 
-        // Helper function to get category name by id
         function getCategoryName(id) {
-            if (!window.categoriesList) return `Category #${id}`;
-            const category = window.categoriesList.find(c => c.id == id);
+            const category = window.categoriesList?.find(c => c.id == id);
             return category ? category.name : `Category #${id}`;
         }
 
-        // Helper function to get form data as object
         function getFormData() {
             const formData = {
                 name: $('#name').val(),
@@ -699,109 +837,74 @@
                 couponCodes: []
             };
 
-            // Get rules
             $('.rule-container').each(function () {
                 const ruleType = $(this).data('rule-type');
-                const rule = {ruleType, ruleData: {}};
-
-                if (ruleType === 'PRODUCT') {
-                    rule.ruleData.productId = parseInt($(this).find('select').val());
-                } else if (ruleType === 'CATEGORY') {
-                    rule.ruleData.categoryId = parseInt($(this).find('select').val());
-                } else if (ruleType === 'CART_QUANTITY') {
-                    rule.ruleData.minQuantity = parseInt($(this).find('input[type="number"]').val());
-                } else if (ruleType === 'CART_AMOUNT') {
-                    rule.ruleData.minAmount = parseFloat($(this).find('input[type="number"]').val());
-                }
-
+                const rule = { ruleType, ruleData: {} };
+                if (ruleType === 'PRODUCT') rule.ruleData.productId = parseInt($(this).find('select').val());
+                else if (ruleType === 'CATEGORY') rule.ruleData.categoryId = parseInt($(this).find('select').val());
+                else if (ruleType === 'CART_QUANTITY') rule.ruleData.minQuantity = parseInt($(this).find('input[type="number"]').val());
+                else if (ruleType === 'CART_AMOUNT') rule.ruleData.minAmount = parseFloat($(this).find('input[type="number"]').val());
                 formData.rules.push(rule);
             });
 
-            // Get actions
             $('.action-container').each(function () {
                 const actionType = $(this).data('action-type');
-                const action = {actionType, actionData: {}};
-
-                if (actionType === 'PERCENT_DISCOUNT') {
-                    action.actionData.percentDiscount = parseFloat($(this).find('input[type="number"]').val());
-                } else if (actionType === 'FIXED_DISCOUNT') {
-                    action.actionData.fixedDiscount = parseFloat($(this).find('input[type="number"]').val());
-                } else if (actionType === 'FREE_PRODUCT') {
+                const action = { actionType, actionData: {} };
+                if (actionType === 'PERCENT_DISCOUNT') action.actionData.percentDiscount = parseFloat($(this).find('input[type="number"]').val());
+                else if (actionType === 'FIXED_DISCOUNT') action.actionData.fixedDiscount = parseFloat($(this).find('input[type="number"]').val());
+                else if (actionType === 'FREE_PRODUCT') {
                     action.actionData.productId = parseInt($(this).find('select').val());
                     action.actionData.quantity = parseInt($(this).find('input[type="number"]').val());
                 }
-
                 formData.actions.push(action);
             });
 
-            // Get coupon codes
             $('#couponCodesContainer input[type="text"]').each(function () {
                 const code = $(this).val().trim();
-                if (code) {
-                    formData.couponCodes.push(code);
-                }
+                if (code) formData.couponCodes.push(code);
             });
 
             return formData;
         }
 
-        // Form submit handler
         $('#promotionForm').submit(function (e) {
             e.preventDefault();
-
             const formData = getFormData();
-
-            // Validate form data
             if (!formData.name || !formData.promotionType || !formData.startDate || !formData.endDate) {
                 $('#error-alert').text('Please fill in all required fields.').removeClass('d-none');
                 return;
             }
-
-            // Validate that there's at least one action
             if (formData.actions.length === 0) {
                 $('#error-alert').text('Please add at least one action.').removeClass('d-none');
                 return;
             }
 
-            // Send form data to server
-            <!-- AJAX submission URL update -->
             $.ajax({
                 url: '/promotions/api/create',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
-                success: function (response) {
+                success: function () {
                     $('#success-alert').removeClass('d-none');
                     $('#error-alert').addClass('d-none');
-                    // Redirect to promotions list after a delay
-                    setTimeout(function () {
-                        window.location.href = '/promotions';
-                    }, 2000);
+                    setTimeout(() => window.location.href = '/promotions', 2000);
                 },
-                error: function (xhr, status, error) {
-                    $('#error-alert').text('Error creating promotion: ' + (xhr.responseJSON?.message || error)).removeClass('d-none');
+                error: function (xhr) {
+                    $('#error-alert').text('Error creating promotion: ' + (xhr.responseJSON?.message || 'Unknown error')).removeClass('d-none');
                     $('#success-alert').addClass('d-none');
                 }
             });
         });
 
-        // Initialize the form with default values
         function initForm() {
-            // Set default dates
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate() + 1);
-
-            // Format dates for datetime-local input
-            const formatDate = (date) => {
-                return date.toISOString().slice(0, 16);
-            };
-
+            const formatDate = date => date.toISOString().slice(0, 16);
             $('#startDate').val(formatDate(now));
             $('#endDate').val(formatDate(tomorrow));
         }
 
-        // Initialize the form
         initForm();
     });
 </script>

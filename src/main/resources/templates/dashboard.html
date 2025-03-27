@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sidebars</title>
     <!--        <link th:href="@{/static.css/styles.css}" rel="stylesheet" />-->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
             rel="stylesheet"
@@ -288,14 +288,14 @@
 
         <ul>
             <li>
-                <input type="radio" id="dashboard" name="sidebar" />
+                <input type="radio" id="dashboard" name="sidebar"/>
                 <label for="dashboard">
                     <i class="ai-dashboard"></i>
                     <p>Dashboard</p>
                 </label>
             </li>
             <li>
-                <input type="radio" id="settings" name="sidebar" />
+                <input type="radio" id="settings" name="sidebar"/>
                 <label for="settings">
                     <i class="ai-gear"></i>
                     <p>Customers</p>
@@ -313,7 +313,7 @@
                 </div>
             </li>
             <li>
-                <input type="radio" id="create" name="sidebar" />
+                <input type="radio" id="create" name="sidebar"/>
                 <label for="create">
                     <i class="ai-cart"></i>
                     <p>Menu</p>
@@ -322,16 +322,18 @@
                 <div class="sub-menu">
                     <ul>
                         <li>
-                            <button type="button" onclick="window.location.href='/categories'"><a>Categories List</a></button>
+                            <button type="button" onclick="window.location.href='/categories'"><a>Categories List</a>
+                            </button>
                         </li>
                         <li>
-                            <button type="button" onclick="window.location.href='/products'"><a>Products List</a></button>
+                            <button type="button" onclick="window.location.href='/products'"><a>Products List</a>
+                            </button>
                         </li>
                     </ul>
                 </div>
             </li>
             <li>
-                <input type="radio" id="profile" name="sidebar" />
+                <input type="radio" id="profile" name="sidebar"/>
                 <label for="profile">
                     <i class="ai-person"></i>
                     <p>Profile</p>
@@ -349,24 +351,37 @@
                 </div>
             </li>
             <li>
-                <input type="radio" id="notifications" name="sidebar" />
+                <input type="radio" id="notifications" name="sidebar"/>
                 <label for="notifications">
                     <i class="ai-bell"></i>
                     <p>Notifications</p>
                 </label>
             </li>
             <li>
-                <input type="radio" id="products" name="sidebar" />
+                <input type="radio" id="account" name="sidebar"/>
+                <label for="account">
+                    <i class="ai-lock-on"></i>
+                    <p>Pomotions</p>
+                    <i class="ai-chevron-down-small"></i>
+                </label>
+                <div class="sub-menu">
+                    <ul>
+                        <li>
+                            <button type="button" onclick="window.location.href='/promotions/create'"><a>Create new
+                                promotions</a></button>
+                        </li>
+                        <li>
+                            <button type="button" onclick="window.location.href='/promotions'"><a>Promotions List</a>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <input type="radio" id="products" name="sidebar"/>
                 <label for="products">
                     <i class="ai-cart"></i>
                     <p>Products</p>
-                </label>
-            </li>
-            <li>
-                <input type="radio" id="account" name="sidebar" />
-                <label for="account">
-                    <i class="ai-lock-on"></i>
-                    <p>Account</p>
                 </label>
             </li>
         </ul>

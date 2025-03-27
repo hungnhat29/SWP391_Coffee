@@ -13,9 +13,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmailContactService {
@@ -23,6 +27,8 @@ public class EmailContactService {
     @Autowired
     private JavaMailSender mailSender;
     private Map<String, String> otpCache = new ConcurrentHashMap<>();
+    private final Map<String, Long> otpExpiry = new HashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public void sendContactEmail(ContactRequest request) throws MessagingException {
         String toEmail = "hungpoporo@gmail.com"; // Email nhận thông báo
@@ -42,16 +48,33 @@ public class EmailContactService {
         mailSender.send(message);
     }
 
+    public void SendMail(ContactRequest request) throws MessagingException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true,"UTF-8");
+        helper.setTo(request.getEmail());
+        helper.setSubject(request.getSubject());
+        helper.setText(request.getMessage(), true); // `true` để hỗ trợ HTML trong email
+
+        mailSender.send(message);
+    }
+
     public void sendVerificationOtp(String email) throws MessagingException {
         String otp = generateOtp();
         // Lưu OTP vào cache
         otpCache.put(email, otp);
+        otpExpiry.put(email, System.currentTimeMillis() + (5 * 60 * 1000));
+
+        scheduler.schedule(() -> {
+            otpCache.remove(email);
+            otpExpiry.remove(email);
+        }, 5, TimeUnit.MINUTES);
 
         // Nội dung email
         String subject = "Xác minh email - Mã OTP của bạn";
         String body = "<p>Chào bạn,</p>"
                 + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
-                + "<p>Vui lòng nhập mã này để hoàn tất quá trình đăng ký.</p>"
+                + "<p>Mã OTP có hiệu lực trong 5 phút.Vui lòng nhập mã này để hoàn tất quá trình đăng ký.</p>"
                 + "<br/><p>Trân trọng,</p>";
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -67,7 +90,7 @@ public class EmailContactService {
         String cachedOtp = otpCache.get(email);
         if(cachedOtp != null && cachedOtp.equals(otpInput)) {
             // Sau khi xác minh thành công, có thể xóa OTP khỏi cache
-            otpCache.remove(email);
+//            otpCache.remove(email);
             return true;
         }
         return false;

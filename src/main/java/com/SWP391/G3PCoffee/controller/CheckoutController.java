@@ -168,7 +168,8 @@ public class CheckoutController {
                     checkoutRequest.getPaymentMethod(),
                     customerName,
                     customerEmail,
-                    customerPhone
+                    customerPhone,
+                    checkoutRequest.getReceiveType()
             );
 
             // Process payment based on payment method

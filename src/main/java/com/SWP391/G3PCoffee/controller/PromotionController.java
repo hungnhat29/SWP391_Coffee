@@ -393,18 +393,33 @@ public class PromotionController {
      * Handle promotion deletion
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Map<String, Object>> deletePromotion(@PathVariable("id") Integer id) {
+    public ResponseEntity<Map<String, Object>> deletePromotion(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
 
-        boolean deleted = promotionService.deletePromotion(id);
-        if (deleted) {
-            response.put("success", true);
-            response.put("message", "Promotion deleted successfully");
-            return ResponseEntity.ok(response);
-        } else {
+        try {
+            boolean deleted = promotionService.deletePromotion(id);
+            if (deleted) {
+                response.put("success", true);
+                response.put("message", "Promotion deleted successfully");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("success", false);
+                response.put("message", "Promotion not found");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "Promotion not found or could not be deleted");
-            return ResponseEntity.status(404).body(response);
+            // Include the exception type and stack trace for better debugging
+            String errorMessage = "Error deleting promotion: " + e.getClass().getSimpleName();
+            if (e.getMessage() != null) {
+                errorMessage += " - " + e.getMessage();
+            }
+            response.put("message", errorMessage);
+            // Optionally, include the stack trace in the response (for debugging purposes)
+            response.put("errorDetails", e.getStackTrace()[0].toString());
+            // Log the exception for server-side debugging
+            e.printStackTrace();
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

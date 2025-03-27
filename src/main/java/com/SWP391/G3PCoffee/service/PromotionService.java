@@ -822,7 +822,24 @@ public class PromotionService {
         if (!promotionOpt.isPresent()) {
             return false;
         }
-        promotionRepository.deleteById(id); // Simply delete the promotion by ID
+
+        Promotion promotion = promotionOpt.get();
+
+        // Delete associated rules
+        List<PromotionRule> rules = ruleRepository.findByPromotion(promotion);
+        ruleRepository.deleteAll(rules);
+
+        // Delete associated actions
+        List<PromotionAction> actions = actionRepository.findByPromotion(promotion);
+        actionRepository.deleteAll(actions);
+
+        // Delete associated coupons
+        List<PromotionCoupon> coupons = couponRepository.findByPromotion(promotion);
+        couponRepository.deleteAll(coupons);
+
+        // Delete the promotion
+        promotionRepository.delete(promotion);
+
         return true;
     }
 

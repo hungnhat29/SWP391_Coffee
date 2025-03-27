@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum Role {
     CUSTOMER("customer"),
     ADMIN("admin"),
-    MANAGER("manager");
+    MANAGER("manager"),
+    STAFF("staff");
 
     private final String value;
 
@@ -14,7 +15,7 @@ public enum Role {
         this.value = value;
     }
 
-    public String getValue() { 
+    public String getValue() {
         return value;
     }
 

@@ -4,8 +4,11 @@ import com.SWP391.G3PCoffee.model.Cart;
 import com.SWP391.G3PCoffee.model.Order;
 import com.SWP391.G3PCoffee.model.OrderItem;
 import com.SWP391.G3PCoffee.model.User;
+import com.SWP391.G3PCoffee.constant.OrderStatus;
+import com.SWP391.G3PCoffee.constant.TypeOrder;
 import com.SWP391.G3PCoffee.repository.OrderRepository;
 import com.SWP391.G3PCoffee.repository.OrderItemRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -26,7 +28,8 @@ public class OrderService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-
+    @Autowired
+    private UserService userService;
     
     @Transactional
     public Order createOrder(
@@ -35,7 +38,8 @@ public class OrderService {
             List<Cart> cartItems, 
             String shippingAddress, 
             String paymentMethod, String customerName, String customerEmail,
-            String customerPhone) {
+            String customerPhone,
+            String receiveType) {
         
         // Calculate order total
         BigDecimal orderTotal = cartItems.stream()
@@ -53,6 +57,7 @@ public class OrderService {
         order.setOrderTotal(orderTotal);
         order.setShippingAddress(shippingAddress);
         order.setPaymentMethod(paymentMethod);
+        order.setTypeOrder(Objects.equals(receiveType, "PICKUP") ? TypeOrder.PICKUP : TypeOrder.DELIVERY);
         order.setStatus("pending");
         
         // Save order to get order ID
@@ -151,5 +156,139 @@ public class OrderService {
         } else {
             return orderRepository.findByUserId(user.getId(), pageable);
         }
+    }
+
+    public Page<Order> findByUserAndOrderIdExcludingStatuses(User user, Long orderId, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndIdAndStatusNotInAndOrderDateAfter(user.getId(), orderId, excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndIdAndStatusNotIn(user.getId(), orderId, excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndStatusExcludingStatuses(User user, String status, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCaseAndStatusNotInAndOrderDateAfter(user.getId(), status, excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndStatusContainingIgnoreCaseAndStatusNotIn(user.getId(), status, excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> findByUserAndDateExcludingStatuses(User user, LocalDateTime startDate, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        if (startDate != null) {
+            return orderRepository.findByUserIdAndStatusNotInAndOrderDateAfter(user.getId(), excludedStatuses, startDate, pageable);
+        } else {
+            return orderRepository.findByUserIdAndStatusNotIn(user.getId(), excludedStatuses, pageable);
+        }
+    }
+
+    public Page<Order> getPagedOrdersByUserIdExcludingStatuses(Integer userId, Pageable pageable) {
+        List<String> excludedStatuses = Arrays.asList("completed", "canceled");
+        return orderRepository.findByUserIdAndStatusNotInOrderByOrderDateDesc(userId, excludedStatuses, pageable);
+    }
+
+    public Page<Order> getOrderByType(TypeOrder typeOrder, String email, Pageable pageable) {
+        User user = userService.getCustomerByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        Long userId = user.getId();
+        return orderRepository.getPageOrderUser(typeOrder, userId, pageable);
+    }
+
+    public Page<Order> getAllOrder(String email, Pageable pageable) {
+        User user = userService.getCustomerByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        Long userId = user.getId();
+
+        return orderRepository.getAllOrder(userId, pageable);
+    }
+
+    public Map<String, Object> cancelOrderByUser(String email, Integer orderId) {
+        Map<String, Object> response = new HashMap<>();
+        User user = userService.getCustomerByEmail(email);
+        if (user == null) {
+            response.put("message", "Can't not find user update status");
+            response.put("type", "error");
+            return response;
+        }
+
+        Long userId = user.getId();
+        Order order = findOrderById(orderId, response);
+        if (order == null) return response;
+
+        if (!((Long) order.getUserId().longValue()).equals(userId)) {
+            response.put("message", "Can't not find order of user to update status");
+            response.put("type", "error");
+            return response;
+        }
+
+        String status = order.getStatus();
+        if (status != null && (!status.equals(OrderStatus.pending.name()) && !status.equals(OrderStatus.paid.name()))) {
+            response.put("message", "Can't cancel order");
+            response.put("type", "error");
+            return response;
+        }
+
+        order.setStatus(OrderStatus.canceled.name());
+        order.setUpdatedAt(LocalDateTime.now());
+        orderRepository.save(order);
+
+        response.put("message", "cancel order successful");
+        response.put("type", "success");
+        return response;
+    }
+
+    public List<Order> getAllOrderAdmin() {
+        return orderRepository.getAllOrderAdmin();
+    }
+
+    public Page<Order> getPageOrderAdminByType(TypeOrder typeOrder, Pageable pageable) {
+        return orderRepository.getPageOrderByTypeAdmin(typeOrder, pageable);
+    }
+
+    public Map<String, Object> updateStatusOrder(Integer orderId) {
+        Map<String, Object> response = new HashMap<>();
+        Order order = findOrderById(orderId, response);
+        if (order == null) return response;
+
+        OrderStatus status = OrderStatus.valueOf(order.getStatus());
+        TypeOrder typeOrder = order.getTypeOrder();
+        String payment = order.getPaymentMethod();
+        String nextStatus = status.getNextStatus(typeOrder, payment).name();
+        order.setStatus(nextStatus);
+        order.setUpdatedAt(LocalDateTime.now());
+        orderRepository.save(order);
+
+        response.put("message", "update status order successful");
+        response.put("type", "success");
+        return response;
+    }
+
+    public Map<String, Object> cancelOrderByAdmin(Integer orderId) {
+        Map<String, Object> response = new HashMap<>();
+        Order order = findOrderById(orderId, response);
+        if (order == null) return response;
+
+        order.setStatus(OrderStatus.canceled.name());
+        order.setUpdatedAt(LocalDateTime.now());
+        orderRepository.save(order);
+
+        response.put("message", "cancel order successful");
+        response.put("type", "success");
+        return response;
+    }
+
+    private Order findOrderById(Integer orderId, Map<String, Object> response) {
+        return orderRepository.findById(orderId).orElseGet(() -> {
+            response.put("message", "Can't find order to update status");
+            response.put("type", "error");
+            return null;
+        });
     }
 }

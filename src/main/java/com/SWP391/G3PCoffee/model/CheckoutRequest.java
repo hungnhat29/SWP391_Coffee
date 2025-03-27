@@ -23,4 +23,5 @@ public class CheckoutRequest {
     private String customerPhone;
     private String customerAddress;
     private BigDecimal totalAmount;
+    private String receiveType;
 }
