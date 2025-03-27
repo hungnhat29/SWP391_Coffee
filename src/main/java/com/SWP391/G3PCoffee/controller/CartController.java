@@ -326,5 +326,30 @@ public class CartController {
         }
     }
 
+    @GetMapping("/api/cart/preview")
+    @ResponseBody
+    public Map<String, Object> getCartPreview(HttpSession session, Authentication authentication) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Cart> cartItems;
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                User user = userService.getCustomerByEmail(email);
+                cartItems = user != null ? cartService.getCartItems(user.getId().intValue(), null) : cartService.getCartItems(null, getOrCreateSessionId(session));
+            } else {
+                String sessionId = getOrCreateSessionId(session);
+                cartItems = cartService.getCartItems(null, sessionId);
+            }
 
+            BigDecimal totalAmount = calculateTotalAmount(cartItems);
+
+            response.put("items", cartItems);
+            response.put("total", totalAmount);
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error loading cart preview: " + e.getMessage());
+        }
+        return response;
+    }
 }

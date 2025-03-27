@@ -188,6 +188,7 @@ public class CheckoutController {
             } else if ("COD".equalsIgnoreCase(checkoutRequest.getPaymentMethod())) {
                 // For COD orders, send confirmation email
                 try {
+
                     emailService.sendOrderConfirmationEmail(order);
                 } catch (Exception e) {
                     // Log email error but don't block the order processing

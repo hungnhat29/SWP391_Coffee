@@ -212,8 +212,7 @@
             </div>
 
             <div class="order-total">
-                Total: <span th:text="${#numbers.formatDecimal(order.orderTotal, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
-                đ
+                Total: <span class="text-primary total-amount">$0.00</span>
             </div>
         </div>
     </div>
@@ -227,6 +226,15 @@
 <!-- Footer will be here -->
 <div th:replace="~{/footer-template :: footer-template}"></div>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedTotalAmount = sessionStorage.getItem('cartTotalAmount');
+        if (storedTotalAmount) {
+            const totalElements = document.querySelectorAll('.total-amount');
+            totalElements.forEach(element => {
+                element.textContent = new Intl.NumberFormat('vi-VN').format(storedTotalAmount) + ' đ';
+            });
+        }
+    });
     function logout() {
         fetch('/auth/logout', {
             method: 'POST', // Gọi API với phương thức POST

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchase History - G3P Coffee</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f7fa;
+      padding: 30px;
+      color: #333;
+    }
+
+    .container {
+      display: block;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .purchase-history, .order-details {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .purchase-history h2, .order-details h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    /* Search bar */
+    .search-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .search-bar input, .search-bar select {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-bar input {
+      flex: 1;
+    }
+
+    .search-bar select {
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+    }
+
+    th, td {
+      padding: 15px 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 16px;
+    }
+
+    th {
+      background-color: #f9f9f9;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    td img {
+      width: 60px;
+      height: 60px;
+      background-color: #ddd;
+      border-radius: 5px;
+      margin-right: 15px;
+      vertical-align: middle;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 14px;
+      color: #fff;
+      text-transform: capitalize;
+    }
+
+    .status.delivered {
+      background-color: #28a745;
+    }
+
+    .status.processing {
+      background-color: #007bff;
+    }
+
+    .status.pending {
+      background-color: #6c757d;
+    }
+
+    .view-details {
+      color: #ff6200; /* Màu cam */
+      cursor: pointer;
+      text-decoration: none; /* Bỏ gạch chân */
+      font-size: 16px;
+    }
+
+    .view-details:hover {
+      color: #e55b00; /* Màu cam đậm hơn khi hover */
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pagination button {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.2s;
+    }
+
+    .pagination button.active {
+      background-color: #ff6200;
+      color: #fff;
+      border-color: #ff6200;
+    }
+
+    .pagination button:hover:not(.active) {
+      background-color: #f0f0f0;
+    }
+
+    /* Order details section */
+    .order-details {
+      display: none;
+    }
+
+    .order-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .print-invoice {
+      background-color: #ff6200;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .print-invoice:hover {
+      background-color: #e55b00;
+    }
+
+    .details-container {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 25px;
+    }
+
+    .customer-info, .shipping-info {
+      flex: 1;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .customer-info h3, .shipping-info h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .customer-info p, .shipping-info p {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .customer-info p strong {
+      color: #333;
+    }
+
+    /* Order items */
+    .order-items {
+      margin-bottom: 25px;
+    }
+
+    .order-items h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-item img {
+      width: 60px;
+      height: 60px;
+      background-color: #ddd;
+      border-radius: 5px;
+    }
+
+    .order-item-details {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .order-item-details p {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .order-item-price {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* Payment summary */
+    .payment-summary h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .payment-summary p {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .payment-summary p strong {
+      color: #333;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .details-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Purchase History Section -->
+  <div class="purchase-history">
+    <h2>Purchase History</h2>
+    <div class="search-bar">
+      <input type="text" placeholder="Search orders..." id="search-input">
+      <select id="time-filter">
+        <option value="all">ALL TIME</option>
+        <option value="this-month">THIS MONTH</option>
+        <option value="last-month">LAST MONTH</option>
+      </select>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+        <tr>
+          <th>ORDER ID</th>
+          <th>PRODUCT</th>
+          <th>DATE</th>
+          <th>TOTAL</th>
+          <th>STATUS</th>
+          <th>ACTION</th>
+        </tr>
+        </thead>
+        <tbody id="purchase-history-table">
+        <!-- Data will be populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <button id="prev-page"><</button>
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button id="next-page">></button>
+    </div>
+  </div>
+
+  <!-- Order Details Section -->
+  <div class="order-details" id="order-details">
+    <div class="order-details-header">
+      <h2>Order Details #<span id="order-id"></span></h2>
+      <button class="print-invoice" onclick="printInvoice()">Print Invoice</button>
+    </div>
+    <div class="details-container">
+      <div class="customer-info">
+        <h3>Customer Information</h3>
+        <p><strong>Name:</strong> <span id="customer-name"></span></p>
+        <p><strong>Email:</strong> <span id="customer-email"></span></p>
+        <p><strong>Phone:</strong> <span id="customer-phone"></span></p>
+      </div>
+      <div class="shipping-info">
+        <h3>Shipping Information</h3>
+        <p><span id="shipping-address"></span></p>
+        <p><span id="shipping-city-zip"></span></p>
+        <p><span id="shipping-phone"></span></p>
+      </div>
+    </div>
+    <div class="order-items">
+      <h3>Order Items</h3>
+      <div id="order-items-list">
+        <!-- Items will be populated dynamically -->
+      </div>
+    </div>
+    <div class="payment-summary">
+      <h3>Payment Summary</h3>
+      <p><strong>Subtotal:</strong> <span id="subtotal"></span> ₫</p>
+      <p><strong>Total:</strong> <span id="total"></span> ₫</p>
+      <p><strong>Payment Method:</strong> <span id="payment-method"></span></p>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script th:inline="javascript">
+  // Hàm định dạng số tiền theo phong cách Việt Nam
+  function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN');
+  }
+
+  // Lấy tất cả đơn hàng
+  async function fetchPurchaseHistory() {
+    try {
+      console.log('Fetching all orders...');
+      const response = await fetch(`/admin/orders/all`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const orders = await response.json();
+      console.log('Order data fetched:', orders);
+      displayPurchaseHistory(orders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      const tableBody = document.getElementById('purchase-history-table');
+      tableBody.innerHTML = '<tr><td colspan="6">Error fetching orders. Please try again later.</td></tr>';
+    }
+  }
+
+  // Hiển thị lịch sử mua hàng trong bảng
+  function displayPurchaseHistory(orders) {
+    const tableBody = document.getElementById('purchase-history-table');
+    tableBody.innerHTML = '';
+
+    if (!orders || orders.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6">No orders found.</td></tr>';
+      return;
+    }
+
+    orders.forEach(order => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>
+                        <img src="${order.firstProductImageUrl || '/placeholder.png'}" alt="Product" style="width: 60px; height: 60px;">
+                        ${order.firstProductName || 'Unknown Product'} x ${order.orderItems ? order.orderItems.length : 0}
+                    </td>
+                    <td>${new Date(order.orderDate).toLocaleDateString('en-US')}</td>
+                    <td>${formatCurrency(order.orderTotal)} ₫</td>
+                    <td><span class="status ${order.status.toLowerCase()}">${order.status}</span></td>
+                    <td><span class="view-details" onclick="fetchOrderDetails(${order.id})">View Details</span></td>
+                `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Lấy chi tiết đơn hàng theo ID
+  async function fetchOrderDetails(orderId) {
+    try {
+      console.log('Fetching order details for orderId:', orderId);
+      const response = await fetch(`/admin/orders/${orderId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Order details fetched:', data);
+      displayOrderDetails(data.order, data.orderItems);
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      alert('Error fetching order details. Please try again later.');
+    }
+  }
+
+  // Hiển thị chi tiết đơn hàng
+  function displayOrderDetails(order, orderItems) {
+    const orderDetailsSection = document.getElementById('order-details');
+    orderDetailsSection.style.display = 'block';
+
+    // Order ID
+    document.getElementById('order-id').textContent = order.id;
+
+    // Customer Information
+    document.getElementById('customer-name').textContent = order.customerName || 'N/A';
+    document.getElementById('customer-email').textContent = order.customerEmail || 'N/A';
+    document.getElementById('customer-phone').textContent = order.customerPhone || 'N/A';
+
+    // Shipping Information
+    document.getElementById('shipping-address').textContent = order.shippingAddress || 'N/A';
+    document.getElementById('shipping-city-zip').textContent = 'N/A';
+    document.getElementById('shipping-phone').textContent = order.customerPhone || 'N/A';
+
+    // Order Items
+    const orderItemsList = document.getElementById('order-items-list');
+    orderItemsList.innerHTML = '';
+    if (!orderItems || orderItems.length === 0) {
+      orderItemsList.innerHTML = '<p>No items found in this order.</p>';
+      return;
+    }
+
+    orderItems.forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'order-item';
+      const sizeInfo = item.sizeInfo ? JSON.parse(item.sizeInfo) : { name: 'N/A' };
+      const toppingsInfo = item.toppingsInfo ? JSON.parse(item.toppingsInfo) : [];
+      const toppingNames = toppingsInfo.map(topping => topping.name);
+      itemDiv.innerHTML = `
+                    <img src="${item.product?.imageUrl || '/placeholder.png'}" alt="Product">
+                    <div class="order-item-details">
+                        <p>${item.product?.name || 'Unknown Product'}</p>
+                        <p>Size: ${sizeInfo.name}</p>
+                        <p>Toppings: ${toppingNames.length > 0 ? toppingNames.join(', ') : 'None'}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                    </div>
+                    <p class="order-item-price">${formatCurrency(item.subTotal)} ₫</p>
+                `;
+      orderItemsList.appendChild(itemDiv);
+    });
+
+    // Payment Summary
+    const subtotal = parseFloat(order.orderTotal);
+    document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('total').textContent = formatCurrency(subtotal);
+    document.getElementById('payment-method').textContent = order.paymentMethod || 'N/A';
+  }
+
+  // Print Invoice
+  function printInvoice() {
+    window.print();
+  }
+
+  // Load all orders when the page loads
+  window.onload = () => {
+    fetchPurchaseHistory();
+  };
+</script>
+</body>
+</html>

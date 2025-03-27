@@ -83,23 +83,65 @@ public class EmailService {
      */
     private void sendSimpleConfirmationEmail(Order order) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(order.getCustomerEmail());
         helper.setSubject("G3P Coffee - Order Confirmation #" + order.getId());
 
-        String content = "Dear " + order.getCustomerName() + ",\n\n" +
-                "Thank you for your order #" + order.getId() + ".\n" +
-                "Your order has been received and is being processed.\n\n" +
-                "Payment Method: " + order.getPaymentMethod() + "\n" +
-                "Total Amount: " + order.getOrderTotal() + " đ\n" +
-                "Shipping Address: " + order.getShippingAddress() + "\n\n" +
-                "For Cash on Delivery orders, please have the exact amount ready when our delivery person arrives.\n\n" +
-                "If you have any questions about your order, please contact our customer support team.\n\n" +
-                "Best regards,\n" +
-                "G3P Coffee Team";
+        String content = "<!DOCTYPE html>" +
+                "<html lang='en'>" +
+                "<head>" +
+                "   <meta charset='UTF-8'>" +
+                "   <style>" +
+                "       body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }" +
+                "       .container { background-color: #f4f4f4; padding: 20px; border-radius: 8px; }" +
+                "       .header { background-color: #6F4E37; color: white; text-align: center; padding: 10px; border-radius: 8px 8px 0 0; }" +
+                "       .content { background-color: white; padding: 20px; border-radius: 0 0 8px 8px; }" +
+                "       table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }" +
+                "       th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }" +
+                "       th { background-color: #f2f2f2; }" +
+                "       .footer { text-align: center; color: #777; margin-top: 20px; }" +
+                "   </style>" +
+                "</head>" +
+                "<body>" +
+                "   <div class='container'>" +
+                "       <div class='header'>" +
+                "           <h1>Order Confirmation</h1>" +
+                "       </div>" +
+                "       <div class='content'>" +
+                "           <p>Dear " + order.getCustomerName() + ",</p>" +
+                "           <p>Thank you for your order with G3P Coffee. Your order details are below:</p>" +
+                "           <table>" +
+                "               <tr>" +
+                "                   <th>Order Number</th>" +
+                "                   <td>#" + order.getId() + "</td>" +
+                "               </tr>" +
+                "               <tr>" +
+                "                   <th>Payment Method</th>" +
+                "                   <td>" + order.getPaymentMethod() + "</td>" +
+                "               </tr>" +
+                "               <tr>" +
+                "                   <th>Total Amount</th>" +
+                "                   <td>" + order.getOrderTotal() + " đ</td>" +
+                "               </tr>" +
+                "               <tr>" +
+                "                   <th>Shipping Address</th>" +
+                "                   <td>" + order.getShippingAddress() + "</td>" +
+                "               </tr>" +
+                "           </table>" +
+                "           <p><strong>Important Note:</strong> For Cash on Delivery orders, please have the exact amount ready when our delivery person arrives.</p>" +
+                "           <p>If you have any questions about your order, please contact our customer support team.</p>" +
+                "           <p>Thank you for choosing G3P Coffee!</p>" +
+                "           <p>Best regards,<br>G3P Coffee Team</p>" +
+                "       </div>" +
+                "       <div class='footer'>" +
+                "           <p>© 2024 G3P Coffee. All rights reserved.</p>" +
+                "       </div>" +
+                "   </div>" +
+                "</body>" +
+                "</html>";
 
-        helper.setText(content);
+        helper.setText(content, true); // true indicates HTML content
 
         mailSender.send(message);
         logger.info("Simple order confirmation email sent successfully to: " + order.getCustomerEmail());

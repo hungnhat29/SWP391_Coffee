@@ -14,6 +14,78 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
     <style>
+        .cart-popup {
+            position: fixed;
+            top: 70px; /* Adjust based on header height */
+            right: 20px;
+            width: 350px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .cart-popup.show {
+            display: block;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-options {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .cart-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .cart-popup-empty {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+
         .text-brown {
             color: #6F4E37;
         }
@@ -308,6 +380,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Cart Popup -->
+    <div id="cartPopup" class="cart-popup">
+        <div id="cartItemsContainer">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div id="cartEmptyMessage" class="cart-popup-empty" style="display:none;">
+            Giỏ hàng của bạn đang trống
+        </div>
+        <div id="cartTotalSection" style="display:none;">
+            <div class="cart-total">
+                Tổng cộng: <span id="cartTotalAmount">0</span>đ
+            </div>
+            <div class="cart-actions">
+                <button class="btn btn-secondary" onclick="viewCart()">Xem giỏ hàng</button>
+                <button class="btn btn-order" onclick="proceedToCheckout()">Thanh toán</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 <div th:replace="~{/footer-template :: footer-template}"></div>
 <!-- Bootstrap JS -->
@@ -320,6 +412,107 @@
     let basePrice = parseFloat(document.querySelector('.product-price span').textContent.replace(/,/g, ''));
     let selectedSize = null;
     let selectedToppings = new Set();
+
+    function loadCartPreview() {
+        fetch('/api/cart/preview')
+            .then(response => response.json())
+            .then(data => {
+                const cartItemsContainer = document.getElementById('cartItemsContainer');
+                const cartEmptyMessage = document.getElementById('cartEmptyMessage');
+                const cartTotalSection = document.getElementById('cartTotalSection');
+                const cartTotalAmount = document.getElementById('cartTotalAmount');
+
+                // Clear previous items
+                cartItemsContainer.innerHTML = '';
+
+                if (!data.success || data.items.length === 0) {
+                    cartEmptyMessage.style.display = 'block';
+                    cartTotalSection.style.display = 'none';
+
+                    // Clear sessionStorage when cart is empty
+                    sessionStorage.removeItem('cartTotalAmount');
+                    return;
+                }
+
+                // Hide empty message
+                cartEmptyMessage.style.display = 'none';
+
+                // Populate cart items
+                let total = 0;
+                data.items.forEach(item => {
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.classList.add('cart-item');
+
+                    // Construct options string
+                    let optionsText = '';
+                    let itemTotal = item.product.basePrice;
+
+                    if (item.sizeInfo) {
+                        const size = JSON.parse(item.sizeInfo);
+                        optionsText += `Size: ${size.name} `;
+                        itemTotal += size.price;
+                    }
+
+                    if (item.toppingsInfo) {
+                        const toppings = JSON.parse(item.toppingsInfo);
+                        optionsText += `Topping: ${toppings.map(t => t.name).join(', ')}`;
+                        toppings.forEach(topping => {
+                            itemTotal += topping.price;
+                        });
+                    }
+
+                    // Calculate item total
+                    itemTotal *= item.quantity;
+                    total += itemTotal;
+
+                    cartItemElement.innerHTML = `
+                        <img src="${item.product.imageUrl || '/images/default-product.jpg'}"
+                             alt="${item.product.name}"
+                             class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.product.name}</div>
+                            <div class="cart-item-options">${optionsText}</div>
+                            <div>Số lượng: ${item.quantity}</div>
+                            <div>Tổng: ${itemTotal.toLocaleString()}đ</div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemElement);
+                });
+
+                // Update total
+                cartTotalAmount.textContent = total.toLocaleString();
+                cartTotalSection.style.display = 'block';
+
+                // Save total to sessionStorage
+                sessionStorage.setItem('cartTotalAmount', total);
+            })
+            .catch(error => {
+                console.error('Error loading cart preview:', error);
+                // Clear sessionStorage in case of error
+                sessionStorage.removeItem('cartTotalAmount');
+            });
+    }
+
+    // Toggle cart popup visibility
+    function toggleCartPopup() {
+        const cartPopup = document.getElementById('cartPopup');
+        cartPopup.classList.toggle('show');
+
+        // Load cart items when popup is opened
+        if (cartPopup.classList.contains('show')) {
+            loadCartPreview();
+        }
+    }
+
+    // View cart page
+    function viewCart() {
+        window.location.href = '/cart';
+    }
+
+    // Proceed to checkout
+    function proceedToCheckout() {
+        window.location.href = '/checkout';
+    }
 
     function selectSize(element) {
         // Bỏ chọn tất cả size-option
@@ -381,7 +574,6 @@
         // Lấy productId từ input hidden
         const productId = parseInt(document.getElementById('productId').value);
         if (isNaN(productId) || productId <= 0) {
-            console.error("Invalid product ID:", productId);
             Swal.fire({
                 title: "Lỗi",
                 text: "Không thể xác định sản phẩm",
@@ -392,28 +584,20 @@
             return;
         }
 
-        // Chuẩn bị dữ liệu sizeInfo (nếu có)
-        let sizeInfo = selectedSize ? JSON.stringify(selectedSize) : null;
-
-        // Chuẩn bị dữ liệu toppingsInfo (nếu có)
-        let toppingsInfo = selectedToppings.size > 0 ? JSON.stringify(
+        // Prepare cart item data
+        const sizeInfo = selectedSize ? JSON.stringify(selectedSize) : null;
+        const toppingsInfo = selectedToppings.size > 0 ? JSON.stringify(
             Array.from(selectedToppings).map(item => JSON.parse(item))
         ) : null;
 
-        // Tạo đối tượng cart item theo định dạng API
         const cartItem = {
-            product: {
-                id: productId
-            },
+            product: {id: productId},
             quantity: 1,
             sizeInfo: sizeInfo,
             toppingsInfo: toppingsInfo,
             receiveType: orderType
         };
 
-        console.log("Sending cart data:", JSON.stringify(cartItem, null, 2));
-
-        // Gọi API để thêm vào giỏ hàng
         fetch('/api/cart', {
             method: 'POST',
             headers: {
@@ -426,7 +610,6 @@
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(text => {
-                        console.error('Error response:', text);
                         throw new Error(`Server returned error: ${response.status}`);
                     });
                 }
@@ -434,18 +617,17 @@
             })
             .then(data => {
                 if (data.success) {
+                    // Show cart popup
+                    loadCartPreview();
+                    const cartPopup = document.getElementById('cartPopup');
+                    cartPopup.classList.add('show');
+
                     Swal.fire({
                         title: "Thành công",
-                        text: data.message || "Đã thêm sản phẩm vào giỏ hàng!",
+                        text: "Đã thêm sản phẩm vào giỏ hàng!",
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
-                    }).then(() => {
-                        if (data.redirectUrl) {
-//                                                        alert(data.redirectUrl);
-                            window.location.href = data.redirectUrl;
-
-                        }
                     });
                 } else {
                     throw new Error(data.message || "Unknown error");
@@ -461,6 +643,29 @@
                 });
             });
     }
+
+    // Add event listener to cart icon
+    document.addEventListener('DOMContentLoaded', function () {
+        const cartIcon = document.querySelector('.nav-item a[href="/cart"]');
+        if (cartIcon) {
+            cartIcon.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleCartPopup();
+            });
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function (event) {
+            const cartPopup = document.getElementById('cartPopup');
+            const cartIcon = document.querySelector('.nav-item a[href="/cart"]');
+
+            if (cartPopup.classList.contains('show') &&
+                !cartPopup.contains(event.target) &&
+                !cartIcon.contains(event.target)) {
+                cartPopup.classList.remove('show');
+            }
+        });
+    });
 
     // Xử lý nút "Dùng tại quán"
     function storeOrder() {

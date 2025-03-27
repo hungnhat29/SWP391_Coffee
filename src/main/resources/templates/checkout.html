@@ -377,6 +377,7 @@
         // Disable button to prevent multiple submissions
         const orderButton = document.getElementById('placeOrderBtn');
         const totalAmount = sessionStorage.getItem('cartTotalAmount');
+
         orderButton.disabled = true;
         orderButton.textContent = 'Processing...';
 
@@ -419,6 +420,7 @@
                 orderButton.textContent = 'Place Order';
             });
     }
+
 </script>
 <script>
     function logout() {

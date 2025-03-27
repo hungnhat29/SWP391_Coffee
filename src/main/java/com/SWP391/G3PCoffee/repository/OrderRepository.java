@@ -57,4 +57,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Page<Order> findByUserIdAndStatusNotInAndOrderDateAfter(Long userId, List<String> excludedStatuses, LocalDateTime startDate, Pageable pageable);
     Page<Order> findByUserIdAndStatusNotIn(Long userId, List<String> excludedStatuses, Pageable pageable);
+
+    List<Order> findByUserId(Long userId);
+
+    List<Order> findByStatus(String status);
+    List<Order> findAll();
+    List<Order> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }
