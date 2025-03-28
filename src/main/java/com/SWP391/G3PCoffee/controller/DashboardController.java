@@ -34,6 +34,9 @@ public class DashboardController {
         // Get orders for last 7 days
         model.addAttribute("recentOrders", dashboardService.getOrdersForLast7Days());
 
+
+        model.addAttribute("customerPurchaseRatio", dashboardService.getCustomerPurchaseRatio());
+
         return "AdminDashboard";
     }
 }

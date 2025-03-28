@@ -18,155 +18,159 @@
     }
 
     body {
-      margin: 0;
-      background-color: #f5f5f5;
-      font-family: "Poppins", "Arial", sans-serif;
-      display: flex;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    .container {
-      display: flex;
-      width: 100%;
-    }
+      body {
+        background-color: white;
+        font-family: "Poppins", Arial, sans-serif;
+        height: 100vh;
+      }
 
-    .sidebar {
-      position: fixed;
-      top: 24px;
-      left: 24px;
-      bottom: 44px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 260px;
-      border-radius: 16px;
-      padding: 0 16px;
-      background: rgba(0, 0, 0, 1);
-      backdrop-filter: blur(30px);
-      transition: width 0.4s;
-    }
+      .sidebar {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        bottom: 44px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 260px;
+        border-radius: 16px;
+        padding: 0 16px;
+        background: rgba(0, 0, 0, 1);
+        backdrop-filter: blur(30px);
+        transition: width 0.4s;
+      }
 
-    .sidebar header {
-      display: flex;
-      align-items: center;
-      height: 72px;
-      padding-top: 10px;
-      border-bottom: 1px solid rgb(255 255 255 / 8%);
-    }
+      .sidebar header {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Căn giữa logo theo chiều ngang */
+        height: 72px;
+        padding-top: 10px;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
+      }
 
-    .logo-text {
-      font-size: 24px;
-      font-weight: bold;
-      color: #F76D37;
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-    }
+      .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #F76D37;
+        margin: 0;
+        padding: 0;
+        text-align: center; /* Đảm bảo text căn giữa */
+      }
 
-    .sidebar input {
-      scale: 0;
-      position: absolute;
-    }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
 
-    .sidebar input#settings:checked ~ div { height: 150px; }
-    .sidebar input#create:checked ~ div { height: 200px; }
-    .sidebar input#profile:checked ~ div { height: 100px; }
+      .sidebar li {
+        position: relative;
+      }
 
-    .sidebar :is(button, label) {
-      position: relative;
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      height: 50px;
-      width: 100%;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 1;
-      padding: 0 16px;
-      color: rgb(255 255 255 / 95%);
-      transition: color 0.3s;
-    }
+      .sidebar input {
+        display: none; /* Ẩn input radio */
+      }
 
-    .sidebar :is(button, label):hover {
-      color: #F76D37;
-    }
+      .sidebar label, .sidebar button {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; /* Căn trái cho button và label */
+        height: 50px;
+        width: 100%;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 400;
+        padding: 0 16px;
+        color: rgb(255 255 255 / 95%);
+        cursor: pointer;
+        transition: all 0.3s;
+        background: transparent;
+        border: none;
+        text-align: left;
+      }
 
-    .sidebar label p:nth-child(2) {
-      flex: 1 1 auto;
-    }
+      .sidebar .text-icon-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 16px; /* Khoảng cách giữa icon và text */
+      }
 
-    .sidebar input:checked ~ label {
-      background: #1960f3;
-    }
+      .sidebar label:hover, .sidebar button:hover {
+        background: rgba(50, 50, 50, 0.8);
+        color: #F76D37;
+      }
 
-    .sidebar input:not(:checked) ~ label:hover,
-    .sidebar button:hover {
-      background: rgba(50, 50, 50, 0.8);
-      color: #F76D37;
-    }
+      .sidebar input:checked + label {
+        background: #1960f3; /* Màu nền khi được chọn */
+        color: rgb(255 255 255 / 95%);
+      }
 
-    .sidebar input#settings:not(:checked) ~ label:hover,
-    .sidebar input#create:not(:checked) ~ label:hover {
-      background: transparent;
-      color: #F76D37;
-    }
+      .sidebar input:checked + label:hover {
+        color: #F76D37; /* Hiệu ứng hover khi checked */
+      }
 
-    .sidebar ul {
-      display: grid;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-    }
+      .sidebar label i:last-child {
+        transition: transform 0.3s; /* Hiệu ứng xoay icon */
+        margin-left: auto; /* Đẩy icon chevron sang phải */
+      }
 
-    .sub-menu {
-      position: relative;
-      overflow: hidden;
-      height: 0;
-      transition: 0.5s;
-    }
+      .sidebar input:checked + label i:last-child {
+        transform: rotate(-180deg); /* Xoay icon khi checked */
+      }
 
-    .sub-menu ul {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: grid;
-    }
+      .sub-menu {
+        overflow: hidden;
+        height: 0;
+        transition: height 0.5s ease;
+      }
 
-    .sub-menu button {
-      padding-left: 52px;
-    }
+      /* Tùy chỉnh chiều cao sub-menu cho từng mục */
+      .sidebar input#settings:checked ~ .sub-menu { height: 100px; }
+      .sidebar input#create:checked ~ .sub-menu { height: 100px; }
+      .sidebar input#notifications:checked ~ .sub-menu { height: 50px; }
+      .sidebar input#account:checked ~ .sub-menu { height: 100px; }
 
-    .sub-menu button::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 24px;
-      translate: 0 -50%;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background-color: rgb(255 255 255 / 35%);
-    }
+      .sub-menu a {
+        display: block;
+        padding: 10px 16px 10px 52px;
+        color: rgb(255 255 255 / 95%);
+        text-decoration: none;
+        font-size: 14px;
+        position: relative;
+        transition: all 0.3s;
+      }
 
-    .sidebar a {
-      color: inherit;
-      text-decoration: none;
-      display: block;
-      width: 100%;
-    }
+      .sub-menu a:hover {
+        color: #F76D37;
+        background: rgba(50, 50, 50, 0.8);
+      }
 
-    .sidebar a:hover {
-      color: #F76D37;
-    }
+      .sub-menu a::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 24px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: rgb(255 255 255 / 35%);
+        transform: translateY(-50%);
+      }
 
-    .sidebar i {
-      font-size: 20px;
-      width: 20px;
-      max-width: 20px;
-      min-width: 20px;
-    }
+      .content {
+        margin-left: 280px;
+        padding: 20px;
+        width: calc(100% - 280px);
+      }
 
     .main-content {
       flex: 1;
@@ -322,74 +326,67 @@
     </header>
     <ul>
       <li>
-        <input type="radio" id="dashboard" name="sidebar" checked />
-        <label for="dashboard">
-          <i class="ai-dashboard"></i>
-          <p>Dashboard</p>
-        </label>
+        <button onclick="window.location.href='/admin/dashboard'">
+          <div class="text-icon-wrapper">
+            <i class="bx bx-tachometer"></i>
+            <p>Dashboard</p>
+          </div>
+        </button>
       </li>
       <li>
-        <input type="radio" id="settings" name="sidebar" />
+        <input type="radio" id="settings" name="sidebar"/>
         <label for="settings">
-          <i class="ai-gear"></i>
-          <p>Customers</p>
-          <i class="ai-chevron-down-small"></i>
+          <div class="text-icon-wrapper">
+            <i class="bx bx-user"></i>
+            <p>Customers</p>
+          </div>
+          <i class="bx bx-chevron-down"></i>
         </label>
         <div class="sub-menu">
-          <ul>
-            <li><button type="button"><a href="/users/customers/list">Customers List</a></button></li>
-            <li><button onclick="window.location.href='/membership'" type="button">Members List</button></li>
-          </ul>
+          <a href="/users/customers/list">Customers List</a>
+          <a href="/membership">Members List</a>
         </div>
       </li>
       <li>
-        <input type="radio" id="create" name="sidebar" />
+        <input type="radio" id="create" name="sidebar"/>
         <label for="create">
-          <i class="ai-cart"></i>
-          <p>Menu</p>
-          <i class="ai-chevron-down-small"></i>
+          <div class="text-icon-wrapper">
+            <i class="bx bx-cart"></i>
+            <p>Menu</p>
+          </div>
+          <i class="bx bx-chevron-down"></i>
         </label>
         <div class="sub-menu">
-          <ul>
-            <li><button type="button" onclick="window.location.href='/categories'"><a>Categories List</a></button></li>
-            <li><button type="button" onclick="window.location.href='/products'"><a>Products List</a></button></li>
-          </ul>
+          <a href="/categories">Categories List</a>
+          <a href="/products">Products List</a>
         </div>
       </li>
       <li>
-        <input type="radio" id="profile" name="sidebar" />
-        <label for="profile">
-          <i class="ai-person"></i>
-          <p>Profile</p>
-          <i class="ai-chevron-down-small"></i>
-        </label>
-        <div class="sub-menu">
-          <ul>
-            <li><button type="button">Avatar</button></li>
-            <li><button type="button">Theme</button></li>
-          </ul>
-        </div>
-      </li>
-      <li>
-        <input type="radio" id="notifications" name="sidebar" />
+        <input type="radio" id="notifications" name="sidebar"/>
         <label for="notifications">
-          <i class="ai-bell"></i>
-          <p>Notifications</p>
+          <div class="text-icon-wrapper">
+            <i class="bx bx-bell"></i>
+            <p>Purchase history</p>
+          </div>
+          <i class="bx bx-chevron-down"></i>
         </label>
+        <div class="sub-menu">
+          <a href="/admin/orders">Customer purchase history</a>
+        </div>
       </li>
       <li>
-        <input type="radio" id="products" name="sidebar" />
-        <label for="products">
-          <i class="ai-cart"></i>
-          <p>Products</p>
-        </label>
-      </li>
-      <li>
-        <input type="radio" id="account" name="sidebar" />
+        <input type="radio" id="account" name="sidebar"/>
         <label for="account">
-          <i class="ai-lock-on"></i>
-          <p>Account</p>
+          <div class="text-icon-wrapper">
+            <i class="bx bx-lock"></i>
+            <p>Promotions</p>
+          </div>
+          <i class="bx bx-chevron-down"></i>
         </label>
+        <div class="sub-menu">
+          <a href="/promotions/create">Create new promotions</a>
+          <a href="/promotions">Promotions List</a>
+        </div>
       </li>
     </ul>
   </aside>

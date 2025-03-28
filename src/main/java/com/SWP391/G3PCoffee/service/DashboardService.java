@@ -76,7 +76,7 @@ public class DashboardService {
         }
 
         for (Order order : orders) {
-            if (order.getOrderDate().getYear() == currentYear) {
+            if (order.getOrderDate().getYear() == currentYear && "completed".equalsIgnoreCase(order.getStatus())) {
                 int month = order.getOrderDate().getMonthValue();
                 double currentTotal = monthlyRevenue.getOrDefault(month, 0.0);
                 monthlyRevenue.put(month, currentTotal + order.getOrderTotal().doubleValue());
@@ -119,6 +119,30 @@ public class DashboardService {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(7);
         return orderRepository.findByOrderDateBetween(startDate, endDate);
+    }
+
+    // Tính tỷ lệ khách hàng có tài khoản đã mua hàng (đơn hàng completed)
+    public Double getCustomerPurchaseRatio() {
+        List<User> customers = userRepository.findAll().stream()
+                .filter(user -> "customer".equals(user.getRole()))
+                .collect(Collectors.toList());
+
+        if (customers.isEmpty()) {
+            return 0.0;
+        }
+
+
+        List<Order> completedOrders = orderRepository.findAll().stream()
+                .filter(order -> "completed".equalsIgnoreCase(order.getStatus()))
+                .collect(Collectors.toList());
+
+        long customersWithOrders = completedOrders.stream()
+//                .map(order -> order.get)
+                .distinct()
+                .count();
+
+        // Tính tỷ lệ
+        return (double) customersWithOrders / customers.size() * 100;
     }
 
     // Lớp nội bộ để lưu trữ thông tin bán hàng của sản phẩm

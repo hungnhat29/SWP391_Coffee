@@ -16,9 +16,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 
-    <!-- Boxicons và Akar Icons -->
+    <!-- Boxicons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <script src="https://unpkg.com/akar-icons-fonts"></script>
 
     <style>
         * {
@@ -28,251 +27,322 @@
         }
 
         body {
-            background: linear-gradient(135deg, #3C2F2F 0%, #6F4E37 100%);
+            background: #f0f2f5;
             font-family: "Poppins", sans-serif;
             min-height: 100vh;
             display: flex;
+            overflow-x: hidden;
         }
 
         /* Sidebar Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: white;
+            font-family: "Poppins", Arial, sans-serif;
+            height: 100vh;
+        }
+
         .sidebar {
             position: fixed;
             top: 24px;
             left: 24px;
             bottom: 44px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             width: 260px;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 0 16px;
-            background: rgb(0 0 0 / 32%);
+            background: rgba(0, 0, 0, 1);
             backdrop-filter: blur(30px);
-            overflow-y: auto;
+            transition: width 0.4s;
         }
 
         .sidebar header {
             display: flex;
             align-items: center;
+            justify-content: center; /* Căn giữa logo theo chiều ngang */
             height: 72px;
             padding-top: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgb(255 255 255 / 8%);
         }
 
         .logo-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: #E8D5B5;
-            letter-spacing: 1px;
-        }
-
-        .sidebar input {
-            display: none;
-        }
-
-        .sidebar :is(button, label) {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            height: 50px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 0 16px;
-            color: #E8D5B5;
-            transition: background 0.3s ease;
-        }
-
-        .sidebar label:hover, .sidebar button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #D4A017;
+            font-size: 24px;
+            font-weight: bold;
+            color: #F76D37;
+            margin: 0;
+            padding: 0;
+            text-align: center; /* Đảm bảo text căn giữa */
         }
 
         .sidebar ul {
             list-style: none;
             padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .sidebar li {
+            position: relative;
+        }
+
+        .sidebar input {
+            display: none; /* Ẩn input radio */
+        }
+
+        .sidebar label, .sidebar button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Căn trái cho button và label */
+            height: 50px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 16px;
+            color: rgb(255 255 255 / 95%);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            text-align: left;
+        }
+
+        .sidebar .text-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Khoảng cách giữa icon và text */
+        }
+
+        .sidebar label:hover, .sidebar button:hover {
+            background: rgba(50, 50, 50, 0.8);
+            color: #F76D37;
+        }
+
+        .sidebar input:checked + label {
+            background: #1960f3; /* Màu nền khi được chọn */
+            color: rgb(255 255 255 / 95%);
+        }
+
+        .sidebar input:checked + label:hover {
+            color: #F76D37; /* Hiệu ứng hover khi checked */
+        }
+
+        .sidebar label i:last-child {
+            transition: transform 0.3s; /* Hiệu ứng xoay icon */
+            margin-left: auto; /* Đẩy icon chevron sang phải */
+        }
+
+        .sidebar input:checked + label i:last-child {
+            transform: rotate(-180deg); /* Xoay icon khi checked */
         }
 
         .sub-menu {
-            position: relative;
             overflow: hidden;
             height: 0;
+            transition: height 0.5s ease;
         }
 
-        .sub-menu ul {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Tùy chỉnh chiều cao sub-menu cho từng mục */
+        .sidebar input#settings:checked ~ .sub-menu { height: 100px; }
+        .sidebar input#create:checked ~ .sub-menu { height: 100px; }
+        .sidebar input#notifications:checked ~ .sub-menu { height: 50px; }
+        .sidebar input#account:checked ~ .sub-menu { height: 100px; }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px 16px 10px 52px;
+            color: rgb(255 255 255 / 95%);
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s;
         }
 
-        .sub-menu button {
-            padding-left: 52px;
-            font-size: 15px;
-            color: #D4A017;
+        .sub-menu a:hover {
+            color: #F76D37;
+            background: rgba(50, 50, 50, 0.8);
         }
 
-        .sub-menu button::before {
+        .sub-menu a::before {
             content: "";
             position: absolute;
             top: 50%;
-            left: 30px;
-            translate: 0 -50%;
-            width: 6px;
-            height: 6px;
+            left: 24px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background-color: #D4A017;
+            background-color: rgb(255 255 255 / 35%);
+            transform: translateY(-50%);
         }
 
-        .sidebar i {
-            font-size: 20px;
-            color: #E8D5B5;
-        }
-
-        /* Main Content Styles */
-        .container {
-            margin: 30px 30px 30px 300px;
-            flex: 1;
-            background: #FFF8E7;
+        .content {
+            margin-left: 280px;
             padding: 20px;
+            width: calc(100% - 280px);
+        }
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .content-card {
+            background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E8D5B5;
-        }
-
-        h2 {
-            color: #3C2F2F;
-            font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .btn-primary {
-            background-color: #6F4E37;
-            border: none;
-            padding: 8px 16px;
-            font-weight: 500;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #5A3E2B;
-        }
-
-        .btn-danger {
-            background-color: #A0522D;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: background 0.3s ease;
-        }
-
-        .btn-danger:hover {
-            background-color: #8B4513;
-        }
-
-        .btn-warning {
-            background-color: #D4A017;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: background 0.3s ease;
-        }
-
-        .btn-warning:hover {
-            background-color: #B8860B;
-        }
-
-        table.dataTable {
-            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            border: 1px solid #E8D5B5;
-            font-size: 14px;
         }
 
-        table.dataTable thead th {
-            background-color: #6F4E37;
-            color: #FFF8E7;
-            font-weight: 500;
-            padding: 10px;
-            border-bottom: 2px solid #5A3E2B;
+        .content-header {
+            background: #F76D37;
+            color: white;
+            padding: 16px 24px;
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        table.dataTable tbody tr {
-            transition: background 0.3s ease;
+        .content-header i {
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        table.dataTable tbody tr:nth-child(even) {
-            background-color: #FDF6E3;
+        .content-header i:hover {
+            transform: rotate(90deg);
         }
 
-        table.dataTable tbody tr:hover {
-            background-color: #ECE1C8;
+        .content-body {
+            padding: 20px;
         }
 
-        /* Pagination Styles (Previous, Next, và số trang) */
-        .dataTables_paginate .paginate_button {
-            padding: 5px 10px;
-            margin: 0 5px;
-            border-radius: 4px; /* Điều chỉnh để giống hình ảnh */
-            background: #FDF6E3; /* Kem nhạt */
-            color: #3C2F2F !important; /* Chữ nâu đậm */
-            border: 1px solid #6F4E37; /* Viền nâu cà phê */
+        .search-add-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 10px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s ease;
         }
 
-        .dataTables_paginate .paginate_button:hover {
-            background: #ECE1C8; /* Kem đậm hơn khi hover */
-            color: #3C2F2F !important;
-            border-color: #6F4E37;
+        .search-input:focus {
+            border-color: #F76D37;
+            box-shadow: 0 0 6px rgba(247, 109, 55, 0.2);
+            outline: none;
         }
 
-        .dataTables_paginate .paginate_button.current {
-            background: #6F4E37 !important; /* Nâu cà phê cho trang hiện tại */
-            color: #FFF8E7 !important; /* Chữ kem nhạt */
-            border-color: #6F4E37 !important;
-        }
-
-        .dataTables_paginate .paginate_button.previous,
-        .dataTables_paginate .paginate_button.next {
-            background: #8B5A2B; /* Nâu cà phê nhạt cho Previous và Next */
-            color: #FFF8E7 !important;
-            border: 1px solid #704214;
+        .add-button {
+            background: #F76D37;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
 
-        .dataTables_paginate .paginate_button.previous:hover,
-        .dataTables_paginate .paginate_button.next:hover {
-            background: #704214; /* Nâu đậm hơn khi hover */
-            color: #FFF8E7 !important;
-            border-color: #704214;
+        .add-button:hover {
+            background: #e55a29;
+            box-shadow: 0 4px 10px rgba(247, 109, 55, 0.3);
         }
 
-        .dataTables_paginate .paginate_button.disabled {
-            background: #8B5A2B;
-            color: #E8D5B5 !important;
-            border-color: #8B5A2B;
-            opacity: 0.6;
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
+        table.dataTable thead th {
+            background: #f8fafc;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        table.dataTable tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        table.dataTable tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        table.dataTable tbody td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #4b5563;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .action-button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .view-btn { background: #28a745; }
+        .edit-btn { background: #007bff; }
+        .delete-btn { background: #dc3545; }
+
+        .action-button:hover {
+            opacity: 0.9;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .action-button i {
+            font-size: 16px;
+        }
+
+        /* Modal Styles */
         .modal-content {
             border-radius: 12px;
-            background: #FFF8E7;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             border: none;
         }
 
         .modal-header {
-            background-color: #6F4E37;
-            color: #FFF8E7;
-            border-bottom: none;
-            border-radius: 12px 12px 0 0;
-            padding: 15px 20px;
-        }
-
-        .modal-title {
-            font-weight: 600;
-            font-size: 20px;
+            background: #f8fafc;
+            color: #1f2937;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .modal-body {
@@ -280,67 +350,117 @@
         }
 
         .modal-footer {
+            padding: 16px 24px;
             border-top: none;
-            padding: 15px 20px;
         }
 
         .btn-secondary {
-            background-color: #8B5A2B;
-            border: none;
+            background: #6b7280;
             border-radius: 8px;
-            padding: 8px 16px;
-            transition: background 0.3s ease;
+            padding: 10px 20px;
+            color: white;
+            transition: all 0.3s ease;
         }
 
         .btn-secondary:hover {
-            background-color: #704214;
+            background: #4b5563;
         }
 
         .form-control {
             border-radius: 8px;
-            border: 1px solid #E8D5B5;
-            padding: 8px;
-            background: #FDF6E3;
-            transition: border-color 0.3s ease;
+            border: 1px solid #d1d5db;
+            padding: 10px 14px;
             font-size: 14px;
-        }
-
-        .form-control:focus {
-            border-color: #6F4E37;
-            box-shadow: 0 0 5px rgba(111, 78, 55, 0.3);
-        }
-
-        .option-box {
-            background-color: #FFF8E7;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin: 5px;
-            font-size: 13px;
-            border: 1px solid #E8D5B5;
-            display: inline-block;
-            width: 120px;
-            text-align: center;
             transition: all 0.3s ease;
         }
 
-        .option-box.selected {
-            background-color: #6F4E37;
-            color: #FFF8E7;
-            border-color: #6F4E37;
+        .form-control:focus {
+            border-color: #F76D37;
+            box-shadow: 0 0 6px rgba(247, 109, 55, 0.2);
+            outline: none;
         }
 
-        .option-box:hover {
-            background-color: #D4A017;
-            color: #FFF8E7;
-            border-color: #D4A017;
-        }
-
-        #addSizesContainer, #editSizesContainer,
-        #addToppingsContainer, #editToppingsContainer {
+        /* Dynamic Size/Topping Styles */
+        .size-entry, .topping-entry {
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
             gap: 10px;
-            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .size-entry input, .topping-entry input {
+            flex: 1;
+        }
+
+        .size-entry .btn-danger, .topping-entry .btn-danger {
+            padding: 6px 12px;
+        }
+
+        /* Entries Control */
+        .entries-control {
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .entries-select {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .form-select {
+            padding: 6px 24px 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: #F76D37;
+            box-shadow: 0 0 6px rgba(247, 109, 55, 0.2);
+            outline: none;
+        }
+
+        .dataTables_info {
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .sidebar { width: 220px; }
+            .main-content { margin-left: 260px; width: calc(100% - 260px); }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 200px; }
+            .main-content { margin-left: 240px; width: calc(100% - 240px); }
+            .search-input { width: 250px; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 240px;
+                padding: 0 16px;
+                left: 10px;
+            }
+            .main-content {
+                margin-left: 280px;
+                width: calc(100% - 280px);
+                padding: 16px;
+            }
+            .search-input { width: 100%; }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar { width: 220px; }
+            .main-content {
+                margin-left: 260px;
+                width: calc(100% - 260px);
+            }
         }
     </style>
 </head>
@@ -348,107 +468,120 @@
 <!-- Sidebar -->
 <aside class="sidebar">
     <header>
-        <h1 class="logo-text">Coffee Admin</h1>
+        <h1 class="logo-text">G3P Coffee</h1>
     </header>
     <ul>
         <li>
-            <input type="radio" id="dashboard" name="sidebar" />
-            <label for="dashboard">
-                <i class="ai-dashboard"></i>
-                <p>Dashboard</p>
-            </label>
+            <button onclick="window.location.href='/admin/dashboard'">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-tachometer"></i>
+                    <p>Dashboard</p>
+                </div>
+            </button>
         </li>
         <li>
-            <input type="radio" id="settings" name="sidebar" />
+            <input type="radio" id="settings" name="sidebar"/>
             <label for="settings">
-                <i class="ai-gear"></i>
-                <p>Customers</p>
-                <i class="ai-chevron-down-small"></i>
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-user"></i>
+                    <p>Customers</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
             </label>
             <div class="sub-menu">
-                <ul>
-                    <li><button type="button">Customers List</button></li>
-                    <li><button type="button">Members List</button></li>
-                </ul>
+                <a href="/users/customers/list">Customers List</a>
+                <a href="/membership">Members List</a>
             </div>
         </li>
         <li>
-            <input type="radio" id="create" name="sidebar" />
+            <input type="radio" id="create" name="sidebar"/>
             <label for="create">
-                <i class="ai-folder-add"></i>
-                <p>Create</p>
-                <i class="ai-chevron-down-small"></i>
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-cart"></i>
+                    <p>Menu</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
             </label>
             <div class="sub-menu">
-                <ul>
-                    <li><button type="button">Article</button></li>
-                    <li><button type="button">Document</button></li>
-                    <li><button type="button">Video</button></li>
-                    <li><button type="button">Presentation</button></li>
-                </ul>
+                <a href="/categories">Categories List</a>
+                <a href="/products">Products List</a>
             </div>
         </li>
         <li>
-            <input type="radio" id="profile" name="sidebar" />
-            <label for="profile">
-                <i class="ai-person"></i>
-                <p>Profile</p>
-                <i class="ai-chevron-down-small"></i>
-            </label>
-            <div class="sub-menu">
-                <ul>
-                    <li><button type="button">Avatar</button></li>
-                    <li><button type="button">Theme</button></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-            <input type="radio" id="notifications" name="sidebar" />
+            <input type="radio" id="notifications" name="sidebar"/>
             <label for="notifications">
-                <i class="ai-bell"></i>
-                <p>Notifications</p>
-            </label>
-        </li>
-        <li>
-            <input type="radio" id="products" name="sidebar" checked />
-            <label for="products">
-                <i class="ai-folder-add"></i>
-                <p>Products</p>
-                <i class="ai-chevron-down-small"></i>
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-bell"></i>
+                    <p>Purchase history</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
             </label>
             <div class="sub-menu">
-                <ul>
-                    <li><button type="button" onclick="window.location.href='/products'">Products List</button></li>
-                </ul>
+                <a href="/admin/orders">Customer purchase history</a>
             </div>
         </li>
         <li>
-            <input type="radio" id="account" name="sidebar" />
+            <input type="radio" id="account" name="sidebar"/>
             <label for="account">
-                <i class="ai-lock-on"></i>
-                <p>Account</p>
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-lock"></i>
+                    <p>Promotions</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
             </label>
+            <div class="sub-menu">
+                <a href="/promotions/create">Create new promotions</a>
+                <a href="/promotions">Promotions List</a>
+            </div>
         </li>
     </ul>
 </aside>
 
 <!-- Main Content -->
-<div class="container">
-    <h2>Products List</h2>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
-    <table id="productTable" class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Base Price</th>
-            <th>Category</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div class="main-content">
+    <div class="content-card">
+        <div class="content-header">
+            Products List
+            <i class="bx bx-refresh" onclick="$('#productTable').DataTable().ajax.reload();"></i>
+        </div>
+        <div class="content-body">
+            <div class="search-add-container">
+                <input type="text" class="search-input" id="productSearch" placeholder="Search products...">
+                <button class="add-button" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <i class="bx bx-plus"></i> Add Product
+                </button>
+            </div>
+            <div class="entries-control d-flex justify-content-start align-items-center mb-3 flex-wrap gap-3">
+                <div class="entries-select">
+                    <label for="entriesDropdown" class="me-2">Show</label>
+                    <select id="entriesDropdown" class="form-select d-inline-block w-auto">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span class="ms-2">entries</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="productTable" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Base Price</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="dataTables_info mt-3" id="productTable_info" role="status" aria-live="polite"></div>
+        </div>
+    </div>
 </div>
 
 <!-- Add Product Modal -->
@@ -486,16 +619,18 @@
                     <div class="mb-3">
                         <label class="form-label">Sizes</label>
                         <div id="addSizesContainer"></div>
+                        <button type="button" id="addSizeBtn" class="btn btn-secondary mt-2">Add Size</button>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Toppings</label>
                         <div id="addToppingsContainer"></div>
+                        <button type="button" id="addToppingBtn" class="btn btn-secondary mt-2">Add Topping</button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="addProductBtn" class="btn btn-primary">Save</button>
+                <button type="button" id="addProductBtn" class="btn add-button">Save</button>
             </div>
         </div>
     </div>
@@ -535,16 +670,18 @@
                     <div class="mb-3">
                         <label class="form-label">Sizes</label>
                         <div id="editSizesContainer"></div>
+                        <button type="button" id="editAddSizeBtn" class="btn btn-secondary mt-2">Add Size</button>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Toppings</label>
                         <div id="editToppingsContainer"></div>
+                        <button type="button" id="editAddToppingBtn" class="btn btn-secondary mt-2">Add Topping</button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="updateProductBtn" class="btn btn-primary">Update</button>
+                <button type="button" id="updateProductBtn" class="btn add-button">Update</button>
             </div>
         </div>
     </div>
@@ -599,83 +736,6 @@
 
 <script>
     let categories = [];
-    const allSizes = [
-        {"name": "Nhỏ", "price": 0},
-        {"name": "Vừa", "price": 6000},
-        {"name": "Lớn", "price": 16000}
-    ];
-    const allToppings = [
-        {"name": "Thạch Sương Sáo", "price": 10000},
-        {"name": "Thạch Kim Quất", "price": 10000},
-        {"name": "Thạch Cà Phê", "price": 10000},
-        {"name": "Foam Phô Mai", "price": 10000},
-        {"name": "Shot Espresso", "price": 10000},
-        {"name": "Sốt Caramel", "price": 10000},
-        {"name": "Trân châu trắng", "price": 10000},
-        {"name": "Đào Miếng", "price": 10000},
-        {"name": "Hạt Sen", "price": 10000},
-        {"name": "Trái Vải", "price": 10000},
-        {"name": "Kem Phô Mai Macchiato", "price": 10000}
-    ];
-    let addSelectedSizes = [];
-    let addSelectedToppings = [];
-    let editSelectedSizes = [];
-    let editSelectedToppings = [];
-
-    function loadCategories() {
-        fetch('/products/categories', { method: 'GET' })
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load categories: ' + response.status);
-                return response.json();
-            })
-            .then(data => {
-                categories = data;
-                console.log('Loaded categories:', categories);
-                updateCategorySelects();
-            })
-            .catch(error => {
-                console.error('Error loading categories:', error);
-                Swal.fire('Error', 'Failed to load categories', 'error');
-            });
-    }
-
-    function updateCategorySelects() {
-        const addSelect = document.getElementById('addProductCategory');
-        addSelect.innerHTML = '<option value="">Select a category</option>';
-        categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            addSelect.appendChild(option);
-        });
-
-        const editSelect = document.getElementById('editProductCategory');
-        editSelect.innerHTML = '';
-        categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            editSelect.appendChild(option);
-        });
-    }
-
-    function toggleSelection(containerId, optionsArray, selectedArray) {
-        const container = document.getElementById(containerId);
-        container.querySelectorAll('.option-box').forEach(box => {
-            box.addEventListener('click', function() {
-                const value = JSON.parse(this.getAttribute('data-value'));
-                const index = selectedArray.findIndex(item => item.name === value.name && item.price === value.price);
-                if (index === -1) {
-                    selectedArray.push(value);
-                    this.classList.add('selected');
-                } else {
-                    selectedArray.splice(index, 1);
-                    this.classList.remove('selected');
-                }
-                console.log(`${containerId} updated:`, selectedArray);
-            });
-        });
-    }
 
     $(document).ready(function() {
         loadCategories();
@@ -686,8 +746,7 @@
                 type: 'GET',
                 dataSrc: '',
                 error: function(xhr, error, thrown) {
-                    console.error('DataTables error:', xhr.status, thrown);
-                    Swal.fire('Error', 'Failed to load products: ' + thrown, 'error');
+                    Swal.fire('Error', 'Failed to load products', 'error');
                 }
             },
             columns: [
@@ -695,7 +754,7 @@
                 {
                     data: 'imageUrl',
                     render: function(data) {
-                        return data ? `<img src="${data}" alt="Product Image" width="100" class="img-thumbnail" style="border-radius: 6px;">` : 'No Image';
+                        return data ? `<img src="${data}" alt="Product Image" width="80" class="img-thumbnail" style="border-radius: 6px;">` : 'No Image';
                     }
                 },
                 { data: 'name' },
@@ -705,282 +764,256 @@
                     data: null,
                     render: function(data) {
                         return `
-                                <button class="btn btn-sm btn-primary view-btn" data-id="${data.id}">View</button>
-                                <button class="btn btn-sm btn-warning edit-btn" data-id="${data.id}">Edit</button>
-                                <button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Delete</button>
-                            `;
+                            <button class="action-button view-btn" data-id="${data.id}">
+                                <i class="bx bx-show"></i> View
+                            </button>
+                            <button class="action-button edit-btn" data-id="${data.id}">
+                                <i class="bx bx-edit"></i> Edit
+                            </button>
+                            <button class="action-button delete-btn" data-id="${data.id}">
+                                <i class="bx bx-trash"></i> Delete
+                            </button>
+                        `;
                     }
                 }
             ],
             paging: true,
             searching: true,
             ordering: true,
-            pageLength: 5,
-            responsive: true
+            pageLength: 5, // Giá trị mặc định ban đầu
+            lengthChange: false, // Tắt length menu mặc định của DataTables
+            responsive: true,
+            dom: 'rt<"dataTables_info"i>p', // Giữ lại phần info và phân trang
+            info: true // Bật hiển thị thông tin "Showing 1 to 5 of X entries"
         });
 
-        $(document).on('click', '.view-btn', function() {
-            const id = $(this).data('id');
-            console.log('Viewing product ID:', id);
-            fetch(`/products/${id}`, { method: 'GET' })
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Fetched product:', data);
-                    document.getElementById('viewProductName').textContent = data.name || 'N/A';
-                    document.getElementById('viewProductDescription').textContent = data.description || 'N/A';
-                    document.getElementById('viewProductBasePrice').textContent = data.basePrice || 'N/A';
-                    document.getElementById('viewProductCategory').textContent = data.category ? data.category.name : 'N/A';
-                    document.getElementById('viewProductImage').src = data.imageUrl || '';
-
-                    let sizes = [];
-                    try {
-                        const sizesObj = data.sizes && typeof data.sizes === 'string' && data.sizes.trim() !== '' ? JSON.parse(data.sizes) : {};
-                        sizes = sizesObj.sizes && Array.isArray(sizesObj.sizes) ? sizesObj.sizes : [];
-                    } catch (e) {
-                        console.error('Error parsing sizes:', e, 'Raw sizes:', data.sizes);
-                        sizes = [];
-                    }
-                    document.getElementById('viewProductSizes').innerHTML = sizes.length > 0 ? sizes.map(s => `<li class="list-group-item">${s.name} - $${s.price}</li>`).join('') : 'No sizes available';
-
-                    let toppings = [];
-                    try {
-                        const toppingsObj = data.toppings && typeof data.toppings === 'string' && data.sizes.trim() !== '' ? JSON.parse(data.toppings) : {};
-                        toppings = toppingsObj.toppings && Array.isArray(toppingsObj.toppings) ? toppingsObj.toppings : [];
-                    } catch (e) {
-                        console.error('Error parsing toppings:', e, 'Raw toppings:', data.toppings);
-                        toppings = [];
-                    }
-                    document.getElementById('viewProductToppings').innerHTML = toppings.length > 0 ? toppings.map(t => `<li class="list-group-item">${t.name} - $${t.price}</li>`).join('') : 'No toppings available';
-
-                    $('#viewProductModal').modal('show');
-                })
-                .catch(error => {
-                    console.error('Error fetching product:', error);
-                    Swal.fire('Error', 'Failed to load product details: ' + error.message, 'error');
-                });
+        // Dropdown chọn số lượng entries
+        $('#entriesDropdown').on('change', function() {
+            const pageLength = parseInt($(this).val());
+            table.page.len(pageLength).draw();
         });
 
+        // Đồng bộ giá trị dropdown với pageLength ban đầu
+        $('#entriesDropdown').val(table.page.len());
+
+        // Tìm kiếm tùy chỉnh
+        $('#productSearch').on('keyup', function() {
+            table.search(this.value).draw();
+        });
+
+        // Xử lý nút "Add Size" trong modal Add
+        $('#addSizeBtn').on('click', function() {
+            const sizeIndex = $('#addSizesContainer .size-entry').length;
+            const sizeHtml = `
+                <div class="size-entry mb-2 d-flex gap-2">
+                    <input type="text" class="form-control" placeholder="Size Name" name="sizeName${sizeIndex}" required />
+                    <input type="number" step="0.01" class="form-control" placeholder="Size Price" name="sizePrice${sizeIndex}" required />
+                    <button type="button" class="btn btn-danger remove-size">Remove</button>
+                </div>
+            `;
+            $('#addSizesContainer').append(sizeHtml);
+        });
+
+        // Xử lý nút "Add Topping" trong modal Add
+        $('#addToppingBtn').on('click', function() {
+            const toppingIndex = $('#addToppingsContainer .topping-entry').length;
+            const toppingHtml = `
+                <div class="topping-entry mb-2 d-flex gap-2">
+                    <input type="text" class="form-control" placeholder="Topping Name" name="toppingName${toppingIndex}" required />
+                    <input type="number" step="0.01" class="form-control" placeholder="Topping Price" name="toppingPrice${toppingIndex}" required />
+                    <button type="button" class="btn btn-danger remove-topping">Remove</button>
+                </div>
+            `;
+            $('#addToppingsContainer').append(toppingHtml);
+        });
+
+        // Xử lý nút "Add Size" trong modal Edit
+        $('#editAddSizeBtn').on('click', function() {
+            const sizeIndex = $('#editSizesContainer .size-entry').length;
+            const sizeHtml = `
+                <div class="size-entry mb-2 d-flex gap-2">
+                    <input type="text" class="form-control" placeholder="Size Name" name="sizeName${sizeIndex}" required />
+                    <input type="number" step="0.01" class="form-control" placeholder="Size Price" name="sizePrice${sizeIndex}" required />
+                    <button type="button" class="btn btn-danger remove-size">Remove</button>
+                </div>
+            `;
+            $('#editSizesContainer').append(sizeHtml);
+        });
+
+        // Xử lý nút "Add Topping" trong modal Edit
+        $('#editAddToppingBtn').on('click', function() {
+            const toppingIndex = $('#editToppingsContainer .topping-entry').length;
+            const toppingHtml = `
+                <div class="topping-entry mb-2 d-flex gap-2">
+                    <input type="text" class="form-control" placeholder="Topping Name" name="toppingName${toppingIndex}" required />
+                    <input type="number" step="0.01" class="form-control" placeholder="Topping Price" name="toppingPrice${toppingIndex}" required />
+                    <button type="button" class="btn btn-danger remove-topping">Remove</button>
+                </div>
+            `;
+            $('#editToppingsContainer').append(toppingHtml);
+        });
+
+        // Xử lý nút "Remove" cho size và topping
+        $(document).on('click', '.remove-size', function() {
+            $(this).closest('.size-entry').remove();
+        });
+        $(document).on('click', '.remove-topping', function() {
+            $(this).closest('.topping-entry').remove();
+        });
+
+        // Khi mở modal Add Product
+        $('#addProductModal').on('show.bs.modal', function() {
+            updateCategorySelects();
+            $('#addSizesContainer').empty();
+            $('#addToppingsContainer').empty();
+            $('#addSizeBtn').trigger('click');
+            $('#addToppingBtn').trigger('click');
+        });
+
+        // Khi mở modal Edit Product
         $(document).on('click', '.edit-btn', function() {
             const id = $(this).data('id');
-            console.log('Editing product ID:', id);
             fetch(`/products/${id}`, { method: 'GET' })
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch product'))
                 .then(data => {
-                    console.log('Fetched product for edit:', data);
-                    document.getElementById('editProductId').value = data.id;
-                    document.getElementById('editProductName').value = data.name || '';
-                    document.getElementById('editProductDescription').value = data.description || '';
-                    document.getElementById('editProductBasePrice').value = data.basePrice || '';
-                    document.getElementById('editProductCategory').value = data.category ? data.category.id : '';
-                    document.getElementById('editProductImageUrl').value = data.imageUrl || 'https://';
+                    $('#editProductId').val(data.id);
+                    $('#editProductName').val(data.name || '');
+                    $('#editProductDescription').val(data.description || '');
+                    $('#editProductBasePrice').val(data.basePrice || '');
+                    $('#editProductCategory').val(data.category ? data.category.id : '');
+                    $('#editProductImageUrl').val(data.imageUrl || 'https://');
 
-                    editSelectedSizes = [];
-                    try {
-                        const sizesObj = data.sizes && typeof data.sizes === 'string' && data.sizes.trim() !== '' ? JSON.parse(data.sizes) : {};
-                        editSelectedSizes = sizesObj.sizes && Array.isArray(sizesObj.sizes) ? sizesObj.sizes : [];
-                    } catch (e) {
-                        console.error('Error parsing sizes for edit:', e, 'Raw sizes:', data.sizes);
-                        editSelectedSizes = [];
-                    }
-
-                    editSelectedToppings = [];
-                    try {
-                        const toppingsObj = data.toppings && typeof data.toppings === 'string' && data.toppings.trim() !== '' ? JSON.parse(data.toppings) : {};
-                        editSelectedToppings = toppingsObj.toppings && Array.isArray(toppingsObj.toppings) ? toppingsObj.toppings : [];
-                    } catch (e) {
-                        console.error('Error parsing toppings for edit:', e, 'Raw toppings:', data.toppings);
-                        editSelectedToppings = [];
-                    }
-
-                    const editSizesContainer = document.getElementById('editSizesContainer');
-                    editSizesContainer.innerHTML = '';
-                    allSizes.forEach(size => {
-                        const isSelected = editSelectedSizes.some(s => s.name === size.name && s.price === size.price);
-                        const box = document.createElement('span');
-                        box.className = 'option-box' + (isSelected ? ' selected' : '');
-                        box.setAttribute('data-value', JSON.stringify(size));
-                        box.textContent = `${size.name} - $${size.price}`;
-                        editSizesContainer.appendChild(box);
+                    const editSizesContainer = $('#editSizesContainer');
+                    editSizesContainer.empty();
+                    let sizes = data.sizes && typeof data.sizes === 'string' ? JSON.parse(data.sizes).sizes || [] : [];
+                    sizes.forEach((size, index) => {
+                        const sizeHtml = `
+                            <div class="size-entry mb-2 d-flex gap-2">
+                                <input type="text" class="form-control" value="${size.name}" name="sizeName${index}" required />
+                                <input type="number" step="0.01" class="form-control" value="${size.price}" name="sizePrice${index}" required />
+                                <button type="button" class="btn btn-danger remove-size">Remove</button>
+                            </div>
+                        `;
+                        editSizesContainer.append(sizeHtml);
                     });
 
-                    const editToppingsContainer = document.getElementById('editToppingsContainer');
-                    editToppingsContainer.innerHTML = '';
-                    allToppings.forEach(topping => {
-                        const isSelected = editSelectedToppings.some(t => t.name === topping.name && t.price === topping.price);
-                        const box = document.createElement('span');
-                        box.className = 'option-box' + (isSelected ? ' selected' : '');
-                        box.setAttribute('data-value', JSON.stringify(topping));
-                        box.textContent = `${topping.name} - $${topping.price}`;
-                        editToppingsContainer.appendChild(box);
+                    const editToppingsContainer = $('#editToppingsContainer');
+                    editToppingsContainer.empty();
+                    let toppings = data.toppings && typeof data.toppings === 'string' ? JSON.parse(data.toppings).toppings || [] : [];
+                    toppings.forEach((topping, index) => {
+                        const toppingHtml = `
+                            <div class="topping-entry mb-2 d-flex gap-2">
+                                <input type="text" class="form-control" value="${topping.name}" name="toppingName${index}" required />
+                                <input type="number" step="0.01" class="form-control" value="${topping.price}" name="toppingPrice${index}" required />
+                                <button type="button" class="btn btn-danger remove-topping">Remove</button>
+                            </div>
+                        `;
+                        editToppingsContainer.append(toppingHtml);
                     });
 
-                    toggleSelection('editSizesContainer', allSizes, editSelectedSizes);
-                    toggleSelection('editToppingsContainer', allToppings, editSelectedToppings);
                     $('#editProductModal').modal('show');
                 })
-                .catch(error => {
-                    console.error('Error fetching product for edit:', error);
-                    Swal.fire('Error', 'Failed to load product: ' + error.message, 'error');
-                });
+                .catch(error => Swal.fire('Error', 'Failed to load product', 'error'));
         });
 
+        // Xử lý thêm sản phẩm
         $('#addProductBtn').on('click', function() {
-            const name = $('#addProductName').val().trim();
-            const description = $('#addProductDescription').val().trim();
-            const basePrice = $('#addProductBasePrice').val().trim();
-            const categoryId = $('#addProductCategory').val();
-            const imageUrl = $('#addProductImageUrl').val().trim();
+            const sizes = [];
+            $('#addSizesContainer .size-entry').each(function() {
+                const name = $(this).find('input[name^=sizeName]').val().trim();
+                const price = parseFloat($(this).find('input[name^=sizePrice]').val().trim());
+                if (name && !isNaN(price)) {
+                    sizes.push({ name, price });
+                }
+            });
 
-            if (!name) {
-                Swal.fire('Error', 'Name must not be empty', 'error');
-                return;
-            }
-            if (!description) {
-                Swal.fire('Error', 'Description must not be empty', 'error');
-                return;
-            }
-            if (!basePrice || isNaN(basePrice)) {
-                Swal.fire('Error', 'Base Price must be a valid number', 'error');
-                return;
-            }
-            if (!categoryId) {
-                Swal.fire('Error', 'Please select a category', 'error');
-                return;
-            }
-            if (!imageUrl) {
-                Swal.fire('Error', 'Image URL must not be empty', 'error');
-                return;
-            }
+            const toppings = [];
+            $('#addToppingsContainer .topping-entry').each(function() {
+                const name = $(this).find('input[name^=toppingName]').val().trim();
+                const price = parseFloat($(this).find('input[name^=toppingPrice]').val().trim());
+                if (name && !isNaN(price)) {
+                    toppings.push({ name, price });
+                }
+            });
 
-            const selectedSizes = Array.from(document.querySelectorAll('#addSizesContainer .option-box.selected')).map(box => JSON.parse(box.getAttribute('data-value')));
-            const selectedToppings = Array.from(document.querySelectorAll('#addToppingsContainer .option-box.selected')).map(box => JSON.parse(box.getAttribute('data-value')));
-
-            if (selectedSizes.length === 0) {
-                Swal.fire('Error', 'Please select at least one size', 'error');
-                return;
-            }
-            if (selectedToppings.length === 0) {
-                Swal.fire('Error', 'Please select at least one topping', 'error');
+            if (sizes.length === 0 || toppings.length === 0) {
+                Swal.fire('Error', 'At least one size and one topping are required', 'error');
                 return;
             }
 
             const formData = new FormData();
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('basePrice', basePrice);
-            formData.append('categoryId', categoryId);
-            formData.append('imageUrl', imageUrl);
-            formData.append('sizes', JSON.stringify({ sizes: selectedSizes }));
-            formData.append('toppings', JSON.stringify({ toppings: selectedToppings }));
+            formData.append('name', $('#addProductName').val().trim());
+            formData.append('description', $('#addProductDescription').val().trim());
+            formData.append('basePrice', $('#addProductBasePrice').val().trim());
+            formData.append('categoryId', $('#addProductCategory').val());
+            formData.append('imageUrl', $('#addProductImageUrl').val().trim());
+            formData.append('sizes', JSON.stringify({ sizes }));
+            formData.append('toppings', JSON.stringify({ toppings }));
 
-            console.log('Adding product with data:', Object.fromEntries(formData));
             fetch('/products/update-product', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(`HTTP error! Status: ${response.status} - ${text}`); });
-                    }
-                    return response.text();
-                })
+                .then(response => response.ok ? response.text() : Promise.reject('Failed to add product'))
                 .then(message => {
-                    console.log('Add product response:', message);
                     Swal.fire('Success', message, 'success');
                     $('#addProductModal').modal('hide');
                     table.ajax.reload();
                 })
-                .catch(error => {
-                    console.error('Error adding product:', error);
-                    Swal.fire('Error', 'Failed to add product: ' + error.message, 'error');
-                });
+                .catch(error => Swal.fire('Error', error, 'error'));
         });
 
+        // Xử lý cập nhật sản phẩm
         $('#updateProductBtn').on('click', function() {
-            const id = $('#editProductId').val();
-            const name = $('#editProductName').val().trim();
-            const description = $('#editProductDescription').val().trim();
-            const basePrice = $('#editProductBasePrice').val().trim();
-            const categoryId = $('#editProductCategory').val();
-            const imageUrl = $('#editProductImageUrl').val().trim();
+            const sizes = [];
+            $('#editSizesContainer .size-entry').each(function() {
+                const name = $(this).find('input[name^=sizeName]').val().trim();
+                const price = parseFloat($(this).find('input[name^=sizePrice]').val().trim());
+                if (name && !isNaN(price)) {
+                    sizes.push({ name, price });
+                }
+            });
 
-            if (!name) {
-                Swal.fire('Error', 'Name must not be empty', 'error');
-                return;
-            }
-            if (!description) {
-                Swal.fire('Error', 'Description must not be empty', 'error');
-                return;
-            }
-            if (!basePrice || isNaN(basePrice)) {
-                Swal.fire('Error', 'Base Price must be a valid number', 'error');
-                return;
-            }
-            if (!categoryId) {
-                Swal.fire('Error', 'Please select a category', 'error');
-                return;
-            }
-            if (!imageUrl) {
-                Swal.fire('Error', 'Image URL must not be empty', 'error');
-                return;
-            }
+            const toppings = [];
+            $('#editToppingsContainer .topping-entry').each(function() {
+                const name = $(this).find('input[name^=toppingName]').val().trim();
+                const price = parseFloat($(this).find('input[name^=toppingPrice]').val().trim());
+                if (name && !isNaN(price)) {
+                    toppings.push({ name, price });
+                }
+            });
 
-            const selectedSizes = Array.from(document.querySelectorAll('#editSizesContainer .option-box.selected')).map(box => JSON.parse(box.getAttribute('data-value')));
-            const selectedToppings = Array.from(document.querySelectorAll('#editToppingsContainer .option-box.selected')).map(box => JSON.parse(box.getAttribute('data-value')));
-
-            if (selectedSizes.length === 0) {
-                Swal.fire('Error', 'Please select at least one size', 'error');
-                return;
-            }
-            if (selectedToppings.length === 0) {
-                Swal.fire('Error', 'Please select at least one topping', 'error');
+            if (sizes.length === 0 || toppings.length === 0) {
+                Swal.fire('Error', 'At least one size and one topping are required', 'error');
                 return;
             }
 
             const formData = new FormData();
-            formData.append('id', id);
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('basePrice', basePrice);
-            formData.append('categoryId', categoryId);
-            formData.append('imageUrl', imageUrl);
-            formData.append('sizes', JSON.stringify({ sizes: selectedSizes }));
-            formData.append('toppings', JSON.stringify({ toppings: selectedToppings }));
+            formData.append('id', $('#editProductId').val());
+            formData.append('name', $('#editProductName').val().trim());
+            formData.append('description', $('#editProductDescription').val().trim());
+            formData.append('basePrice', $('#editProductBasePrice').val().trim());
+            formData.append('categoryId', $('#editProductCategory').val());
+            formData.append('imageUrl', $('#editProductImageUrl').val().trim());
+            formData.append('sizes', JSON.stringify({ sizes }));
+            formData.append('toppings', JSON.stringify({ toppings }));
 
-            console.log('Updating product with data:', Object.fromEntries(formData));
             fetch('/products/update-product', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(`HTTP error! Status: ${response.status} - ${text}`); });
-                    }
-                    return response.text();
-                })
+                .then(response => response.ok ? response.text() : Promise.reject('Failed to update product'))
                 .then(message => {
-                    console.log('Update product response:', message);
                     Swal.fire('Success', message, 'success');
                     $('#editProductModal').modal('hide');
                     table.ajax.reload();
                 })
-                .catch(error => {
-                    console.error('Error updating product:', error);
-                    Swal.fire('Error', 'Failed to update product: ' + error.message, 'error');
-                });
+                .catch(error => Swal.fire('Error', error, 'error'));
         });
 
+        // Xử lý xóa sản phẩm
         $(document).on('click', '.delete-btn', function() {
             const id = $(this).data('id');
-            console.log('Deleting product ID:', id);
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'Do you want to delete this product?',
@@ -990,59 +1023,64 @@
                 cancelButtonText: 'No, cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`/products/delete-product?productId=${id}`, {
-                        method: 'DELETE'
-                    })
-                        .then(response => {
-                            console.log('Response status:', response.status);
-                            if (!response.ok) {
-                                return response.text().then(text => { throw new Error(`HTTP error! Status: ${response.status} - ${text}`); });
-                            }
-                            return response.text();
-                        })
+                    fetch(`/products/delete-product?productId=${id}`, { method: 'DELETE' })
+                        .then(response => response.ok ? response.text() : Promise.reject('Failed to delete product'))
                         .then(message => {
-                            console.log('Delete product response:', message);
                             Swal.fire('Success', message, 'success');
                             table.ajax.reload();
                         })
-                        .catch(error => {
-                            console.error('Error deleting product:', error);
-                            Swal.fire('Error', 'Failed to delete product: ' + error.message, 'error');
-                        });
+                        .catch(error => Swal.fire('Error', error, 'error'));
                 }
             });
         });
 
-        $('#addProductModal').on('show.bs.modal', function() {
-            updateCategorySelects();
-            addSelectedSizes = [];
-            addSelectedToppings = [];
-            const addSizesContainer = document.getElementById('addSizesContainer');
-            addSizesContainer.innerHTML = '';
-            allSizes.forEach(size => {
-                const box = document.createElement('span');
-                box.className = 'option-box';
-                box.setAttribute('data-value', JSON.stringify(size));
-                box.textContent = `${size.name} - $${size.price}`;
-                addSizesContainer.appendChild(box);
-            });
-            const addToppingsContainer = document.getElementById('addToppingsContainer');
-            addToppingsContainer.innerHTML = '';
-            allToppings.forEach(topping => {
-                const box = document.createElement('span');
-                box.className = 'option-box';
-                box.setAttribute('data-value', JSON.stringify(topping));
-                box.textContent = `${topping.name} - $${topping.price}`;
-                addToppingsContainer.appendChild(box);
-            });
-            toggleSelection('addSizesContainer', allSizes, addSelectedSizes);
-            toggleSelection('addToppingsContainer', allToppings, addSelectedToppings);
-        });
+        // Xử lý xem sản phẩm
+        $(document).on('click', '.view-btn', function() {
+            const id = $(this).data('id');
+            fetch(`/products/${id}`, { method: 'GET' })
+                .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch product'))
+                .then(data => {
+                    $('#viewProductName').text(data.name || 'N/A');
+                    $('#viewProductDescription').text(data.description || 'N/A');
+                    $('#viewProductBasePrice').text(data.basePrice || 'N/A');
+                    $('#viewProductCategory').text(data.category ? data.category.name : 'N/A');
+                    $('#viewProductImage').attr('src', data.imageUrl || '');
 
-        $('#editProductModal').on('show.bs.modal', function() {
-            updateCategorySelects();
+                    let sizes = data.sizes && typeof data.sizes === 'string' ? JSON.parse(data.sizes).sizes || [] : [];
+                    $('#viewProductSizes').html(sizes.length > 0 ? sizes.map(s => `<li class="list-group-item">${s.name} - $${s.price}</li>`).join('') : 'No sizes');
+
+                    let toppings = data.toppings && typeof data.toppings === 'string' ? JSON.parse(data.toppings).toppings || [] : [];
+                    $('#viewProductToppings').html(toppings.length > 0 ? toppings.map(t => `<li class="list-group-item">${t.name} - $${t.price}</li>`).join('') : 'No toppings');
+
+                    $('#viewProductModal').modal('show');
+                })
+                .catch(error => Swal.fire('Error', 'Failed to load product details', 'error'));
         });
     });
+
+    function loadCategories() {
+        fetch('/products/categories', { method: 'GET' })
+            .then(response => response.ok ? response.json() : Promise.reject('Failed to load categories'))
+            .then(data => {
+                categories = data;
+                updateCategorySelects();
+            })
+            .catch(error => Swal.fire('Error', error, 'error'));
+    }
+
+    function updateCategorySelects() {
+        const addSelect = document.getElementById('addProductCategory');
+        addSelect.innerHTML = '<option value="">Select a category</option>';
+        categories.forEach(cat => {
+            addSelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+        });
+
+        const editSelect = document.getElementById('editProductCategory');
+        editSelect.innerHTML = '';
+        categories.forEach(cat => {
+            editSelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+        });
+    }
 </script>
 </body>
 </html>
