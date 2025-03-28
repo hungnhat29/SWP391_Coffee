@@ -24,8 +24,9 @@ public class PageController {
         return "change_password";
     }
 
-    @GetMapping("/forgot_password")
+    @GetMapping("/forgot-password")
     public String showFPPage() {
+        System.out.println("Rendering forgot_password page");
         return "forgot_password";
     }
 }

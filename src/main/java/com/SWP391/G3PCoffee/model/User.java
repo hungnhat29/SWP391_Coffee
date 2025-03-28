@@ -54,4 +54,6 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Transient // This field is not stored in the database
+    private long orderCount;
 }

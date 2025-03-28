@@ -572,7 +572,6 @@
     </div>
 </div>
 <script>
-    // Hàm lấy dữ liệu cơ bản (id, name, email)
     // Hàm lấy customerId từ URL
     function getCustomerIdFromURL() {
         const urlParts = window.location.pathname.split('/');
@@ -581,7 +580,7 @@
 
     // Hàm lấy dữ liệu cơ bản (id, name, email) của khách hàng
     async function fetchCustomerBasicInfo() {
-        const customerId = getCustomerIdFromURL(); // Lấy ID từ URL
+        const customerId = getCustomerIdFromURL();
 
         if (!customerId) {
             console.error('Customer ID not found in URL');
@@ -590,7 +589,7 @@
 
         try {
             const response = await fetch(`/users/customers/${customerId}`);
-            const customer = await response.json(); // Chỉ lấy 1 object thay vì danh sách
+            const customer = await response.json();
 
             const tbody = document.getElementById('basic-info-body');
             tbody.innerHTML = `
@@ -607,21 +606,22 @@
         }
     }
 
-    // Hàm lấy dữ liệu đầy đủ (id, name, email, password, phone, address, created_at)
+    // Hàm lấy dữ liệu đầy đủ của khách hàng, thay password bằng số lượng order
     async function fetchCustomerFullInfo(customerId) {
         try {
             const response = await fetch(`/users/customers/${customerId}`);
             const customer = await response.json();
 
+            // Giả sử API trả về thêm trường "orderCount" từ OrderService
             const detailsGrid = document.getElementById('full-info-grid');
             detailsGrid.innerHTML = `
-                    <div class="details-row"><span class="details-label">Customer ID</span><span class="details-value">${customer.id}</span></div>
-                    <div class="details-row"><span class="details-label">Full Name</span><span class="details-value">${customer.name}</span></div>
-                    <div class="details-row"><span class="details-label">Email</span><span class="details-value">${customer.email}</span></div>
-                    <div class="details-row"><span class="details-label">Password</span><span class="details-value">${customer.password || 'N/A'}</span></div>
-                    <div class="details-row"><span class="details-label">Phone</span><span class="details-value">${customer.phone || 'N/A'}</span></div>
-                    <div class="details-row"><span class="details-label">Address</span><span class="details-value">${customer.address || 'N/A'}</span></div>
-                    <div class="details-row"><span class="details-label">Created Date</span><span class="details-value">${customer.createdAt || 'N/A'}</span></div>`;
+                <div class="details-row"><span class="details-label">Customer ID</span><span class="details-value">${customer.id}</span></div>
+                <div class="details-row"><span class="details-label">Full Name</span><span class="details-value">${customer.name}</span></div>
+                <div class="details-row"><span class="details-label">Email</span><span class="details-value">${customer.email}</span></div>
+                <div class="details-row"><span class="details-label">Number of Orders</span><span class="details-value">${customer.orderCount || 'N/A'}</span></div>
+                <div class="details-row"><span class="details-label">Phone</span><span class="details-value">${customer.phone || 'N/A'}</span></div>
+                <div class="details-row"><span class="details-label">Address</span><span class="details-value">${customer.address || 'N/A'}</span></div>
+                <div class="details-row"><span class="details-label">Created Date</span><span class="details-value">${customer.createdAt || 'N/A'}</span></div>`;
         } catch (error) {
             console.error('Error fetching full info:', error);
         }

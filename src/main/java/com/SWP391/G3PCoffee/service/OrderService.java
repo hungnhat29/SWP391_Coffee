@@ -291,4 +291,11 @@ public class OrderService {
             return null;
         });
     }
+
+    public long getOrderCountByCustomerId(Integer userId) {
+        if (userId == null) {
+            return 0; // Return 0 if no userId is provided (e.g., guest orders)
+        }
+        return orderRepository.countByUserId(userId); // Assumes OrderRepository has a countByUserId method
+    }
 }
