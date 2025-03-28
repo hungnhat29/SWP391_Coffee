@@ -29,6 +29,7 @@
             width: 100%;
         }
 
+        /* Sidebar Styles */
         .sidebar {
             position: fixed;
             top: 24px;
@@ -59,7 +60,7 @@
             color: #F76D37;
             margin: 0;
             padding: 0;
-            font-family: "Poppins", sans-serif;
+            font-family: "Euclid Circular A", sans-serif;
         }
 
         .sidebar input {
@@ -70,6 +71,7 @@
         .sidebar input#settings:checked ~ div { height: 150px; }
         .sidebar input#create:checked ~ div { height: 200px; }
         .sidebar input#profile:checked ~ div { height: 100px; }
+        .sidebar input#account:checked ~ .sub-menu { height: 100px; }
 
         .sidebar :is(button, label) {
             position: relative;
@@ -79,10 +81,8 @@
             height: 50px;
             width: 100%;
             border-radius: 6px;
-            font-family: inherit;
             font-size: 16px;
             font-weight: 400;
-            line-height: 1;
             padding: 0 16px;
             color: rgb(255 255 255 / 95%);
             transition: color 0.3s;
@@ -100,14 +100,20 @@
             background: #1960f3;
         }
 
-        .sidebar input:not(:checked) ~ label:hover,
-        .sidebar button:hover {
-            background: rgba(50, 50, 50, 0.8);
+        .sidebar input:checked ~ label:hover {
             color: #F76D37;
         }
 
-        .sidebar input#settings:not(:checked) ~ label:hover,
-        .sidebar input#create:not(:checked) ~ label:hover {
+        .sidebar label i {
+            transition: 0.3s;
+        }
+
+        .sidebar input:checked ~ label > i:nth-child(3) {
+            rotate: -180deg;
+        }
+
+        .sidebar input:not(:checked) ~ label:hover,
+        .sidebar button:hover {
             background: transparent;
             color: #F76D37;
         }
@@ -125,6 +131,7 @@
             overflow: hidden;
             height: 0;
             transition: 0.5s;
+            background: transparent;
         }
 
         .sub-menu ul {
@@ -136,6 +143,7 @@
 
         .sub-menu button {
             padding-left: 52px;
+            background: transparent;
         }
 
         .sub-menu button::before {
@@ -161,6 +169,10 @@
             color: #F76D37;
         }
 
+        .sidebar .material-symbols-outlined {
+            font-size: 16px;
+        }
+
         .sidebar i {
             font-size: 20px;
             width: 20px;
@@ -168,59 +180,90 @@
             min-width: 20px;
         }
 
+        /* Main Content Styles */
         .main-content {
             flex: 1;
-            padding: 40px;
-            margin-left: 280px;
+            padding: 30px 40px;
+            margin-left: 300px;
             background: linear-gradient(135deg, #f5f5f5 0%, #e8ecef 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Tăng khoảng cách giữa các phần để hợp lý hơn */
         }
 
         .card {
             background-color: white;
-            padding: 25px;
-            margin-bottom: 30px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
             border-left: 4px solid #F76D37;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        /* Stats Container - Đã chỉnh sửa khoảng cách */
+        .stats-container {
+            display: flex;
+            gap: 20px; /* Tăng khoảng cách giữa các card nhỏ */
+            margin-top: 30px; /* Tăng khoảng cách với phần bên trên */
+            flex-wrap: wrap; /* Đảm bảo responsive trên màn hình nhỏ */
         }
 
         .card.small {
-            width: 240px;
-            display: inline-block;
-            margin-right: 30px;
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            padding: 20px; /* Tăng padding để có không gian thoáng hơn */
             text-align: center;
-            border-left: none;
-            border-top: 4px solid #F76D37;
+            border: 2px solid #F76D37;
+            border-radius: 10px;
+            box-shadow: none;
+            background-color: #fff;
+        }
+
+        .card.small h3 {
+            margin: 0 0 12px; /* Tăng khoảng cách dưới tiêu đề */
+            font-size: 16px;
+            font-weight: 500;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .card.small p:nth-child(2) {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 10px; /* Tăng khoảng cách dưới số liệu */
+        }
+
+        .card.small p:nth-child(3) {
+            font-size: 12px;
+            margin: 0; /* Loại bỏ margin mặc định */
         }
 
         .card h3 {
-            margin: 0 0 15px;
-            font-size: 20px;
+            margin: 0 0 10px;
+            font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .card p {
             margin: 5px 0;
             color: #7f8c8d;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .chart {
-            height: 300px;
+            height: 280px;
             background: #fff;
             border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
             position: relative;
         }
 
@@ -228,14 +271,14 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 15px;
+            margin-top: 10px;
             background: #fff;
             border-radius: 8px;
             overflow: hidden;
         }
 
         table th, table td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eef2f7;
         }
@@ -245,34 +288,34 @@
             color: white;
             font-weight: 500;
             text-transform: uppercase;
-            font-size: 13px;
+            font-size: 12px;
             letter-spacing: 0.5px;
         }
 
         table td {
             color: #34495e;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         table tr:hover {
-            background-color: #f8f9fa;
+            background-color: transparent;
         }
 
         .filter {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: right;
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
         .filter select {
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid #ddd;
             background: #fff;
-            font-size: 14px;
+            font-size: 13px;
             color: #2c3e50;
             cursor: pointer;
             transition: border-color 0.2s ease;
@@ -283,16 +326,19 @@
         }
 
         .search-bar {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .search-bar input {
-            padding: 10px 15px 10px 40px;
-            width: 300px;
+            padding: 8px 12px 8px 35px;
+            width: 250px;
             border-radius: 20px;
             border: 1px solid #ddd;
-            font-size: 14px;
-            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%237f8c8d" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 12px center;
+            font-size: 13px;
+            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%237f8c8d" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 10px center;
             transition: border-color 0.2s ease;
         }
 
@@ -302,10 +348,32 @@
             box-shadow: 0 0 5px rgba(247, 109, 55, 0.3);
         }
 
-        .stats-container {
+        .pagination {
             display: flex;
-            gap: 30px;
-            margin-top: 30px;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .pagination button.active {
+            background-color: #F76D37;
+            color: #fff;
+            border-color: #F76D37;
+        }
+
+        .pagination button:hover {
+            background-color: transparent;
         }
 
         .highlight {
@@ -329,7 +397,7 @@
                 </label>
             </li>
             <li>
-                <input type="radio" id="settings" name="sidebar" />
+                <input type="radio" id="settings" name="sidebar"/>
                 <label for="settings">
                     <i class="ai-gear"></i>
                     <p>Customers</p>
@@ -343,7 +411,7 @@
                 </div>
             </li>
             <li>
-                <input type="radio" id="create" name="sidebar" />
+                <input type="radio" id="create" name="sidebar"/>
                 <label for="create">
                     <i class="ai-cart"></i>
                     <p>Menu</p>
@@ -357,7 +425,7 @@
                 </div>
             </li>
             <li>
-                <input type="radio" id="profile" name="sidebar" />
+                <input type="radio" id="profile" name="sidebar"/>
                 <label for="profile">
                     <i class="ai-person"></i>
                     <p>Profile</p>
@@ -371,24 +439,31 @@
                 </div>
             </li>
             <li>
-                <input type="radio" id="notifications" name="sidebar" />
+                <input type="radio" id="notifications" name="sidebar"/>
                 <label for="notifications">
                     <i class="ai-bell"></i>
                     <p>Notifications</p>
                 </label>
             </li>
             <li>
-                <input type="radio" id="products" name="sidebar" />
+                <input type="radio" id="account" name="sidebar"/>
+                <label for="account">
+                    <i class="ai-lock-on"></i>
+                    <p>Promotions</p>
+                    <i class="ai-chevron-down-small"></i>
+                </label>
+                <div class="sub-menu">
+                    <ul>
+                        <li><button type="button" onclick="window.location.href='/promotions/create'"><a>Create new promotions</a></button></li>
+                        <li><button type="button" onclick="window.location.href='/promotions'"><a>Promotions List</a></button></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <input type="radio" id="products" name="sidebar"/>
                 <label for="products">
                     <i class="ai-cart"></i>
                     <p>Products</p>
-                </label>
-            </li>
-            <li>
-                <input type="radio" id="account" name="sidebar" />
-                <label for="account">
-                    <i class="ai-lock-on"></i>
-                    <p>Account</p>
                 </label>
             </li>
         </ul>
@@ -424,16 +499,16 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Created At</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="customer : ${customers}">
-                    <td th:text="${customer.id}"></td>
-                    <td th:text="${customer.name}"></td>
-                    <td th:text="${customer.email}"></td>
-                </tr>
+                <tbody id="customerTableBody">
+                <!-- Dữ liệu sẽ được thêm động -->
                 </tbody>
             </table>
+            <div class="pagination" id="customerPagination">
+                <!-- Phân trang sẽ được thêm động -->
+            </div>
         </div>
 
         <!-- Top 10 Selling Products -->
@@ -463,17 +538,17 @@
         <div class="stats-container">
             <div class="card small">
                 <h3><i class="bx bx-user-plus"></i> New Customers</h3>
-                <p th:text="${newCustomersCount}" style="font-size: 24px; color: #2c3e50; margin: 10px 0;"></p>
+                <p th:text="${newCustomersCount}"></p>
                 <p style="color: #e74c3c;">-2.4%</p>
             </div>
             <div class="card small">
                 <h3><i class="bx bx-money"></i> Daily Revenue</h3>
-                <p th:text="${#numbers.formatDecimal(dailyRevenue, 0, 'COMMA', 0, 'POINT') + ' VND'}" style="font-size: 24px; color: #2c3e50; margin: 10px 0;"></p>
+                <p th:text="${#numbers.formatDecimal(dailyRevenue, 0, 'COMMA', 0, 'POINT') + ' VND'}"></p>
                 <p style="color: #7f8c8d;">Today</p>
             </div>
             <div class="card small">
                 <h3><i class="bx bx-money"></i> Weekly Revenue</h3>
-                <p th:text="${#numbers.formatDecimal(weeklyRevenue, 0, 'COMMA', 0, 'POINT') + ' VND'}" style="font-size: 24px; color: #2c3e50; margin: 10px 0;"></p>
+                <p th:text="${#numbers.formatDecimal(weeklyRevenue, 0, 'COMMA', 0, 'POINT') + ' VND'}"></p>
                 <p style="color: #7f8c8d;">Last 7 days</p>
             </div>
         </div>
@@ -484,11 +559,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:inline="javascript">
     let revenueChart;
+    let allCustomers = [];
+    const itemsPerPage = 10;
+    let currentPage = 1;
 
     // Real data from backend
     const dailyRevenue = /*[[${dailyRevenue}]]*/ 0;
     const weeklyRevenue = /*[[${weeklyRevenue}]]*/ 0;
     const monthlyRevenue = /*[[${monthlyRevenue}]]*/ {};
+    const customersData = /*[[${customers}]]*/ [];
 
     const dailyLabels = ['Today'];
     const dailyData = [dailyRevenue];
@@ -499,6 +578,92 @@
     const monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthlyData = monthlyLabels.map((label, index) => monthlyRevenue[index + 1] || 0);
 
+    // Sắp xếp khách hàng từ mới nhất đến cũ nhất
+    function sortCustomersByDate(customers) {
+        return customers.sort((a, b) => {
+            const dateA = new Date(a.createdAt || '1970-01-01');
+            const dateB = new Date(b.createdAt || '1970-01-01');
+            return dateB - dateA;
+        });
+    }
+
+    // Hiển thị danh sách khách hàng với phân trang
+    function displayCustomers(customers) {
+        const tableBody = document.getElementById('customerTableBody');
+        tableBody.innerHTML = '';
+
+        if (!customers || customers.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4">No customers found.</td></tr>';
+            return;
+        }
+
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedCustomers = customers.slice(start, end);
+
+        paginatedCustomers.forEach(customer => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('en-US') : '-'}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        updatePagination(customers.length);
+    }
+
+    // Cập nhật phân trang
+    function updatePagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById('customerPagination');
+        pagination.innerHTML = '';
+
+        const prevButton = document.createElement('button');
+        prevButton.innerText = '<';
+        prevButton.onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayCustomers(getFilteredCustomers());
+            }
+        };
+        pagination.appendChild(prevButton);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i;
+            pageButton.className = i === currentPage ? 'active' : '';
+            pageButton.onclick = () => {
+                currentPage = i;
+                displayCustomers(getFilteredCustomers());
+            };
+            pagination.appendChild(pageButton);
+        }
+
+        const nextButton = document.createElement('button');
+        nextButton.innerText = '>';
+        nextButton.onclick = () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayCustomers(getFilteredCustomers());
+            }
+        };
+        pagination.appendChild(nextButton);
+    }
+
+    // Lọc khách hàng khi tìm kiếm
+    function getFilteredCustomers() {
+        const searchText = document.getElementById('customerSearch').value.toLowerCase();
+        return allCustomers.filter(customer =>
+            customer.id.toString().includes(searchText) ||
+            customer.name.toLowerCase().includes(searchText) ||
+            customer.email.toLowerCase().includes(searchText)
+        );
+    }
+
+    // Cập nhật biểu đồ doanh thu
     function updateChart() {
         const filter = document.getElementById('chartFilter').value;
         let labels, data;
@@ -509,7 +674,7 @@
         } else if (filter === 'weekly') {
             labels = weeklyLabels;
             data = weeklyData;
-        } else { // monthly
+        } else {
             labels = monthlyLabels;
             data = monthlyData;
         }
@@ -594,28 +759,17 @@
         });
     }
 
-    // Initial chart render
-    document.addEventListener('DOMContentLoaded', updateChart);
+    // Khởi tạo khi trang tải
+    document.addEventListener('DOMContentLoaded', () => {
+        allCustomers = sortCustomersByDate(customersData);
+        displayCustomers(allCustomers);
+        updateChart();
+    });
 
-    // Customer Search Functionality
+    // Tìm kiếm khách hàng
     document.getElementById('customerSearch').addEventListener('input', function(e) {
-        const searchText = e.target.value.toLowerCase();
-        const table = document.getElementById('customerTable');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        for (let i = 0; i < rows.length; i++) {
-            const id = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
-            const name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
-            const email = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
-
-            if (id.includes(searchText) || name.includes(searchText) || email.includes(searchText)) {
-                rows[i].style.display = '';
-                rows[i].classList.add('highlight');
-            } else {
-                rows[i].style.display = 'none';
-                rows[i].classList.remove('highlight');
-            }
-        }
+        currentPage = 1;
+        displayCustomers(getFilteredCustomers());
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

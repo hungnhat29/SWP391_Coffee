@@ -2,6 +2,7 @@ package com.SWP391.G3PCoffee.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderDTO {
     private Integer id;
@@ -15,12 +16,13 @@ public class OrderDTO {
     private String shippingAddress;
     private String paymentMethod;
     private String firstProductImageUrl;
-    private String firstProductName; // Thêm firstProductName vào DTO
+    private String firstProductName;
+    private List<OrderItem> orderItems; // Thêm thuộc tính orderItems
 
     // Constructor
     public OrderDTO(Integer id, Integer userId, LocalDateTime orderDate, BigDecimal orderTotal, String status,
                     String customerName, String customerEmail, String customerPhone, String shippingAddress,
-                    String paymentMethod, String firstProductImageUrl, String firstProductName) {
+                    String paymentMethod, String firstProductImageUrl, String firstProductName, List<OrderItem> orderItems) {
         this.id = id;
         this.userId = userId;
         this.orderDate = orderDate;
@@ -33,6 +35,7 @@ public class OrderDTO {
         this.paymentMethod = paymentMethod;
         this.firstProductImageUrl = firstProductImageUrl;
         this.firstProductName = firstProductName;
+        this.orderItems = orderItems;
     }
 
     // Getters và setters
@@ -60,4 +63,6 @@ public class OrderDTO {
     public void setFirstProductImageUrl(String firstProductImageUrl) { this.firstProductImageUrl = firstProductImageUrl; }
     public String getFirstProductName() { return firstProductName; }
     public void setFirstProductName(String firstProductName) { this.firstProductName = firstProductName; }
+    public List<OrderItem> getOrderItems() { return orderItems; }
+    public void setOrderItems(List<OrderItem> orderItems) { this.orderItems = orderItems; }
 }
