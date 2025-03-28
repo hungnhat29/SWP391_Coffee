@@ -24,4 +24,8 @@ public class PageController {
         return "change_password";
     }
 
+    @GetMapping("/forgot_password")
+    public String showFPPage() {
+        return "forgot_password";
+    }
 }
