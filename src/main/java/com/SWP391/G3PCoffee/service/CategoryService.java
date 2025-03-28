@@ -88,15 +88,24 @@ public class CategoryService {
         return response;
     }
 
-    public boolean deleteCategory(Long categoryId) {
+    public Map<String, String> deleteCategory(Long categoryId) {
+        Map<String, String> response = new HashMap<>();
         Category categoryInDb = getCategoryById(categoryId);
-        if (categoryInDb == null) return false;
+        if (categoryInDb == null) {
+            response.put("message", "Không tìm thấy danh mục!");
+            response.put("messageType", "error");
+            return response;
+        }
         List<Product> listProduct =  productService.getProductByCateId(categoryId);
         if(!listProduct.isEmpty()){
-            return false;
+            response.put("message", "Danh mục chứa sản phẩm không thể xóa!");
+            response.put("messageType", "warning");
+            return response;
         }
         categoryRepository.delete(categoryInDb);
-        return true;
+        response.put("message", "Xóa danh mục thành công");
+        response.put("messageType", "success");
+        return response;
     }
 
     private String saveImage(MultipartFile imageFile) {
