@@ -78,8 +78,12 @@ public class UserService {
 
     @Transactional
     public String registerUser(UserRegisterDto userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent() || userRepository.findByPhone(userDTO.getPhone()).isPresent()) {
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email is already in use!");
+        }
+
+        if (userRepository.findByPhone(userDTO.getPhone()).isPresent()) {
+            throw new RuntimeException("Phone is already in use!");
         }
 
         User user = new User();

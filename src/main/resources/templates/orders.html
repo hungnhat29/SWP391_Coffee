@@ -605,32 +605,50 @@
 
     $('#orderTable tbody').on('click', '.edit-btn', function() {
       let orderId = $(this).data('id');
-      Swal.fire({
-        title: 'Cập nhật trạng thái đơn hàng',
-        text: 'Bạn có chắc chắn muốn cập nhật trạng thái đơn hàng này?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Cập nhật'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $.ajax({
-            url: '/orders/update-order',
-            type: 'POST',
-            data: { orderId: orderId },
-            success: function(response) {
-              Swal.fire('Thành công', 'Trạng thái đơn hàng đã được cập nhật!', 'success');
-              $('#orderTable').DataTable().ajax.reload(); // Reload lại bảng dữ liệu
-            },
-            error: function(xhr) {
-              Swal.fire('Lỗi', 'Không thể cập nhật trạng thái đơn hàng!', 'error');
-              console.error('Lỗi cập nhật:', xhr);
+
+      // Gọi API để lấy trạng thái tiếp theo
+      $.ajax({
+        url: '/orders/get-next-status', // API mới để lấy trạng thái tiếp theo
+        type: 'GET',
+        data: { orderId: orderId },
+        success: function(response) {
+          let nextStatus = response.nextStatus; // Trạng thái tiếp theo
+
+          // Hiển thị hộp thoại xác nhận với trạng thái tiếp theo
+          Swal.fire({
+            title: 'Update order status',
+            html: `Update order status to: <b>${nextStatus}</b>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Update'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Tiến hành cập nhật trạng thái đơn hàng
+              $.ajax({
+                url: '/orders/update-order',
+                type: 'POST',
+                data: { orderId: orderId },
+                success: function(updateResponse) {
+                  Swal.fire('Success', updateResponse.message, 'success');
+                  $('#orderTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                  Swal.fire('Error', 'Updated order status fail!!', 'error');
+                  console.error('Lỗi cập nhật:', xhr);
+                }
+              });
             }
           });
+        },
+        error: function(xhr) {
+          Swal.fire('Lỗi', 'Không thể lấy trạng thái đơn hàng!', 'error');
+          console.error('Lỗi lấy trạng thái:', xhr);
         }
       });
     });
+
 
     $('#orderTable tbody').on('click', '.delete-btn', function() {
       let orderId = $(this).data('id');

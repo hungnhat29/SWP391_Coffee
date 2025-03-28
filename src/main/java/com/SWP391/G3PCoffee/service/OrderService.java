@@ -261,14 +261,16 @@ public class OrderService {
         TypeOrder typeOrder = order.getTypeOrder();
         String payment = order.getPaymentMethod();
         String nextStatus = status.getNextStatus(typeOrder, payment).name();
+
         order.setStatus(nextStatus);
         order.setUpdatedAt(LocalDateTime.now());
         orderRepository.save(order);
 
-        response.put("message", "update status order successful");
+        response.put("message", "Update order status success");
         response.put("type", "success");
         return response;
     }
+
 
     public Map<String, Object> cancelOrderByAdmin(Integer orderId) {
         Map<String, Object> response = new HashMap<>();

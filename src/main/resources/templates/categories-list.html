@@ -652,6 +652,11 @@
                 return;
             }
 
+            if (categoryDescription.length > 500) {
+                showMessage('Mô tả không được vượt quá 500 ký tự', "error");
+                return;
+            }
+
             var formData = new FormData();
             formData.append("id", categoryId);
             formData.append("name", categoryName);
@@ -734,6 +739,11 @@
                 return;
             }
 
+            if (categoryDescription.length > 500) {
+                showMessage('Mô tả không được vượt quá 500 ký tự', "error");
+                return;
+            }
+
             var formData = new FormData();
             formData.append("name", categoryName);
             formData.append("description", categoryDescription);
@@ -748,7 +758,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    showMessage(response, "success");
+                    showMessage(response.message, response.messageType);
                     $('#addCategoryModal').modal('hide');
                     $('#addCategoryModal').on('hidden.bs.modal', function () {
                         $('#addCategoryName').val('');

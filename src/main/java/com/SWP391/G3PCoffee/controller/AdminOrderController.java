@@ -1,11 +1,14 @@
 package com.SWP391.G3PCoffee.controller;
 
+import com.SWP391.G3PCoffee.constant.OrderStatus;
+import com.SWP391.G3PCoffee.constant.TypeOrder;
 import com.SWP391.G3PCoffee.model.Order;
 import com.SWP391.G3PCoffee.model.OrderItem;
 import com.SWP391.G3PCoffee.service.OrderService;
 import com.SWP391.G3PCoffee.service.PageService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,4 +69,23 @@ public class AdminOrderController {
     public ResponseEntity<Map<String, Object>> updateOrderStatus(@RequestParam Integer orderId) {
         return ResponseEntity.ok(orderService.updateStatusOrder(orderId));
     }
+
+    @GetMapping("/get-next-status")
+    public ResponseEntity<Map<String, String>> getNextOrderStatus(@RequestParam Integer orderId) {
+        Map<String, String> response = new HashMap<>();
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            response.put("error", "Không tìm thấy đơn hàng");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        OrderStatus status = OrderStatus.valueOf(order.getStatus());
+        TypeOrder typeOrder = order.getTypeOrder();
+        String payment = order.getPaymentMethod();
+        String nextStatus = status.getNextStatus(typeOrder, payment).name();
+
+        response.put("nextStatus", nextStatus);
+        return ResponseEntity.ok(response);
+    }
+
 }
