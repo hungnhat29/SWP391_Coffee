@@ -700,8 +700,8 @@
             .then(response => {
               if (response.ok) {
                 Swal.fire({
-                  title: "Thành công",
-                  text: "Đăng xuất thành công!",
+                  title: "Success",
+                  text: "Log out successfully!",
                   icon: "success",
                   timer: 3000,
                   showConfirmButton: false
@@ -712,8 +712,8 @@
                 }, 3000);
               } else {
                 Swal.fire({
-                  title: "Lỗi",
-                  text: "Đăng xuất không thành công!",
+                  title: "Error",
+                  text: "Logout failed!",
                   icon: "error",
                   timer: 5000,
                   showConfirmButton: false
@@ -722,8 +722,8 @@
             })
             .catch(error => {
               Swal.fire({
-                title: "Lỗi",
-                text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                title: "Error",
+                text: "An error occurred, please try again later.",
                 icon: "error",
                 timer: 5000,
                 showConfirmButton: false

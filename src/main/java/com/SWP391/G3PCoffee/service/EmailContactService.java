@@ -71,7 +71,7 @@ public class EmailContactService {
         }, 5, TimeUnit.MINUTES);
 
         // Nội dung email
-        String subject = "Xác minh email - Mã OTP của bạn";
+        String subject = "Email Verification - Your OTP Code";
         String body = "<p>Chào bạn,</p>"
                 + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
                 + "<p>Mã OTP có hiệu lực trong 5 phút.Vui lòng nhập mã này để hoàn tất quá trình đăng ký.</p>"

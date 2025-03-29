@@ -47,7 +47,7 @@ public class CategoryService {
         Optional<Category> existingCategory = categoryRepository.findByName(categoryUpdate.getName());
 
         if (existingCategory.isPresent() && !existingCategory.get().getId().equals(categoryUpdateId)) {
-            response.put("message", "Tên danh mục đã tồn tại!");
+            response.put("message", "Category name already exists!");
             response.put("messageType", "error");
             return response;
         }
@@ -58,13 +58,13 @@ public class CategoryService {
 //                categoryUpdate.setImageUrl(saveImage(imageFile));
 //            }
             categoryRepository.save(categoryUpdate);
-            response.put("message", "Thêm danh mục thành công!");
+            response.put("message", "Category added successfully!");
             response.put("messageType", "success");
         } else {
             // Cập nhật danh mục
             Category categoryInDb = getCategoryById(categoryUpdateId);
             if (categoryInDb == null) {
-                response.put("message", "Không tìm thấy danh mục!");
+                response.put("message","Category not found!");
                 response.put("messageType", "error");
             }
 
@@ -81,7 +81,7 @@ public class CategoryService {
                     .build();
 
             categoryRepository.save(categoryPrepareUpdate);
-            response.put("message", "Cập nhật danh mục thành công!");
+            response.put("message", "Updated category successfully!");
             response.put("messageType", "success");
         }
 
@@ -92,18 +92,18 @@ public class CategoryService {
         Map<String, String> response = new HashMap<>();
         Category categoryInDb = getCategoryById(categoryId);
         if (categoryInDb == null) {
-            response.put("message", "Không tìm thấy danh mục!");
+            response.put("message", "Category not found!");
             response.put("messageType", "error");
             return response;
         }
         List<Product> listProduct =  productService.getProductByCateId(categoryId);
         if(!listProduct.isEmpty()){
-            response.put("message", "Danh mục chứa sản phẩm không thể xóa!");
+            response.put("message", "The category contains products that cannot be deleted!");
             response.put("messageType", "warning");
             return response;
         }
         categoryRepository.delete(categoryInDb);
-        response.put("message", "Xóa danh mục thành công");
+        response.put("message", "Category deleted successfully");
         response.put("messageType", "success");
         return response;
     }

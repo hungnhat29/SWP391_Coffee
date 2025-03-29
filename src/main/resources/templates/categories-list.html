@@ -648,12 +648,12 @@
             var categoryImage = $('#editCategoryImage').val();
 
             if (!categoryName || !categoryDescription) {
-                showMessage('Các trường không được để trống', "error");
+                showMessage('Fields cannot be left blank', "error");
                 return;
             }
 
             if (categoryDescription.length > 500) {
-                showMessage('Mô tả không được vượt quá 500 ký tự', "error");
+                showMessage('Description must not exceed 500 characters', "error");
                 return;
             }
 
@@ -702,11 +702,11 @@
                         url: '/category/delete-category?categoryId=' + categoryId,
                         type: 'DELETE',
                         success: function (response) {
-                            showMessage(response, "success");
+                            showMessage(response.message, response.messageType);
                             $('#categoryTable').DataTable().ajax.reload();
                         },
                         error: function (xhr) {
-                            showMessage('Xóa thất bại: ', "error");
+                            showMessage('Delete failure ', "error");
                         }
                     });
                 }
@@ -735,12 +735,12 @@
             var categoryImage = $('#addCategoryImage').val();
 
             if (!categoryName || !categoryDescription) {
-                showMessage('Các trường không được để trống', "error");
+                showMessage('Fields cannot be empty', "error");
                 return;
             }
 
             if (categoryDescription.length > 500) {
-                showMessage('Mô tả không được vượt quá 500 ký tự', "error");
+                showMessage('Description must not exceed 500 characters', "error");
                 return;
             }
 
@@ -768,7 +768,7 @@
                     $('#categoryTable').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
-                    showMessage('Cập nhật thất bại: ' + xhr.responseText, "error");
+                    showMessage('Update failed: ' + xhr.responseText, "error");
                 }
             });
         });

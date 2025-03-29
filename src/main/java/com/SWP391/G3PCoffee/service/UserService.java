@@ -118,9 +118,9 @@ public class UserService {
 
             return response;
         } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sai email hoặc mật khẩu!");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong email or password!");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Đã xảy ra lỗi!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred!");
         }
     }
 
@@ -148,34 +148,34 @@ public class UserService {
                                               String confirmPassword, String email) {
         Map<String, String> response = new HashMap<>();
         if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            response.put("message", "Vui lòng điền đầy đủ tất cả các trường!");
+            response.put("message", "Please fill in all fields!");
             response.put("messageType", "error");
             return response;
         }
 
         User user = getCustomerByEmail(email);
         if (user == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
-            response.put("message", "Mật khẩu cũ không đúng!");
+            response.put("message", "Old password is incorrect!");
             response.put("messageType", "error");
             return response;
         }
 
         if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")) {
-            response.put("message", "Mật khẩu mới phải có ít nhất 6 ký tự và bao gồm cả chữ và số!");
+            response.put("message", "New password must be at least 6 characters and include both letters and numbers!");
             response.put("messageType", "error");
             return response;
         }
 
 
         if (!newPassword.equals(confirmPassword)) {
-            response.put("message", "Mật khẩu mới không khớp!");
+            response.put("message", "New password does not match!");
             response.put("messageType", "error");
             return response;
         }
 
         Objects.requireNonNull(user).setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-        response.put("message", "Đổi mật khẩu thành công!");
+        response.put("message","Password changed successfully!");
         response.put("messageType", "success");
 
         return response;
@@ -195,7 +195,7 @@ public class UserService {
         log.info("Fetching user with email: {}", user);
 
         if (user == null) {
-            response.put("message", "Thông tin không tồn tại trong hệ thống.");
+            response.put("message", "The information does not exist in the system.");
             response.put("messageType", "error");
             return response;
         }
@@ -215,17 +215,17 @@ public class UserService {
 
         String body = "<p>Chào bạn,</p>"
                 + "<p>Mã OTP để xác minh email của bạn là: <b>" + otp + "</b></p>"
-                + "<p>Mã OTP có hiệu lực trong 5 phút. Vui lòng không cung cấp otp cho bất kì ai!</p>"
+                + "<p>Mã OTP có hiệu lực trong 5 phút.Vui lòng nhập mã này để hoàn tất quá trình đăng ký.</p>"
                 + "<br/><p>Trân trọng,</p>";
 
         // Gửi email
         ContactRequest request = new ContactRequest();
         request.setEmail(email);
-        request.setSubject("Mã OTP đặt lại mật khẩu");
+        request.setSubject("OTP code reset password");
         request.setMessage(body);
         emailContactService.SendMail(request);
 
-        response.put("message", "Mã OTP đã được gửi tới email của bạn. Hãy kiểm tra hộp thư!");
+        response.put("message", "OTP code has been sent to your email. Please check your inbox!");
         response.put("messageType", "success");
         return response;
     }
@@ -238,10 +238,10 @@ public class UserService {
                 System.currentTimeMillis() <= otpExpiry.getOrDefault(email, 0L)) {
 
             verifiedEmails.add(email); // Đánh dấu email đã xác minh
-            response.put("message", "OTP hợp lệ. Bạn có thể đặt lại mật khẩu.");
+            response.put("message", "OTP is valid. You can reset your password.");
             response.put("messageType", "success");
         } else {
-            response.put("message", "OTP không hợp lệ hoặc đã hết hạn!");
+            response.put("message", "OTP is invalid or expired!");
             response.put("messageType", "error");
         }
         return response;
@@ -253,35 +253,35 @@ public class UserService {
         User user = getCustomerByEmail(email);
 
         if (user == null) {
-            response.put("message", "Thông tin không tồn tại trong hệ thống.");
+            response.put("message", "The information does not exist in the system.");
             response.put("messageType", "error");
             return response;
         }
 
         // Kiểm tra email đã xác minh OTP chưa
         if (!verifiedEmails.contains(email)) {
-            response.put("message", "Bạn chưa xác minh OTP!");
+            response.put("message", "You have not verified OTP!");
             response.put("messageType", "error");
             return response;
         }
 
         // Kiểm tra độ mạnh của mật khẩu mới
         if (!newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")) {
-            response.put("message", "Mật khẩu mới phải có ít nhất 6 ký tự và bao gồm cả chữ và số!");
+            response.put("message", "New password must be at least 6 characters and include both letters and numbers!");
             response.put("messageType", "error");
             return response;
         }
 
         // Kiểm tra xác nhận mật khẩu
         if (!newPassword.equals(confirmPassword)) {
-            response.put("message", "Mật khẩu mới không khớp!");
+            response.put("message", "New password does not match!");
             response.put("messageType", "error");
             return response;
         }
 
         // Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            response.put("message", "Mật khẩu mới không được trùng với mật khẩu cũ!");
+            response.put("message", "New password cannot be the same as old password!");
             response.put("messageType", "error");
             return response;
         }
@@ -293,7 +293,7 @@ public class UserService {
         // Xóa trạng thái xác minh
         verifiedEmails.remove(email);
 
-        response.put("message", "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.");
+        response.put("message", "Password reset successful! Please log in again.");
         response.put("messageType", "success");
         return response;
     }

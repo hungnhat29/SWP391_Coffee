@@ -99,7 +99,7 @@
                     }
                 },
                 error: function (xhr) {
-                    let errorMessage = xhr.responseJSON?.message || "Đăng nhập thất bại!";
+                    let errorMessage = xhr.responseJSON?.message || "Login failed!";
                     Swal.fire({
                         toast: true,
                         position: 'top-end', // Hiển thị ở góc trên bên phải

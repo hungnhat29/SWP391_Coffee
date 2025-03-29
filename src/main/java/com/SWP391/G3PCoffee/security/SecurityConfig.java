@@ -53,10 +53,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/admin/dashboard").hasRole("ADMIN")
-//                        .requestMatchers("/shop", "/detail", "/home", "/api/cart", "/api/cart/**", "/cart", "/api/checkout/process", "/purchase-history", "/auth/login", "/auth/register", "/auth/check-login").permitAll()
-//                        .requestMatchers("/").hasRole("ADMIN")
-//                        .requestMatchers("/auth/login", "/auth/register", "/home", "/auth/check-login","/api/contact/send-otp").permitAll()
+//                        .requestMatchers("/admin/dashboard","orders","/customers").hasRole("ADMIN")
+//                         .requestMatchers("/track-order", "/canceled-order", "/get-order-details","/my-voucher","/claim-voucher","/profile","/profile/update").hasRole("CUSTOMER")
+//                        .requestMatchers("/orders/**").hasRole("STAFF")
+//                        .requestMatchers("/shop", "/detail", "/home", "/api/cart", "/api/cart/**", "/cart", "/api/checkout/process", "/purchase-history").permitAll()
+//                        .requestMatchers("/auth/login", "/auth/register", "/home","/", "check-login","/api/contact/send-otp","/forgot-password","/verify-otp").permitAll()
 //                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
 //                        .requestMatchers("/favicon.ico").permitAll()
 

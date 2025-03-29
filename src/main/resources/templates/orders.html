@@ -643,8 +643,8 @@
           });
         },
         error: function(xhr) {
-          Swal.fire('Lỗi', 'Không thể lấy trạng thái đơn hàng!', 'error');
-          console.error('Lỗi lấy trạng thái:', xhr);
+          Swal.fire('Error', 'Unable to get order status!', 'error');
+          console.error('Error getting status:', xhr);
         }
       });
     });
@@ -654,14 +654,14 @@
       let orderId = $(this).data('id');
 
       Swal.fire({
-        title: 'Hủy đơn hàng',
-        text: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+        title: 'Cancel order',
+        text: 'Are you sure you want to cancel this order?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Hủy đơn',
-        cancelButtonText: 'Hủy bỏ'
+        confirmButtonText: 'Cancel order',
+        cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
@@ -669,12 +669,12 @@
             type: 'POST',
             data: { orderId: orderId },
             success: function(response) {
-              Swal.fire('Thành công', 'Đơn hàng đã được hủy!', 'success');
+              Swal.fire('Success', 'Order has been canceled!', 'success');
               $('#orderTable').DataTable().ajax.reload(); // Reload lại bảng dữ liệu
             },
             error: function(xhr) {
-              Swal.fire('Lỗi', 'Không thể hủy đơn hàng!', 'error');
-              console.error('Lỗi hủy đơn hàng:', xhr);
+              Swal.fire('Error', 'Cannot cancel order!', 'error');
+              console.error('Order cancellation error', xhr);
             }
           });
         }
