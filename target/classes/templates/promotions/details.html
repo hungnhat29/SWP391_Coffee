@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotion Details - G3P Coffee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .promotion-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .promotion-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .promotion-header {
+            background-color: #6f4e37;
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 15px;
+        }
+
+        .badge-active {
+            background-color: #28a745;
+        }
+
+        .badge-inactive {
+            background-color: #dc3545;
+        }
+
+        .detail-row {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .rule-card, .action-card {
+            border-left: 4px solid #6f4e37;
+            margin-bottom: 10px;
+        }
+
+        .coupon-badge {
+            font-size: 1rem;
+            padding: 10px;
+            margin: 5px;
+            background-color: #f8f9fa;
+            border: 1px dashed #6f4e37;
+            color: #6f4e37;
+        }
+
+        .edit-form {
+            display: none;
+        }
+
+        .edit-mode .view-mode {
+            display: none;
+        }
+
+        .edit-mode .edit-form {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation placeholder -->
+<!--<div th:replace="fragments/navigation :: navigation"></div>-->
+
+<div class="container py-5" th:classappend="${promotionRequest != null ? 'edit-mode' : ''}">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/promotions">Promotions</a></li>
+                    <li class="breadcrumb-item" th:text="${promotionRequest != null ? 'Edit' : 'Details'}"
+                        aria-current="page">Details
+                    </li>
+                </ol>
+            </nav>
+            <a href="/promotions" class="btn btn-sm btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Back to Promotions
+            </a>
+        </div>
+    </div>
+
+    <!-- View Mode -->
+    <div class="promotion-card bg-white view-mode" th:if="${promotionRequest == null}">
+        <div class="promotion-header d-flex justify-content-between align-items-center">
+            <h2 th:text="${promotion.name}">Promotion Name</h2>
+            <span th:class="${promotion.active ? 'badge badge-active' : 'badge badge-inactive'}"
+                  th:text="${promotion.active ? 'Active' : 'Inactive'}">Status</span>
+        </div>
+
+        <div class="p-4">
+            <div class="mb-4">
+                <h5 class="text-uppercase mb-3 text-muted">Basic Information</h5>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Description:</div>
+                    <div class="col-md-9" th:text="${promotion.description}">Description text</div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Type:</div>
+                    <div class="col-md-9" th:text="${promotion.promotionType}">Promotion type</div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Start Date:</div>
+                    <div class="col-md-9" th:text="${#temporals.format(promotion.startDate, 'dd-MM-yyyy HH:mm')}">
+                        01-01-2023 00:00
+                    </div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">End Date:</div>
+                    <div class="col-md-9" th:text="${#temporals.format(promotion.endDate, 'dd-MM-yyyy HH:mm')}">
+                        31-12-2023 23:59
+                    </div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Priority:</div>
+                    <div class="col-md-9" th:text="${promotion.priority}">1</div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Stackable:</div>
+                    <div class="col-md-9">
+                        <span th:if="${promotion.stackable}" class="text-success"><i class="fas fa-check-circle"></i> Yes</span>
+                        <span th:unless="${promotion.stackable}" class="text-danger"><i class="fas fa-times-circle"></i> No</span>
+                    </div>
+                </div>
+                <div class="row detail-row">
+                    <div class="col-md-3 fw-bold">Usage:</div>
+                    <div class="col-md-9">
+                        <span th:text="${promotion.usageCount}">0</span>
+                        <span th:if="${promotion.usageLimit != null}">
+                                / <span th:text="${promotion.usageLimit}">100</span>
+                            </span>
+                        <span th:unless="${promotion.usageLimit != null}">
+                                / Unlimited
+                            </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rules section -->
+            <div class="mb-4" th:if="${!promotion.rules.empty}">
+                <h5 class="text-uppercase mb-3 text-muted">Rules</h5>
+                <div class="rule-card p-3 bg-light" th:each="rule : ${promotion.rules}">
+                    <h6 th:text="${rule.ruleType}">RULE_TYPE</h6>
+                    <div th:switch="${rule.ruleType}">
+                        <!-- Product Rule -->
+                        <div th:case="'PRODUCT'" class="small">
+                            Product ID: <span th:text="${rule.ruleData.productId}">123</span>
+                        </div>
+
+                        <!-- Category Rule -->
+                        <div th:case="'CATEGORY'" class="small">
+                            Category ID: <span th:text="${rule.ruleData.categoryId}">456</span>
+                        </div>
+
+                        <!-- Cart Quantity Rule -->
+                        <div th:case="'CART_QUANTITY'" class="small">
+                            Min Quantity: <span th:text="${rule.ruleData.minQuantity}">3</span>
+                        </div>
+
+                        <!-- Cart Amount Rule -->
+                        <div th:case="'CART_AMOUNT'" class="small">
+                            Min Amount: <span th:text="${rule.ruleData.minAmount}">100000</span>
+                        </div>
+
+                        <!-- Default case -->
+                        <div th:case="*" class="small">
+                            <pre th:text="${rule.ruleData}">Rule data in JSON format</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions section -->
+            <div class="mb-4" th:if="${!promotion.actions.empty}">
+                <h5 class="text-uppercase mb-3 text-muted">Actions</h5>
+                <div class="action-card p-3 bg-light" th:each="action : ${promotion.actions}">
+                    <h6 th:text="${action.actionType}">ACTION_TYPE</h6>
+                    <div th:switch="${action.actionType}">
+                        <!-- Free Product Action -->
+                        <div th:case="'FREE_PRODUCT'" class="small">
+                            Product ID: <span th:text="${action.actionData.productId}">123</span>
+                        </div>
+
+                        <!-- Percent Discount Action -->
+                        <div th:case="'PERCENT_DISCOUNT'" class="small">
+                            Discount: <span th:text="${action.actionData.percentDiscount}">10</span>%
+                        </div>
+
+                        <!-- Fixed Discount Action -->
+                        <div th:case="'FIXED_DISCOUNT'" class="small">
+                            Discount: <span th:text="${action.actionData.fixedDiscount}">50000</span>
+                        </div>
+
+                        <!-- Default case -->
+                        <div th:case="*" class="small">
+                            <pre th:text="${action.actionData}">Action data in JSON format</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupons section -->
+            <div class="mb-4" th:if="${promotion.couponCodes != null && !promotion.couponCodes.empty}">
+                <h5 class="text-uppercase mb-3 text-muted">Coupon Codes</h5>
+                <div class="d-flex flex-wrap">
+                    <div class="coupon-badge" th:each="code : ${promotion.couponCodes}">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span th:text="${code}">COUPON123</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin actions -->
+            <!--            <div class="mt-4 d-flex justify-content-end" th:if="${#authorization?.expression('hasRole(''ADMIN'')')}">-->
+            <div class="mt-4 d-flex justify-content-end">
+                <a th:href="@{/promotions/{id}/edit(id=${promotion.id})}" class="btn btn-warning me-2">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <form th:action="@{/promotions/{id}/toggle(id=${promotion.id})}" method="post" class="d-inline">
+                    <button type="submit" th:class="${promotion.active ? 'btn btn-danger' : 'btn btn-success'}">
+                        <i th:class="${promotion.active ? 'fas fa-ban' : 'fas fa-check'}"></i>
+                        <span th:text="${promotion.active ? 'Deactivate' : 'Activate'}">Toggle status</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Mode -->
+    <div class="promotion-card bg-white edit-form" th:if="${promotionRequest != null}">
+        <div class="promotion-header">
+            <h2>Edit Promotion</h2>
+        </div>
+        <div class="p-4">
+            <form th:action="@{/promotions/{id}/edit(id=${promotionId})}" th:object="${promotionRequest}" method="post">
+                <!-- Basic Information -->
+                <div class="mb-4">
+                    <h5 class="text-uppercase mb-3 text-muted">Basic Information</h5>
+
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Name:</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Description:</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="mb-3">
+                        <label for="promotionType" class="form-label fw-bold">Type:</label>
+                        <select class="form-select" id="promotionType" th:field="*{promotionType}">
+                            <option value="BUY_ONE_GET_ONE">Buy One Get One</option>
+                            <option value="BUY_X_GET_DISCOUNT">Buy X Get Discount</option>
+                            <option value="FLASH_SALE_ALL">Flash Sale (All Products)</option>
+                            <option value="FLASH_SALE_CATEGORY">Flash Sale (By Category)</option>
+                            <option value="AMOUNT_THRESHOLD_DISCOUNT">Amount Threshold Discount</option>
+                            <option value="ORDER_DISCOUNT">Order Discount</option>
+                        </select>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label fw-bold">Start Date:</label>
+                            <input type="datetime-local" class="form-control" id="startDate" th:field="*{startDate}"
+                                   required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label fw-bold">End Date:</label>
+                            <input type="datetime-local" class="form-control" id="endDate" th:field="*{endDate}"
+                                   required>
+                        </div>
+                    </div>
+
+                    <!-- Priority and Stackable -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="priority" class="form-label fw-bold">Priority:</label>
+                            <input type="number" class="form-control" id="priority" th:field="*{priority}" min="1">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="stackable" th:field="*{stackable}">
+                                <label class="form-check-label fw-bold" for="stackable">
+                                    Stackable with other promotions
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Usage Limit -->
+                    <div class="mb-3">
+                        <label for="usageLimit" class="form-label fw-bold">Usage Limit:</label>
+                        <input type="number" class="form-control" id="usageLimit" th:field="*{usageLimit}"
+                               placeholder="Leave empty for unlimited">
+                    </div>
+
+                    <!-- Active Status -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="active" th:field="*{active}">
+                            <label class="form-check-label fw-bold" for="active">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rules Section -->
+                <div class="mb-4">
+                    <h5 class="text-uppercase mb-3 text-muted">Rules</h5>
+                    <div id="rulesContainer">
+                        <!-- Rules will be dynamically generated here -->
+                        <div th:each="rule, ruleStat : *{rules}" class="rule-card p-3 bg-light mb-3">
+                            <input type="hidden" th:field="*{rules[__${ruleStat.index}__].ruleType}">
+
+                            <div class="mb-2 d-flex justify-content-between">
+                                <h6 th:text="*{rules[__${ruleStat.index}__].ruleType}">RULE_TYPE</h6>
+                                <button type="button" class="btn btn-sm btn-danger remove-rule"
+                                        th:attr="data-index=${ruleStat.index}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Different rule type forms -->
+                            <div th:switch="*{rules[__${ruleStat.index}__].ruleType}">
+                                <!-- Product Rule -->
+                                <div th:case="'PRODUCT'" class="small">
+                                    <label class="form-label">Product ID:</label>
+                                    <input type="text" class="form-control" th:name="|rules[${ruleStat.index}].ruleData['productId']|"
+                                           th:value="${promotionRequest.rules[ruleStat.index].ruleData.get('productId')}">
+                                </div>
+
+                                <!-- Category Rule -->
+                                <div th:case="'CATEGORY'" class="small">
+                                    <label class="form-label">Category ID:</label>
+                                    <input type="text" class="form-control" th:name="|rules[${ruleStat.index}].ruleData['categoryId']|"
+                                           th:value="${promotionRequest.rules[ruleStat.index].ruleData.get('categoryId')}">
+                                </div>
+
+                                <!-- Cart Quantity Rule -->
+                                <div th:case="'CART_QUANTITY'" class="small">
+                                    <label class="form-label">Min Quantity:</label>
+                                    <input type="text" class="form-control" th:name="|rules[${ruleStat.index}].ruleData['minQuantity']|"
+                                           th:value="${promotionRequest.rules[ruleStat.index].ruleData.get('minQuantity')}">
+                                </div>
+
+                                <!-- Cart Amount Rule -->
+                                <div th:case="'CART_AMOUNT'" class="small">
+                                    <label class="form-label">Min Amount:</label>
+                                    <input type="text" class="form-control" th:name="|rules[${ruleStat.index}].ruleData['minAmount']|"
+                                           th:value="${promotionRequest.rules[ruleStat.index].ruleData.get('minAmount')}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    <div class="mb-3">-->
+<!--                        <button type="button" class="btn btn-outline-primary" id="addRule">-->
+<!--                            <i class="fas fa-plus"></i> Add Rule-->
+<!--                        </button>-->
+<!--                    </div>-->
+                </div>
+
+                <!-- Actions Section -->
+                <div class="mb-4">
+                    <h5 class="text-uppercase mb-3 text-muted">Actions</h5>
+                    <div id="actionsContainer">
+                        <!-- Actions will be dynamically generated here -->
+                        <div th:each="action, actionStat : *{actions}" class="action-card p-3 bg-light mb-3">
+                            <input type="hidden" th:field="*{actions[__${actionStat.index}__].actionType}">
+
+                            <div class="mb-2 d-flex justify-content-between">
+                                <h6 th:text="*{actions[__${actionStat.index}__].actionType}">ACTION_TYPE</h6>
+                                <button type="button" class="btn btn-sm btn-danger remove-action"
+                                        th:attr="data-index=${actionStat.index}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Different action type forms -->
+                            <div th:switch="*{actions[__${actionStat.index}__].actionType}">
+                                <!-- Free Product Action -->
+                                <div th:case="'FREE_PRODUCT'" class="small">
+                                    <label class="form-label">Product ID:</label>
+                                    <input type="text" class="form-control" th:name="|actions[${actionStat.index}].actionData['productId']|"
+                                           th:value="${promotionRequest.actions[actionStat.index].actionData.get('productId')}">
+                                </div>
+
+                                <!-- Percent Discount Action -->
+                                <div th:case="'PERCENT_DISCOUNT'" class="small">
+                                    <label class="form-label">Discount Percentage:</label>
+                                    <input type="text" class="form-control" th:name="|actions[${actionStat.index}].actionData['percentDiscount']|"
+                                           th:value="${promotionRequest.actions[actionStat.index].actionData.get('percentDiscount')}"
+                                           min="0" max="100">
+                                </div>
+
+                                <!-- Fixed Discount Action -->
+                                <div th:case="'FIXED_DISCOUNT'" class="small">
+                                    <label class="form-label">Fixed Discount Amount:</label>
+                                    <input type="text" class="form-control" th:name="|actions[${actionStat.index}].actionData['fixedDiscount']|"
+                                           th:value="${promotionRequest.actions[actionStat.index].actionData.get('fixedDiscount')}"
+                                           min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    <div class="mb-3">-->
+<!--                        <button type="button" class="btn btn-outline-primary" id="addAction">-->
+<!--                            <i class="fas fa-plus"></i> Add Action-->
+<!--                        </button>-->
+<!--                    </div>-->
+                </div>
+
+                <!-- Coupons Section -->
+                <div class="mb-4" th:if="*{promotionType == 'COUPON'}">
+                    <h5 class="text-uppercase mb-3 text-muted">Coupon Codes</h5>
+                    <div id="couponsContainer">
+                        <div th:each="coupon, couponStat : *{couponCodes}" class="mb-2 d-flex">
+                            <input type="text" class="form-control me-2"
+                                   th:field="*{couponCodes[__${couponStat.index}__]}">
+                            <button type="button" class="btn btn-sm btn-danger remove-coupon"
+                                    th:attr="data-index=${couponStat.index}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-outline-primary" id="addCoupon">
+                            <i class="fas fa-plus"></i> Add Coupon Code
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form buttons -->
+                <div class="d-flex justify-content-end mt-4">
+                    <a th:href="@{/promotions/{id}(id=${promotionId})}" class="btn btn-secondary me-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Templates for dynamic content -->
+<template id="ruleTemplate">
+    <div class="rule-card p-3 bg-light mb-3 new-rule">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Rule Type:</label>
+            <select class="form-select rule-type-select">
+                <option value="PRODUCT">Product</option>
+                <option value="CATEGORY">Category</option>
+                <option value="CART_QUANTITY">Cart Quantity</option>
+                <option value="CART_AMOUNT">Cart Amount</option>
+            </select>
+        </div>
+
+        <div class="rule-fields">
+            <!-- Fields will be added dynamically based on selection -->
+        </div>
+
+        <div class="text-end mt-2">
+            <button type="button" class="btn btn-sm btn-danger remove-new-rule">
+                <i class="fas fa-trash"></i> Remove
+            </button>
+        </div>
+    </div>
+</template>
+
+<template id="actionTemplate">
+    <div class="action-card p-3 bg-light mb-3 new-action">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Action Type:</label>
+            <select class="form-select action-type-select">
+                <option value="FREE_PRODUCT">Free Product</option>
+                <option value="PERCENT_DISCOUNT">Percent Discount</option>
+                <option value="FIXED_DISCOUNT">Fixed Discount</option>
+            </select>
+        </div>
+
+        <div class="action-fields">
+            <!-- Fields will be added dynamically based on selection -->
+        </div>
+
+        <div class="text-end mt-2">
+            <button type="button" class="btn btn-sm btn-danger remove-new-action">
+                <i class="fas fa-trash"></i> Remove
+            </button>
+        </div>
+    </div>
+</template>
+
+<template id="couponTemplate">
+    <div class="mb-2 d-flex new-coupon">
+        <input type="text" class="form-control me-2" placeholder="Enter coupon code">
+        <button type="button" class="btn btn-sm btn-danger remove-new-coupon">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Counters for dynamic elements
+        let ruleIndex = $('.rule-card').length || 0;
+        let actionIndex = $('.action-card').length || 0;
+        let couponIndex = $('input[name^="couponCodes"]').length || 0;
+
+        // Fetch products and categories for select boxes
+        fetchProducts();
+        fetchCategories();
+
+        // Toggle coupon section based on promotion type
+        $('#promotionType').change(function () {
+            if ($(this).val() === 'COUPON') {
+                $('#couponsSection').removeClass('d-none');
+            } else {
+                $('#couponsSection').addClass('d-none');
+            }
+        });
+
+        // Add rule button
+        $('#addRule').click(function () {
+            const template = $('#ruleTemplate').html();
+            $('#rulesContainer').append(template);
+        });
+
+        // Add action button
+        $('#addAction').click(function () {
+            const template = $('#actionTemplate').html();
+            $('#actionsContainer').append(template);
+        });
+
+        // Add coupon button
+        $('#addCoupon').click(function () {
+            const template = $('#couponTemplate').html();
+            $('#couponsContainer').append(template);
+        });
+
+        // Handle dynamic rule type selection
+        $(document).on('change', '.rule-type-select', function () {
+            const ruleType = $(this).val();
+            const ruleCardElement = $(this).closest('.rule-card');
+            const ruleFieldsElement = ruleCardElement.find('.rule-fields');
+
+            // Clear previous fields
+            ruleFieldsElement.empty();
+
+            // Add appropriate fields based on rule type
+            switch (ruleType) {
+                case 'PRODUCT':
+                    ruleFieldsElement.html(`
+                    <label class="form-label">Product ID:</label>
+                    <input type="text" class="form-control product-select" name="rules[${ruleIndex}].ruleData.productId">
+                `);
+                    populateProductSelect(ruleFieldsElement.find('.product-select'));
+                    break;
+                case 'CATEGORY':
+                    ruleFieldsElement.html(`
+                    <label class="form-label">Category ID:</label>
+                    <input type="text" class="form-control category-select" name="rules[${ruleIndex}].ruleData.categoryId">
+                `);
+                    populateCategorySelect(ruleFieldsElement.find('.category-select'));
+                    break;
+                case 'CART_QUANTITY':
+                    ruleFieldsElement.html(`
+                    <label class="form-label">Min Quantity:</label>
+                    <input type="number" class="form-control" name="rules[${ruleIndex}].ruleData.minQuantity">
+                `);
+                    break;
+                case 'CART_AMOUNT':
+                    ruleFieldsElement.html(`
+                    <label class="form-label">Min Amount:</label>
+                    <input type="number" class="form-control" name="rules[${ruleIndex}].ruleData.minAmount">
+                `);
+                    break;
+            }
+
+            // Add hidden field for rule type
+            ruleFieldsElement.append(`
+            <input type="hidden" name="rules[${ruleIndex}].ruleType" value="${ruleType}">
+        `);
+
+            ruleIndex++;
+        });
+
+        // Handle dynamic action type selection
+        $(document).on('change', '.action-type-select', function () {
+            const actionType = $(this).val();
+            const actionCardElement = $(this).closest('.action-card');
+            const actionFieldsElement = actionCardElement.find('.action-fields');
+
+            // Clear previous fields
+            actionFieldsElement.empty();
+
+            // Add appropriate fields based on action type
+            switch (actionType) {
+                case 'FREE_PRODUCT':
+                    actionFieldsElement.html(`
+                    <label class="form-label">Product ID:</label>
+                    <input type="text" class="form-control product-select" name="actions[${actionIndex}].actionData.productId">
+                `);
+                    populateProductSelect(actionFieldsElement.find('.product-select'));
+                    break;
+                case 'PERCENT_DISCOUNT':
+                    actionFieldsElement.html(`
+                    <label class="form-label">Discount Percentage:</label>
+                    <input type="number" class="form-control" name="actions[${actionIndex}].actionData.percentDiscount" min="0" max="100">
+                `);
+                    break;
+                case 'FIXED_DISCOUNT':
+                    actionFieldsElement.html(`
+                    <label class="form-label">Fixed Discount Amount:</label>
+                    <input type="number" class="form-control" name="actions[${actionIndex}].actionData.fixedDiscount" min="0">
+                `);
+                    break;
+            }
+
+            // Add hidden field for action type
+            actionFieldsElement.append(`
+            <input type="hidden" name="actions[${actionIndex}].actionType" value="${actionType}">
+        `);
+
+            actionIndex++;
+        });
+
+        // Remove rule button handler
+        $(document).on('click', '.remove-rule', function () {
+            const index = $(this).data('index');
+            $(this).closest('.rule-card').remove();
+
+            // Renumber remaining rules
+            updateIndexing('.rule-card', 'rules');
+        });
+
+        // Remove new rule button handler
+        $(document).on('click', '.remove-new-rule', function () {
+            $(this).closest('.new-rule').remove();
+        });
+
+        // Remove action button handler
+        $(document).on('click', '.remove-action', function () {
+            const index = $(this).data('index');
+            $(this).closest('.action-card').remove();
+
+            // Renumber remaining actions
+            updateIndexing('.action-card', 'actions');
+        });
+
+        // Remove new action button handler
+        $(document).on('click', '.remove-new-action', function () {
+            $(this).closest('.new-action').remove();
+        });
+
+        // Remove coupon button handler
+        $(document).on('click', '.remove-coupon', function () {
+            const index = $(this).data('index');
+            $(this).closest('.d-flex').remove();
+
+            // Renumber remaining coupons
+            updateIndexing('input[name^="couponCodes"]', 'couponCodes', true);
+        });
+
+        // Remove new coupon button handler
+        $(document).on('click', '.remove-new-coupon', function () {
+            $(this).closest('.new-coupon').remove();
+        });
+
+        // Function to update indexing after removal
+        function updateIndexing(selector, fieldName, isSimpleArray = false) {
+            let index = 0;
+            $(selector).each(function () {
+                // Update inputs with proper indexes
+                if (isSimpleArray) {
+                    const input = $(this).find('input');
+                    input.attr('name', `${fieldName}[${index}]`);
+                } else {
+                    $(this).find('input, select, textarea').each(function () {
+                        const name = $(this).attr('name');
+                        if (name) {
+                            const newName = name.replace(
+                                new RegExp(`${fieldName}\\[\\d+\\]`),
+                                `${fieldName}[${index}]`
+                            );
+                            $(this).attr('name', newName);
+                        }
+                    });
+
+                    // Update data-index attribute for remove buttons
+                    $(this).find(`.remove-${fieldName.slice(0, -1)}`).data('index', index);
+                }
+                index++;
+            });
+        }
+
+        // Fetch products from API
+        function fetchProducts() {
+            $.ajax({
+                url: '/api/products',
+                type: 'GET',
+                success: function (data) {
+                    window.productsList = data;
+                    // Populate any existing product selects
+                    populateProductSelects();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching products:', error);
+                    // Fallback to sample data
+                    window.productsList = [
+                        {id: 1, name: 'Espresso'},
+                        {id: 2, name: 'Cappuccino'},
+                        {id: 3, name: 'Latte'},
+                        {id: 4, name: 'Americano'},
+                        {id: 5, name: 'Mocha'}
+                    ];
+                    populateProductSelects();
+                }
+            });
+        }
+
+        // Fetch categories from API
+        function fetchCategories() {
+            $.ajax({
+                url: '/category/get-list-category',
+                type: 'GET',
+                success: function (data) {
+                    window.categoriesList = data;
+                    // Populate any existing category selects
+                    populateCategorySelects();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching categories:', error);
+                    // Fallback to sample data
+                    window.categoriesList = [
+                        {id: 1, name: 'Coffee'},
+                        {id: 2, name: 'Tea'},
+                        {id: 3, name: 'Pastries'},
+                        {id: 4, name: 'Breakfast'}
+                    ];
+                    populateCategorySelects();
+                }
+            });
+        }
+
+        // Populate existing product selects
+        function populateProductSelects() {
+            $('.product-select').each(function () {
+                populateProductSelect($(this));
+            });
+        }
+
+        // Populate existing category selects
+        function populateCategorySelects() {
+            $('.category-select').each(function () {
+                populateCategorySelect($(this));
+            });
+        }
+
+        // Populate product select
+        function populateProductSelect(element) {
+            if (window.productsList) {
+                const currentValue = element.val();
+                element.empty();
+
+                // Sửa: Thay vì chỉ hiển thị options, cần hiển thị select box hoặc dữ liệu sản phẩm
+                element.append('<option value="">Select Product</option>');
+
+                window.productsList.forEach(product => {
+                    const selected = currentValue == product.id ? 'selected' : '';
+                    element.append(`<option value="${product.id}" ${selected}>${product.name} (ID: ${product.id})</option>`);
+                });
+            }
+        }
+
+        function populateCategorySelect(element) {
+            if (window.categoriesList) {
+                const currentValue = element.val();
+                element.empty();
+
+                element.append('<option value="">Select Category</option>');
+
+                window.categoriesList.forEach(category => {
+                    const selected = currentValue == category.id ? 'selected' : '';
+                    element.append(`<option value="${category.id}" ${selected}>${category.name} (ID: ${category.id})</option>`);
+                });
+            }
+        }
+
+        // Handle form submission
+        $('form').submit(function (e) {
+            // Process new rules before submission
+            $('.new-rule').each(function () {
+                const ruleType = $(this).find('.rule-type-select').val();
+                if (ruleType) {
+                    // Create hidden inputs for rule data
+                    const ruleDataContainer = $('<div>').appendTo($(this));
+
+                    // Add hidden input for rule type
+                    ruleDataContainer.append(`
+                    <input type="hidden" name="rules[${ruleIndex}].ruleType" value="${ruleType}">
+                `);
+
+                    switch (ruleType) {
+                        case 'PRODUCT':
+                            const productId = $(this).find('.product-select').val();
+                            ruleDataContainer.append(`
+                            <input type="hidden" name="rules[${ruleIndex}].ruleData.productId" value="${productId}">
+                        `);
+                            break;
+                        case 'CATEGORY':
+                            const categoryId = $(this).find('.category-select').val();
+                            ruleDataContainer.append(`
+                            <input type="hidden" name="rules[${ruleIndex}].ruleData.categoryId" value="${categoryId}">
+                        `);
+                            break;
+                        case 'CART_QUANTITY':
+                            const minQuantity = $(this).find('input[name$="minQuantity"]').val();
+                            ruleDataContainer.append(`
+                            <input type="hidden" name="rules[${ruleIndex}].ruleData.minQuantity" value="${minQuantity}">
+                        `);
+                            break;
+                        case 'CART_AMOUNT':
+                            const minAmount = $(this).find('input[name$="minAmount"]').val();
+                            ruleDataContainer.append(`
+                            <input type="hidden" name="rules[${ruleIndex}].ruleData.minAmount" value="${minAmount}">
+                        `);
+                            break;
+                    }
+
+                    ruleIndex++;
+                }
+            });
+
+            // Process new actions before submission
+            $('.new-action').each(function () {
+                const actionType = $(this).find('.action-type-select').val();
+                if (actionType) {
+                    // Create hidden inputs for action data
+                    const actionDataContainer = $('<div>').appendTo($(this));
+
+                    // Add hidden input for action type
+                    actionDataContainer.append(`
+                    <input type="hidden" name="actions[${actionIndex}].actionType" value="${actionType}">
+                `);
+
+                    switch (actionType) {
+                        case 'FREE_PRODUCT':
+                            const productId = $(this).find('.product-select').val();
+                            actionDataContainer.append(`
+                            <input type="hidden" name="actions[${actionIndex}].actionData.productId" value="${productId}">
+                        `);
+                            break;
+                        case 'PERCENT_DISCOUNT':
+                            const percentDiscount = $(this).find('input[name$="percentDiscount"]').val();
+                            actionDataContainer.append(`
+                            <input type="hidden" name="actions[${actionIndex}].actionData.percentDiscount" value="${percentDiscount}">
+                        `);
+                            break;
+                        case 'FIXED_DISCOUNT':
+                            const fixedDiscount = $(this).find('input[name$="fixedDiscount"]').val();
+                            actionDataContainer.append(`
+                            <input type="hidden" name="actions[${actionIndex}].actionData.fixedDiscount" value="${fixedDiscount}">
+                        `);
+                            break;
+                    }
+
+                    actionIndex++;
+                }
+            });
+
+            // Process new coupons before submission
+            $('.new-coupon').each(function () {
+                const couponCode = $(this).find('input').val().trim();
+                if (couponCode) {
+                    $(this).append(`
+                    <input type="hidden" name="couponCodes[${couponIndex}]" value="${couponCode}">
+                `);
+                    couponIndex++;
+                }
+            });
+        });
+
+        // Initialize form validation
+        function validateForm() {
+            const promotionType = $('#promotionType').val();
+            const startDate = new Date($('#startDate').val());
+            const endDate = new Date($('#endDate').val());
+
+            // Basic validation
+            if (!$('#name').val()) {
+                showError('Promotion name is required');
+                return false;
+            }
+
+            if (!promotionType) {
+                showError('Promotion type is required');
+                return false;
+            }
+
+            if (isNaN(startDate.getTime())) {
+                showError('Valid start date is required');
+                return false;
+            }
+
+            if (isNaN(endDate.getTime())) {
+                showError('Valid end date is required');
+                return false;
+            }
+
+            if (startDate >= endDate) {
+                showError('End date must be after start date');
+                return false;
+            }
+
+            if (promotionType === 'COUPON' && $('#couponsContainer').find('input[name^="couponCodes"]').length === 0) {
+                showError('At least one coupon code is required for coupon promotions');
+                return false;
+            }
+
+            // Check if there are rules defined
+            if ($('#rulesContainer').children().length === 0) {
+                showError('At least one rule is required for the promotion');
+                return false;
+            }
+
+            // Check if there are actions defined
+            if ($('#actionsContainer').children().length === 0) {
+                showError('At least one action is required for the promotion');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorAlert = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+            $('#errorContainer').html(errorAlert);
+
+            // Scroll to error message
+            $('html, body').animate({
+                scrollTop: $('#errorContainer').offset().top - 100
+            }, 200);
+        }
+
+        // Add form validation on submit
+        $('form').on('submit', function (e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Handle rule template
+        const ruleTemplate = `
+        <div class="rule-card card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h6 class="card-title">Condition</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-new-rule">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Rule Type:</label>
+                    <select class="form-select rule-type-select">
+                        <option value="">Select Type</option>
+                        <option value="PRODUCT">Product</option>
+                        <option value="CATEGORY">Category</option>
+                        <option value="CART_QUANTITY">Cart Quantity</option>
+                        <option value="CART_AMOUNT">Cart Amount</option>
+                    </select>
+                </div>
+                <div class="rule-fields">
+                    <!-- Rule fields will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    `;
+
+        // Add rule template to the page
+        $('body').append(`<div id="ruleTemplate" style="display: none;">${ruleTemplate}</div>`);
+
+        // Handle action template
+        const actionTemplate = `
+        <div class="action-card card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h6 class="card-title">Action</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-new-action">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Action Type:</label>
+                    <select class="form-select action-type-select">
+                        <option value="">Select Type</option>
+                        <option value="FREE_PRODUCT">Free Product</option>
+                        <option value="PERCENT_DISCOUNT">Percentage Discount</option>
+                        <option value="FIXED_DISCOUNT">Fixed Amount Discount</option>
+                    </select>
+                </div>
+                <div class="action-fields">
+                    <!-- Action fields will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    `;
+
+        // Add action template to the page
+        $('body').append(`<div id="actionTemplate" style="display: none;">${actionTemplate}</div>`);
+
+        // Handle coupon template
+        const couponTemplate = `
+        <div class="new-coupon d-flex align-items-center mb-2">
+            <input type="text" class="form-control me-2" placeholder="Enter coupon code">
+            <button type="button" class="btn btn-sm btn-outline-danger remove-new-coupon">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+
+        // Add coupon template to the page
+        $('body').append(`<div id="couponTemplate" style="display: none;">${couponTemplate}</div>`);
+
+        // Handle date validation
+        $('#startDate, #endDate').change(function () {
+            const startDate = new Date($('#startDate').val());
+            const endDate = new Date($('#endDate').val());
+
+            if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && startDate >= endDate) {
+                showError('End date must be after start date');
+                $(this).addClass('is-invalid');
+            } else {
+                $('#startDate, #endDate').removeClass('is-invalid');
+                // Clear error message if it was a date error
+                if ($('#errorContainer').text().includes('date')) {
+                    $('#errorContainer').empty();
+                }
+            }
+        });
+
+        // Handle auto-generation of coupon codes
+        $('#generateCoupon').click(function () {
+            const generatedCode = generateCouponCode();
+            const couponInput = `
+            <div class="new-coupon d-flex align-items-center mb-2">
+                <input type="text" class="form-control me-2" value="${generatedCode}">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-new-coupon">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+            $('#couponsContainer').append(couponInput);
+        });
+
+        // Generate random coupon code
+        function generateCouponCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        // Handle preview functionality
+        $('#previewPromotion').click(function () {
+            // Collect form data
+            const formData = {
+                name: $('#name').val(),
+                description: $('#description').val(),
+                promotionType: $('#promotionType').val(),
+                startDate: $('#startDate').val(),
+                endDate: $('#endDate').val(),
+                priority: $('#priority').val(),
+                stackable: $('#stackable').is(':checked'),
+                usageLimit: $('#usageLimit').val() || 'Unlimited',
+                active: $('#active').is(':checked'),
+                rules: [],
+                actions: []
+            };
+
+            // Collect rules
+            $('.rule-card').each(function () {
+                const ruleType = $(this).find('input[name$="ruleType"]').val();
+                let ruleData = {};
+
+                switch (ruleType) {
+                    case 'PRODUCT':
+                        const productId = $(this).find('input[name$="productId"]').val();
+                        const productName = window.productsList.find(p => p.id == productId)?.name || 'Unknown Product';
+                        ruleData = {productId, productName};
+                        break;
+                    case 'CATEGORY':
+                        const categoryId = $(this).find('input[name$="categoryId"]').val();
+                        const categoryName = window.categoriesList.find(c => c.id == categoryId)?.name || 'Unknown Category';
+                        ruleData = {categoryId, categoryName};
+                        break;
+                    case 'CART_QUANTITY':
+                        ruleData = {minQuantity: $(this).find('input[name$="minQuantity"]').val()};
+                        break;
+                    case 'CART_AMOUNT':
+                        ruleData = {minAmount: $(this).find('input[name$="minAmount"]').val()};
+                        break;
+                }
+
+                formData.rules.push({ruleType, ruleData});
+            });
+
+            // Collect actions
+            $('.action-card').each(function () {
+                const actionType = $(this).find('input[name$="actionType"]').val();
+                let actionData = {};
+
+                switch (actionType) {
+                    case 'FREE_PRODUCT':
+                        const productId = $(this).find('input[name$="productId"]').val();
+                        const productName = window.productsList.find(p => p.id == productId)?.name || 'Unknown Product';
+                        actionData = {productId, productName};
+                        break;
+                    case 'PERCENT_DISCOUNT':
+                        actionData = {percentDiscount: $(this).find('input[name$="percentDiscount"]').val()};
+                        break;
+                    case 'FIXED_DISCOUNT':
+                        actionData = {fixedDiscount: $(this).find('input[name$="fixedDiscount"]').val()};
+                        break;
+                }
+
+                formData.actions.push({actionType, actionData});
+            });
+
+            // Collect coupon codes
+            if (formData.promotionType === 'COUPON') {
+                formData.couponCodes = [];
+                $('input[name^="couponCodes"]').each(function () {
+                    formData.couponCodes.push($(this).val());
+                });
+            }
+
+            // Display preview
+            showPreviewModal(formData);
+        });
+
+        // Show preview modal
+        function showPreviewModal(data) {
+            // Create rules and actions HTML
+            let rulesHtml = '';
+            data.rules.forEach(rule => {
+                let ruleDescription = '';
+                switch (rule.ruleType) {
+                    case 'PRODUCT':
+                        ruleDescription = `Product: ${rule.ruleData.productName}`;
+                        break;
+                    case 'CATEGORY':
+                        ruleDescription = `Category: ${rule.ruleData.categoryName}`;
+                        break;
+                    case 'CART_QUANTITY':
+                        ruleDescription = `Cart Quantity: Min ${rule.ruleData.minQuantity} items`;
+                        break;
+                    case 'CART_AMOUNT':
+                        ruleDescription = `Cart Amount: Min $${rule.ruleData.minAmount}`;
+                        break;
+                }
+                rulesHtml += `<li>${ruleDescription}</li>`;
+            });
+
+            let actionsHtml = '';
+            data.actions.forEach(action => {
+                let actionDescription = '';
+                switch (action.actionType) {
+                    case 'FREE_PRODUCT':
+                        actionDescription = `Free Product: ${action.actionData.productName}`;
+                        break;
+                    case 'PERCENT_DISCOUNT':
+                        actionDescription = `${action.actionData.percentDiscount}% Discount`;
+                        break;
+                    case 'FIXED_DISCOUNT':
+                        actionDescription = `$${action.actionData.fixedDiscount} Discount`;
+                        break;
+                }
+                actionsHtml += `<li>${actionDescription}</li>`;
+            });
+
+            // Coupon codes
+            let couponHtml = '';
+            if (data.promotionType === 'COUPON' && data.couponCodes && data.couponCodes.length > 0) {
+                couponHtml = `
+                <div class="mb-3">
+                    <strong>Coupon Codes:</strong>
+                    <ul>
+                        ${data.couponCodes.map(code => `<li>${code}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            }
+
+            // Create modal content
+            const modalContent = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Promotion Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <h5>${data.name}</h5>
+                            <p>${data.description || 'No description'}</p>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Type:</strong> ${data.promotionType}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Status:</strong> ${data.active ? 'Active' : 'Inactive'}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Start Date:</strong> ${new Date(data.startDate).toLocaleString()}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>End Date:</strong> ${new Date(data.endDate).toLocaleString()}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Priority:</strong> ${data.priority}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Stackable:</strong> ${data.stackable ? 'Yes' : 'No'}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Usage Limit:</strong> ${data.usageLimit}
+                        </div>
+                        ${couponHtml}
+                        <div class="mb-3">
+                            <strong>Rules:</strong>
+                            <ul>${rulesHtml}</ul>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Actions:</strong>
+                            <ul>${actionsHtml}</ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            // Show modal
+            $('#previewModal').html(modalContent);
+            const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+            previewModal.show();
+        }
+    });
+</script>
+</body>
+</html>

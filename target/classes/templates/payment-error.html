@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Error - G3P Coffee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        .error-icon {
+            font-size: 80px;
+            color: #d9534f;
+            margin-bottom: 20px;
+        }
+        .error-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error-message {
+            margin: 20px 0 30px;
+            color: #555;
+            font-size: 18px;
+        }
+        .btn-retry {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-block;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-right: 15px;
+        }
+        .btn-retry:hover {
+            background-color: #3e8e41;
+        }
+        .btn-cart {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-block;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .btn-cart:hover {
+            background-color: #e2e6ea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be here -->
+<!--    <div th:replace="fragments/header :: header"></div>-->
+
+    <div class="container error-container">
+        <div class="error-card">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            
+            <h1>Payment Error</h1>
+            
+            <p class="error-message" th:text="${errorMessage ?: 'There was an error processing your payment. Please try again.'}">
+                Error message goes here
+            </p>
+            
+            <div>
+                <a href="/checkout" class="btn-retry">Try Again</a>
+                <a href="/cart" class="btn-cart">Return to Cart</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer will be here -->
+<!--    <div th:replace="fragments/footer :: footer"></div>-->
+</body>
+</html>

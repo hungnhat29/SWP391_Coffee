@@ -78,7 +78,6 @@
     "Spring Boot.G3PCoffeeApplication.executor": "Run",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Web/SWP391_Coffee",
@@ -260,7 +259,7 @@
       <workItem from="1743171796478" duration="7613000" />
       <workItem from="1743233161855" duration="17271000" />
       <workItem from="1743259616778" duration="1598000" />
-      <workItem from="1743262848531" duration="2271000" />
+      <workItem from="1743262848531" duration="2955000" />
     </task>
     <servers />
   </component>

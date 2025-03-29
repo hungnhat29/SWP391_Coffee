@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Promotion | G3P Coffee</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Add SweetAlert2 for better notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+    <!-- Akar Icons -->
+    <script src="https://unpkg.com/akar-icons-fonts"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: white;
+            font-family: "Poppins", Arial, sans-serif;
+            height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            bottom: 44px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 260px;
+            border-radius: 16px;
+            padding: 0 16px;
+            background: rgba(0, 0, 0, 1);
+            backdrop-filter: blur(30px);
+            transition: width 0.4s;
+        }
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 72px;
+            padding-top: 10px;
+            border-bottom: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #F76D37;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            flex-grow: 1; /* This makes the list take up available space */
+        }
+
+        .sidebar li {
+            position: relative;
+        }
+
+        .sidebar input {
+            display: none;
+        }
+
+        .sidebar label, .sidebar button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 50px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 16px;
+            color: rgb(255 255 255 / 95%);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            text-align: left;
+        }
+
+        .sidebar .text-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sidebar label:hover, .sidebar button:hover {
+            background: rgba(50, 50, 50, 0.8);
+            color: #F76D37;
+        }
+
+        .sidebar input:checked + label {
+            background: #1960f3;
+            color: rgb(255 255 255 / 95%);
+        }
+
+        .sidebar input:checked + label:hover {
+            color: #F76D37;
+        }
+
+        .sidebar label i:last-child {
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+
+        .sidebar input:checked + label i:last-child {
+            transform: rotate(-180deg);
+        }
+
+        .sub-menu {
+            overflow: hidden;
+            height: 0;
+            transition: height 0.5s ease;
+        }
+
+        .sidebar input#settings:checked ~ .sub-menu {
+            height: 100px;
+        }
+
+        .sidebar input#create:checked ~ .sub-menu {
+            height: 150px;
+        }
+
+        .sidebar input#notifications:checked ~ .sub-menu {
+            height: 50px;
+        }
+
+        .sidebar input#account:checked ~ .sub-menu {
+            height: 100px;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px 16px 10px 52px;
+            color: rgb(255 255 255 / 95%);
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .sub-menu a:hover {
+            color: #F76D37;
+            background: rgba(50, 50, 50, 0.8);
+        }
+
+        .sub-menu a::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: rgb(255 255 255 / 35%);
+            transform: translateY(-50%);
+        }
+
+        /*.content {*/
+        /*    margin-left: 276px; !* Reduced from 280px *!*/
+        /*    padding: 20px;*/
+        /*    width: calc(100% - 276px);*/
+        /*}*/
+
+        /* Logout button at bottom of sidebar */
+        .logout-container {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgb(255 255 255 / 95%);
+            padding: 12px 16px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        .logout-btn i {
+            font-size: 18px;
+        }
+        /* Main Content Styles */
+        .content {
+            margin-left: 300px;
+            padding: 40px;
+            width: calc(100% - 300px);
+            min-height: 100vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .rule-container, .action-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .promotion-type-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section-title {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .add-coupon-btn {
+            margin-bottom: 15px;
+        }
+
+        .coupon-code-container {
+            margin-bottom: 10px;
+        }
+
+        .submit-container {
+            margin-top: 30px;
+        }
+
+        .preview-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .hidden-initially {
+            display: none;
+        }
+
+        .btn-primary {
+            background-color: #5a4a3f;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #3e322a;
+        }
+
+        .btn-outline-primary {
+            border-color: #5a4a3f;
+            color: #5a4a3f;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #5a4a3f;
+            color: #fff;
+        }
+
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <header>
+        <h1 class="logo-text">G3P Coffee</h1>
+    </header>
+    <ul>
+        <li>
+            <button onclick="window.location.href='/admin/dashboard'">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-tachometer"></i>
+                    <p>Dashboard</p>
+                </div>
+            </button>
+        </li>
+        <li>
+            <input type="radio" id="settings" name="sidebar"/>
+            <label for="settings">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-user"></i>
+                    <p>Customers</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/users/customers/list">Customers List</a>
+                <a href="/membership">Members List</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="create" name="sidebar"/>
+            <label for="create">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-cart"></i>
+                    <p>Menu</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/categories">Categories List</a>
+                <a href="/products">Products List</a>
+                <a href="/orders">Orders List</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="notifications" name="sidebar"/>
+            <label for="notifications">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-bell"></i>
+                    <p>Purchase history</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/admin/orders">Customer purchase history</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="account" name="sidebar" checked/>
+            <label for="account">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-lock"></i>
+                    <p>Promotions</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/promotions/create">Create new promotions</a>
+                <a href="/promotions">Promotions List</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Logout button added at bottom of sidebar -->
+    <div class="logout-container">
+        <button class="logout-btn" onclick="logout()">
+            <i class="bx bx-log-out"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+</aside>
+<!-- Main Content -->
+<div class="content">
+    <h1 class="mb-4">Create New Promotion</h1>
+
+    <div class="alert alert-success d-none" id="success-alert">
+        Promotion created successfully!
+    </div>
+
+    <div class="alert alert-danger d-none" id="error-alert">
+        Error creating promotion. Please try again.
+    </div>
+
+    <form id="promotionForm" th:action="@{/promotions/create}" method="post">
+        <!-- Basic Information -->
+        <div class="form-section">
+            <h3 class="form-section-title">Basic Information</h3>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Promotion Name*</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="promotionType" class="form-label">Promotion Type*</label>
+                    <select class="form-select" id="promotionType" name="promotionType" required>
+                        <option value="">Select Type</option>
+                        <option value="BUY_ONE_GET_ONE">Buy One Get One</option>
+                        <option value="BUY_X_GET_DISCOUNT">Buy X Get Discount</option>
+                        <option value="FLASH_SALE_ALL">Flash Sale (All Products)</option>
+                        <option value="FLASH_SALE_CATEGORY">Flash Sale (By Category)</option>
+                        <option value="AMOUNT_THRESHOLD_DISCOUNT">Amount Threshold Discount</option>
+                        <option value="ORDER_DISCOUNT">Order Discount</option>
+                    </select>
+                    <div id="promotionTypeDescription" class="promotion-type-description"></div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="startDate" class="form-label">Start Date*</label>
+                    <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="endDate" class="form-label">End Date*</label>
+                    <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="priority" class="form-label">Priority</label>
+                    <input type="number" class="form-control" id="priority" name="priority" min="1" value="1">
+                    <small class="text-muted">Higher priority is applied first</small>
+                </div>
+                <div class="col-md-4">
+                    <label for="usageLimit" class="form-label">Usage Limit</label>
+                    <input type="number" class="form-control" id="usageLimit" name="usageLimit" min="0">
+                    <small class="text-muted">Leave empty for unlimited</small>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="active" name="active" checked>
+                        <label class="form-check-label" for="active">Active</label>
+                    </div>
+                    <div class="form-check mb-3 ms-4">
+                        <input class="form-check-input" type="checkbox" id="stackable" name="stackable">
+                        <label class="form-check-label" for="stackable">Stackable</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="form-section" id="rulesSection">
+            <h3 class="form-section-title">Rules</h3>
+            <p>Define the conditions for this promotion to be applied.</p>
+            <div id="rulesContainer"></div>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="form-section" id="actionsSection">
+            <h3 class="form-section-title">Actions</h3>
+            <p>Define what happens when the promotion is applied.</p>
+            <div id="actionsContainer"></div>
+        </div>
+
+        <!-- Coupons Section -->
+        <div class="form-section" id="couponsSection">
+            <h3 class="form-section-title">Coupon Codes (Optional)</h3>
+            <p>If you want to make this promotion only available with coupon codes, add them here.</p>
+            <button type="button" class="btn btn-outline-primary add-coupon-btn" id="addCouponBtn">
+                <i class="fas fa-plus"></i> Add Coupon Code
+            </button>
+            <div id="couponCodesContainer"></div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="form-section">
+            <h3 class="form-section-title">Preview</h3>
+            <button type="button" class="btn btn-outline-secondary" id="previewBtn">
+                <i class="fas fa-eye"></i> Preview Promotion
+            </button>
+            <div class="preview-container d-none" id="previewContainer">
+                <h4 id="previewName"></h4>
+                <p id="previewDescription"></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type:</strong> <span id="previewType"></span></p>
+                        <p><strong>Duration:</strong> <span id="previewDuration"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Rules:</strong> <span id="previewRules"></span></p>
+                        <p><strong>Actions:</strong> <span id="previewActions"></span></p>
+                    </div>
+                </div>
+                <p><strong>Coupon Codes:</strong> <span id="previewCoupons"></span></p>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-container">
+            <button type="submit" class="btn btn-primary">Create Promotion</button>
+            <a href="/promotions" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Templates for dynamic form elements -->
+<template id="product-rule-template">
+    <div class="rule-container" data-rule-type="PRODUCT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Product Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Product</label>
+            <select class="form-control product-select" name="rules[{index}].ruleData.productId" required>
+                <option value="">Select a product</option>
+            </select>
+            <input type="hidden" name="rules[{index}].ruleType" value="PRODUCT">
+        </div>
+    </div>
+</template>
+
+<template id="category-rule-template">
+    <div class="rule-container" data-rule-type="CATEGORY">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Category Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Category</label>
+            <select class="form-control category-select" name="rules[{index}].ruleData.categoryId" required>
+                <option value="">Select a category</option>
+            </select>
+            <input type="hidden" name="rules[{index}].ruleType" value="CATEGORY">
+        </div>
+    </div>
+</template>
+
+<template id="cart-quantity-rule-template">
+    <div class="rule-container" data-rule-type="CART_QUANTITY">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Cart Quantity Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Minimum Quantity</label>
+            <input type="number" class="form-control" name="rules[{index}].ruleData.minQuantity" min="1" required>
+            <small class="text-muted">Minimum number of items in cart</small>
+            <input type="hidden" name="rules[{index}].ruleType" value="CART_QUANTITY">
+        </div>
+    </div>
+</template>
+
+<template id="cart-amount-rule-template">
+    <div class="rule-container" data-rule-type="CART_AMOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Cart Amount Rule</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-rule-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Minimum Amount</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" name="rules[{index}].ruleData.minAmount" min="0" step="0.01" required>
+            </div>
+            <small class="text-muted">Minimum cart subtotal amount</small>
+            <input type="hidden" name="rules[{index}].ruleType" value="CART_AMOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="percent-discount-action-template">
+    <div class="action-container" data-action-type="PERCENT_DISCOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Percentage Discount</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Discount Percentage</label>
+            <div class="input-group">
+                <input type="number" class="form-control" name="actions[{index}].actionData.percentDiscount" min="1" max="100" required>
+                <span class="input-group-text">%</span>
+            </div>
+            <input type="hidden" name="actions[{index}].actionType" value="PERCENT_DISCOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="fixed-discount-action-template">
+    <div class="action-container" data-action-type="FIXED_DISCOUNT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Fixed Amount Discount</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Discount Amount</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" name="actions[{index}].actionData.fixedDiscount" min="0.01" step="0.01" required>
+            </div>
+            <input type="hidden" name="actions[{index}].actionType" value="FIXED_DISCOUNT">
+        </div>
+    </div>
+</template>
+
+<template id="free-product-action-template">
+    <div class="action-container" data-action-type="FREE_PRODUCT">
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Free Product</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger remove-action-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Product</label>
+            <select class="form-control product-select" name="actions[{index}].actionData.productId" required>
+                <option value="">Select a product</option>
+            </select>
+            <input type="hidden" name="actions[{index}].actionType" value="FREE_PRODUCT">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" name="actions[{index}].actionData.quantity" min="1" value="1" required>
+        </div>
+    </div>
+</template>
+
+<template id="coupon-code-template">
+    <div class="coupon-code-container">
+        <div class="input-group">
+            <input type="text" class="form-control" name="couponCodes[]" placeholder="Enter coupon code">
+            <button type="button" class="btn btn-outline-danger remove-coupon-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Fetch products and categories for select boxes
+        fetchProducts();
+        fetchCategories();
+
+        // Promotion type descriptions
+        const promotionTypeDescriptions = {
+            'BUY_ONE_GET_ONE': 'Buy one product and get another one free.',
+            'BUY_X_GET_DISCOUNT': 'Buy a minimum number of products and get a discount on one item.',
+            'FLASH_SALE_ALL': 'Discount applied to all products for a limited time.',
+            'FLASH_SALE_CATEGORY': 'Discount applied to products in a specific category.',
+            'AMOUNT_THRESHOLD_DISCOUNT': 'Discount applied when cart subtotal exceeds a threshold.',
+            'ORDER_DISCOUNT': 'Discount applied to the entire order.'
+        };
+
+        // Rules configuration by promotion type
+        const promotionRules = {
+            'BUY_ONE_GET_ONE': ['PRODUCT'],
+            'BUY_X_GET_DISCOUNT': ['CART_QUANTITY'],
+            'FLASH_SALE_ALL': [],
+            'FLASH_SALE_CATEGORY': ['CATEGORY'],
+            'AMOUNT_THRESHOLD_DISCOUNT': ['CART_AMOUNT'],
+            'ORDER_DISCOUNT': []
+        };
+
+        // Actions configuration by promotion type
+        const promotionActions = {
+            'BUY_ONE_GET_ONE': ['FREE_PRODUCT'],
+            'BUY_X_GET_DISCOUNT': ['PERCENT_DISCOUNT'],
+            'FLASH_SALE_ALL': ['PERCENT_DISCOUNT'],
+            'FLASH_SALE_CATEGORY': ['PERCENT_DISCOUNT'],
+            'AMOUNT_THRESHOLD_DISCOUNT': ['PERCENT_DISCOUNT', 'FIXED_DISCOUNT'],
+            'ORDER_DISCOUNT': ['PERCENT_DISCOUNT', 'FIXED_DISCOUNT']
+        };
+
+        let ruleIndex = 0;
+        let actionIndex = 0;
+
+        $('#promotionType').change(function () {
+            const type = $(this).val();
+            $('#promotionTypeDescription').text(promotionTypeDescriptions[type] || '');
+            $('#rulesContainer').empty();
+            $('#actionsContainer').empty();
+
+            if (type) {
+                promotionRules[type].forEach(ruleType => addRule(ruleType));
+                const actionTypes = promotionActions[type];
+                if (actionTypes.length === 1) {
+                    addAction(actionTypes[0]);
+                } else if (actionTypes.length > 1) {
+                    const actionSelector = `
+                            <div class="mb-3">
+                                <label class="form-label">Select Action Type</label>
+                                <select class="form-control" id="actionTypeSelector">
+                                    <option value="">Select an action type</option>
+                                    ${actionTypes.includes('PERCENT_DISCOUNT') ? '<option value="PERCENT_DISCOUNT">Percentage Discount</option>' : ''}
+                                    ${actionTypes.includes('FIXED_DISCOUNT') ? '<option value="FIXED_DISCOUNT">Fixed Amount Discount</option>' : ''}
+                                    ${actionTypes.includes('FREE_PRODUCT') ? '<option value="FREE_PRODUCT">Free Product</option>' : ''}
+                                </select>
+                            </div>
+                        `;
+                    $('#actionsContainer').append(actionSelector);
+                    $('#actionTypeSelector').change(function () {
+                        const actionType = $(this).val();
+                        if (actionType) {
+                            $(this).parent().remove();
+                            addAction(actionType);
+                        }
+                    });
+                }
+            }
+        });
+
+        function addRule(ruleType) {
+            const template = $(`#${ruleType.toLowerCase().replace(/_/g, '-')}-rule-template`).html();
+            if (template) {
+                const ruleHtml = template.replace(/{index}/g, ruleIndex++);
+                $('#rulesContainer').append(ruleHtml);
+                if (ruleType === 'PRODUCT') populateProductSelect($('#rulesContainer .product-select').last());
+                else if (ruleType === 'CATEGORY') populateCategorySelect($('#rulesContainer .category-select').last());
+            }
+        }
+
+        function addAction(actionType) {
+            const template = $(`#${actionType.toLowerCase().replace(/_/g, '-')}-action-template`).html();
+            if (template) {
+                const actionHtml = template.replace(/{index}/g, actionIndex++);
+                $('#actionsContainer').append(actionHtml);
+                if (actionType === 'FREE_PRODUCT') populateProductSelect($('#actionsContainer .product-select').last());
+            }
+        }
+
+        $(document).on('click', '.remove-rule-btn', function () {
+            $(this).closest('.rule-container').remove();
+        });
+
+        $(document).on('click', '.remove-action-btn', function () {
+            $(this).closest('.action-container').remove();
+        });
+
+        $('#addCouponBtn').click(function () {
+            const couponTemplate = $('#coupon-code-template').html();
+            $('#couponCodesContainer').append(couponTemplate);
+        });
+
+        $(document).on('click', '.remove-coupon-btn', function () {
+            $(this).closest('.coupon-code-container').remove();
+        });
+
+        function fetchProducts() {
+            $.ajax({
+                url: '/api/products',
+                type: 'GET',
+                success: function (data) { window.productsList = data; },
+                error: function () {
+                    window.productsList = [
+                        {id: 1, name: 'Espresso'}, {id: 2, name: 'Cappuccino'}, {id: 3, name: 'Latte'},
+                        {id: 4, name: 'Americano'}, {id: 5, name: 'Mocha'}
+                    ];
+                }
+            });
+        }
+
+        function fetchCategories() {
+            $.ajax({
+                url: '/category/get-list-category',
+                type: 'GET',
+                success: function (data) { window.categoriesList = data; },
+                error: function () {
+                    window.categoriesList = [
+                        {id: 1, name: 'Coffee'}, {id: 2, name: 'Tea'}, {id: 3, name: 'Pastries'}, {id: 4, name: 'Breakfast'}
+                    ];
+                }
+            });
+        }
+
+        function populateProductSelect(selectElement) {
+            if (window.productsList) {
+                selectElement.find('option:not(:first)').remove();
+                window.productsList.forEach(product => {
+                    selectElement.append(`<option value="${product.id}">${product.name}</option>`);
+                });
+            }
+        }
+
+        function populateCategorySelect(selectElement) {
+            if (window.categoriesList) {
+                selectElement.find('option:not(:first)').remove();
+                window.categoriesList.forEach(category => {
+                    selectElement.append(`<option value="${category.id}">${category.name}</option>`);
+                });
+            }
+        }
+
+        $('#previewBtn').click(function () {
+            const formData = getFormData();
+            $('#previewName').text(formData.name || 'No Name');
+            $('#previewDescription').text(formData.description || 'No Description');
+            $('#previewType').text(getPromotionTypeName(formData.promotionType));
+            const startDate = formData.startDate ? new Date(formData.startDate).toLocaleDateString() : 'Not set';
+            const endDate = formData.endDate ? new Date(formData.endDate).toLocaleDateString() : 'Not set';
+            $('#previewDuration').text(`${startDate} to ${endDate}`);
+
+            let rulesText = formData.rules.length > 0 ? formData.rules.map(rule => {
+                if (rule.ruleType === 'PRODUCT') return `Apply to product: ${getProductName(rule.ruleData.productId)}`;
+                if (rule.ruleType === 'CATEGORY') return `Apply to category: ${getCategoryName(rule.ruleData.categoryId)}`;
+                if (rule.ruleType === 'CART_QUANTITY') return `Minimum ${rule.ruleData.minQuantity} items in cart`;
+                if (rule.ruleType === 'CART_AMOUNT') return `Minimum cart amount: $${rule.ruleData.minAmount}`;
+            }).join('; ') : 'No rules defined';
+            $('#previewRules').text(rulesText);
+
+            let actionsText = formData.actions.length > 0 ? formData.actions.map(action => {
+                if (action.actionType === 'PERCENT_DISCOUNT') return `${action.actionData.percentDiscount}% discount`;
+                if (action.actionType === 'FIXED_DISCOUNT') return `$${action.actionData.fixedDiscount} discount`;
+                if (action.actionType === 'FREE_PRODUCT') return `Free product: ${getProductName(action.actionData.productId)} (${action.actionData.quantity})`;
+            }).join('; ') : 'No actions defined';
+            $('#previewActions').text(actionsText);
+
+            $('#previewCoupons').text(formData.couponCodes.length > 0 ? formData.couponCodes.join(', ') : 'No coupon codes defined');
+            $('#previewContainer').removeClass('d-none');
+        });
+
+        function getPromotionTypeName(type) {
+            const typeNames = {
+                'BUY_ONE_GET_ONE': 'Buy One Get One', 'BUY_X_GET_DISCOUNT': 'Buy X Get Discount',
+                'FLASH_SALE_ALL': 'Flash Sale (All Products)', 'FLASH_SALE_CATEGORY': 'Flash Sale (By Category)',
+                'AMOUNT_THRESHOLD_DISCOUNT': 'Amount Threshold Discount', 'ORDER_DISCOUNT': 'Order Discount'
+            };
+            return typeNames[type] || type;
+        }
+
+        function getProductName(id) {
+            const product = window.productsList?.find(p => p.id == id);
+            return product ? product.name : `Product #${id}`;
+        }
+
+        function getCategoryName(id) {
+            const category = window.categoriesList?.find(c => c.id == id);
+            return category ? category.name : `Category #${id}`;
+        }
+
+        function getFormData() {
+            const formData = {
+                name: $('#name').val(),
+                description: $('#description').val(),
+                promotionType: $('#promotionType').val(),
+                startDate: $('#startDate').val(),
+                endDate: $('#endDate').val(),
+                priority: $('#priority').val(),
+                usageLimit: $('#usageLimit').val() || null,
+                active: $('#active').is(':checked'),
+                stackable: $('#stackable').is(':checked'),
+                rules: [],
+                actions: [],
+                couponCodes: []
+            };
+
+            $('.rule-container').each(function () {
+                const ruleType = $(this).data('rule-type');
+                const rule = { ruleType, ruleData: {} };
+                if (ruleType === 'PRODUCT') rule.ruleData.productId = parseInt($(this).find('select').val());
+                else if (ruleType === 'CATEGORY') rule.ruleData.categoryId = parseInt($(this).find('select').val());
+                else if (ruleType === 'CART_QUANTITY') rule.ruleData.minQuantity = parseInt($(this).find('input[type="number"]').val());
+                else if (ruleType === 'CART_AMOUNT') rule.ruleData.minAmount = parseFloat($(this).find('input[type="number"]').val());
+                formData.rules.push(rule);
+            });
+
+            $('.action-container').each(function () {
+                const actionType = $(this).data('action-type');
+                const action = { actionType, actionData: {} };
+                if (actionType === 'PERCENT_DISCOUNT') action.actionData.percentDiscount = parseFloat($(this).find('input[type="number"]').val());
+                else if (actionType === 'FIXED_DISCOUNT') action.actionData.fixedDiscount = parseFloat($(this).find('input[type="number"]').val());
+                else if (actionType === 'FREE_PRODUCT') {
+                    action.actionData.productId = parseInt($(this).find('select').val());
+                    action.actionData.quantity = parseInt($(this).find('input[type="number"]').val());
+                }
+                formData.actions.push(action);
+            });
+
+            $('#couponCodesContainer input[type="text"]').each(function () {
+                const code = $(this).val().trim();
+                if (code) formData.couponCodes.push(code);
+            });
+
+            return formData;
+        }
+
+        $('#promotionForm').submit(function (e) {
+            e.preventDefault();
+            const formData = getFormData();
+            if (!formData.name || !formData.promotionType || !formData.startDate || !formData.endDate) {
+                $('#error-alert').text('Please fill in all required fields.').removeClass('d-none');
+                return;
+            }
+            if (formData.actions.length === 0) {
+                $('#error-alert').text('Please add at least one action.').removeClass('d-none');
+                return;
+            }
+
+            $.ajax({
+                url: '/promotions/api/create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function () {
+                    $('#success-alert').removeClass('d-none');
+                    $('#error-alert').addClass('d-none');
+                    setTimeout(() => window.location.href = '/promotions', 2000);
+                },
+                error: function (xhr) {
+                    $('#error-alert').text('Error creating promotion: ' + (xhr.responseJSON?.message || 'Unknown error')).removeClass('d-none');
+                    $('#success-alert').addClass('d-none');
+                }
+            });
+        });
+
+        function initForm() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const formatDate = date => date.toISOString().slice(0, 16);
+            $('#startDate').val(formatDate(now));
+            $('#endDate').val(formatDate(tomorrow));
+        }
+
+        initForm();
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+<script>
+    function logout() {
+        fetch('/auth/logout', {
+            method: 'POST', // Gọi API với phương thức POST
+            credentials: 'include' // Đảm bảo cookie được gửi kèm
+        })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: "Đăng xuất thành công!",
+                        icon: "success",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                    setTimeout(() => {
+                        window.location.href = "/auth/login";
+                    }, 3000);
+                } else {
+                    Swal.fire({
+                        title: "Lỗi",
+                        text: "Đăng xuất không thành công!",
+                        icon: "error",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                    icon: "error",
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            });
+    }
+</script>
+</body>
+</html>
