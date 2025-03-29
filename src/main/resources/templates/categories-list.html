@@ -14,7 +14,8 @@
 
     <!-- Boxicons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-
+    <!-- Add SweetAlert2 for better notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -62,7 +63,7 @@
         .sidebar header {
             display: flex;
             align-items: center;
-            justify-content: center; /* Căn giữa logo theo chiều ngang */
+            justify-content: center;
             height: 72px;
             padding-top: 10px;
             border-bottom: 1px solid rgb(255 255 255 / 8%);
@@ -74,7 +75,7 @@
             color: #F76D37;
             margin: 0;
             padding: 0;
-            text-align: center; /* Đảm bảo text căn giữa */
+            text-align: center;
         }
 
         .sidebar ul {
@@ -82,6 +83,7 @@
             padding: 0;
             margin: 0;
             width: 100%;
+            flex-grow: 1; /* This makes the list take up available space */
         }
 
         .sidebar li {
@@ -89,14 +91,14 @@
         }
 
         .sidebar input {
-            display: none; /* Ẩn input radio */
+            display: none;
         }
 
         .sidebar label, .sidebar button {
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Căn trái cho button và label */
+            justify-content: flex-start;
             height: 50px;
             width: 100%;
             border-radius: 6px;
@@ -114,7 +116,7 @@
         .sidebar .text-icon-wrapper {
             display: flex;
             align-items: center;
-            gap: 16px; /* Khoảng cách giữa icon và text */
+            gap: 16px;
         }
 
         .sidebar label:hover, .sidebar button:hover {
@@ -123,21 +125,21 @@
         }
 
         .sidebar input:checked + label {
-            background: #1960f3; /* Màu nền khi được chọn */
+            background: #1960f3;
             color: rgb(255 255 255 / 95%);
         }
 
         .sidebar input:checked + label:hover {
-            color: #F76D37; /* Hiệu ứng hover khi checked */
+            color: #F76D37;
         }
 
         .sidebar label i:last-child {
-            transition: transform 0.3s; /* Hiệu ứng xoay icon */
-            margin-left: auto; /* Đẩy icon chevron sang phải */
+            transition: transform 0.3s;
+            margin-left: auto;
         }
 
         .sidebar input:checked + label i:last-child {
-            transform: rotate(-180deg); /* Xoay icon khi checked */
+            transform: rotate(-180deg);
         }
 
         .sub-menu {
@@ -146,11 +148,21 @@
             transition: height 0.5s ease;
         }
 
-        /* Tùy chỉnh chiều cao sub-menu cho từng mục */
-        .sidebar input#settings:checked ~ .sub-menu { height: 100px; }
-        .sidebar input#create:checked ~ .sub-menu { height: 100px; }
-        .sidebar input#notifications:checked ~ .sub-menu { height: 50px; }
-        .sidebar input#account:checked ~ .sub-menu { height: 100px; }
+        .sidebar input#settings:checked ~ .sub-menu {
+            height: 100px;
+        }
+
+        .sidebar input#create:checked ~ .sub-menu {
+            height: 150px;
+        }
+
+        .sidebar input#notifications:checked ~ .sub-menu {
+            height: 50px;
+        }
+
+        .sidebar input#account:checked ~ .sub-menu {
+            height: 100px;
+        }
 
         .sub-menu a {
             display: block;
@@ -180,9 +192,40 @@
         }
 
         .content {
-            margin-left: 280px;
+            margin-left: 276px; /* Reduced from 280px */
             padding: 20px;
-            width: calc(100% - 280px);
+            width: calc(100% - 276px);
+        }
+
+        /* Logout button at bottom of sidebar */
+        .logout-container {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgb(255 255 255 / 95%);
+            padding: 12px 16px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        .logout-btn i {
+            font-size: 18px;
         }
 
         /* Main Content Styles */
@@ -410,6 +453,7 @@
             <div class="sub-menu">
                 <a href="/categories">Categories List</a>
                 <a href="/products">Products List</a>
+                <a href="/orders">Orders List</a>
             </div>
         </li>
         <li>
@@ -426,7 +470,7 @@
             </div>
         </li>
         <li>
-            <input type="radio" id="account" name="sidebar"/>
+            <input type="radio" id="account" name="sidebar" checked/>
             <label for="account">
                 <div class="text-icon-wrapper">
                     <i class="bx bx-lock"></i>
@@ -440,6 +484,14 @@
             </div>
         </li>
     </ul>
+
+    <!-- Logout button added at bottom of sidebar -->
+    <div class="logout-container">
+        <button class="logout-btn" onclick="logout()">
+            <i class="bx bx-log-out"></i>
+            <span>Logout</span>
+        </button>
+    </div>
 </aside>
 
 <div class="main-content">
@@ -562,7 +614,47 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/alert.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+<script>
+    function logout() {
+        fetch('/auth/logout', {
+            method: 'POST', // Gọi API với phương thức POST
+            credentials: 'include' // Đảm bảo cookie được gửi kèm
+        })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: "Đăng xuất thành công!",
+                        icon: "success",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                    setTimeout(() => {
+                        window.location.href = "/auth/login";
+                    }, 3000);
+                } else {
+                    Swal.fire({
+                        title: "Lỗi",
+                        text: "Đăng xuất không thành công!",
+                        icon: "error",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                    icon: "error",
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            });
+    }
+</script>
 <script>
     function removeAccents(str) {
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();

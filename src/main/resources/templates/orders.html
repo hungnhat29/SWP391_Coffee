@@ -10,17 +10,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
 
   <!-- Bootstrap và DataTables CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 
-  <!-- Boxicons và Akar Icons -->
+  <!-- Boxicons -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <script src="https://unpkg.com/akar-icons-fonts"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     * {
@@ -30,243 +29,254 @@
     }
 
     body {
-      background: linear-gradient(135deg, #3C2F2F 0%, #6F4E37 100%);
-      font-family: "Poppins", sans-serif;
-      min-height: 100vh;
-      display: flex;
+      background-color: white;
+      font-family: "Poppins", Arial, sans-serif;
+      height: 100vh;
     }
 
-    /* Sidebar Styles */
+    /* Sidebar styles từ customerlist.html */
     .sidebar {
       position: fixed;
       top: 24px;
       left: 24px;
       bottom: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       width: 260px;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 0 16px;
-      background: rgb(0 0 0 / 32%);
+      background: rgba(0, 0, 0, 1);
       backdrop-filter: blur(30px);
-      overflow-y: auto;
+      transition: width 0.4s;
     }
 
     .sidebar header {
       display: flex;
       align-items: center;
+      justify-content: center;
       height: 72px;
       padding-top: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 20px;
+      border-bottom: 1px solid rgb(255 255 255 / 8%);
     }
 
     .logo-text {
-      font-size: 28px;
-      font-weight: 600;
-      color: #E8D5B5;
-      letter-spacing: 1px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #F76D37;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      flex-grow: 1; /* This makes the list take up available space */
+    }
+
+    .sidebar li {
+      position: relative;
     }
 
     .sidebar input {
       display: none;
     }
 
-    .sidebar :is(button, label) {
+    .sidebar label, .sidebar button {
+      position: relative;
       display: flex;
-      gap: 16px;
       align-items: center;
+      justify-content: flex-start;
       height: 50px;
       width: 100%;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 400;
       padding: 0 16px;
-      color: #E8D5B5;
-      transition: background 0.3s ease;
+      color: rgb(255 255 255 / 95%);
+      cursor: pointer;
+      transition: all 0.3s;
+      background: transparent;
+      border: none;
+      text-align: left;
+    }
+
+    .sidebar .text-icon-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     .sidebar label:hover, .sidebar button:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #D4A017;
+      background: rgba(50, 50, 50, 0.8);
+      color: #F76D37;
     }
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
+    .sidebar input:checked + label {
+      background: #1960f3;
+      color: rgb(255 255 255 / 95%);
+    }
+
+    .sidebar input:checked + label:hover {
+      color: #F76D37;
+    }
+
+    .sidebar label i:last-child {
+      transition: transform 0.3s;
+      margin-left: auto;
+    }
+
+    .sidebar input:checked + label i:last-child {
+      transform: rotate(-180deg);
     }
 
     .sub-menu {
-      position: relative;
       overflow: hidden;
       height: 0;
+      transition: height 0.5s ease;
     }
 
-    .sub-menu ul {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .sidebar input#settings:checked ~ .sub-menu {
+      height: 100px;
     }
 
-    .sub-menu button {
-      padding-left: 52px;
-      font-size: 15px;
-      color: #D4A017;
+    .sidebar input#create:checked ~ .sub-menu {
+      height: 150px;
     }
 
-    .sub-menu button::before {
+    .sidebar input#notifications:checked ~ .sub-menu {
+      height: 50px;
+    }
+
+    .sidebar input#account:checked ~ .sub-menu {
+      height: 100px;
+    }
+
+    .sub-menu a {
+      display: block;
+      padding: 10px 16px 10px 52px;
+      color: rgb(255 255 255 / 95%);
+      text-decoration: none;
+      font-size: 14px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .sub-menu a:hover {
+      color: #F76D37;
+      background: rgba(50, 50, 50, 0.8);
+    }
+
+    .sub-menu a::before {
       content: "";
       position: absolute;
       top: 50%;
-      left: 30px;
-      translate: 0 -50%;
-      width: 6px;
-      height: 6px;
+      left: 24px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      background-color: #D4A017;
+      background-color: rgb(255 255 255 / 35%);
+      transform: translateY(-50%);
     }
 
-    .sidebar i {
-      font-size: 20px;
-      color: #E8D5B5;
-    }
-
-    /* Main Content Styles */
-    .container {
-      margin: 30px 30px 30px 300px;
-      flex: 1;
-      background: #FFF8E7;
+    .content {
+      margin-left: 276px; /* Reduced from 280px */
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      border: 1px solid #E8D5B5;
+      width: calc(100% - 276px);
     }
 
-    h2 {
-      color: #3C2F2F;
-      font-weight: 600;
-      margin-bottom: 20px;
-      font-size: 24px;
+    /* Logout button at bottom of sidebar */
+    .logout-container {
+      margin-top: auto;
+      padding: 10px 0;
+      border-top: 1px solid rgb(255 255 255 / 8%);
     }
 
-    .btn-primary {
-      background-color: #6F4E37;
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: rgb(255 255 255 / 95%);
+      padding: 12px 16px;
+      width: 100%;
       border: none;
-      padding: 8px 16px;
-      font-weight: 500;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 59, 48, 0.2);
+      color: #ff3b30;
+    }
+
+    .logout-btn i {
+      font-size: 18px;
+    }
+
+    /* Main Content Styles từ customerlist.html */
+    .orders-list {
       border-radius: 8px;
-      transition: background 0.3s ease;
+      background-color: rgba(255, 255, 255, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      justify-content: start;
+      border: 1px solid #e5e7eb;
+      margin-left: 300px;
+      margin-top: 24px;
+      margin-right: 24px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
-    .btn-primary:hover {
-      background-color: #5A3E2B;
+    .content-title {
+      background-color: transparent;
+      border-color: #e5e7eb;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      color: #F76D37;
+      white-space: nowrap;
+      padding: 24px;
+      font-weight: 600;
+      font-size: 22px;
+      font-family: 'Poppins', sans-serif;
     }
 
-    .btn-danger {
-      background-color: #A0522D;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: background 0.3s ease;
+    .content-body {
+      background-color: transparent;
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      padding: 24px;
     }
 
-    .btn-danger:hover {
-      background-color: #8B4513;
-    }
-
-    .btn-warning {
-      background-color: #D4A017;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: background 0.3s ease;
-    }
-
-    .btn-warning:hover {
-      background-color: #B8860B;
-    }
-
-    table.dataTable {
+    .table-container {
+      background-color: white;
+      display: flex;
+      margin-top: 24px;
+      flex-direction: column;
+      width: 100%;
+      border: 1px solid #e5e7eb;
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid #E8D5B5;
-      font-size: 14px;
     }
 
-    table.dataTable thead th {
-      background-color: #6F4E37;
-      color: #FFF8E7;
-      font-weight: 500;
-      padding: 10px;
-      border-bottom: 2px solid #5A3E2B;
-    }
-
-    table.dataTable tbody tr {
-      transition: background 0.3s ease;
-    }
-
-    table.dataTable tbody tr:nth-child(even) {
-      background-color: #FDF6E3;
-    }
-
-    table.dataTable tbody tr:hover {
-      background-color: #ECE1C8;
-    }
-
-    /* Pagination Styles (Previous, Next, và số trang) */
-    .dataTables_paginate .paginate_button {
-      padding: 5px 10px;
-      margin: 0 5px;
-      border-radius: 4px; /* Điều chỉnh để giống hình ảnh */
-      background: #FDF6E3; /* Kem nhạt */
-      color: #3C2F2F !important; /* Chữ nâu đậm */
-      border: 1px solid #6F4E37; /* Viền nâu cà phê */
-      font-size: 14px;
-      transition: all 0.3s ease;
-    }
-
-    .dataTables_paginate .paginate_button:hover {
-      background: #ECE1C8; /* Kem đậm hơn khi hover */
-      color: #3C2F2F !important;
-      border-color: #6F4E37;
-    }
-
-    .dataTables_paginate .paginate_button.current {
-      background: #6F4E37 !important; /* Nâu cà phê cho trang hiện tại */
-      color: #FFF8E7 !important; /* Chữ kem nhạt */
-      border-color: #6F4E37 !important;
-    }
-
-    .dataTables_paginate .paginate_button.previous,
-    .dataTables_paginate .paginate_button.next {
-      background: #8B5A2B; /* Nâu cà phê nhạt cho Previous và Next */
-      color: #FFF8E7 !important;
-      border: 1px solid #704214;
-      font-weight: 500;
-    }
-
-    .dataTables_paginate .paginate_button.previous:hover,
-    .dataTables_paginate .paginate_button.next:hover {
-      background: #704214; /* Nâu đậm hơn khi hover */
-      color: #FFF8E7 !important;
-      border-color: #704214;
-    }
-
-    .dataTables_paginate .paginate_button.disabled {
-      background: #8B5A2B;
-      color: #E8D5B5 !important;
-      border-color: #8B5A2B;
-      opacity: 0.6;
-    }
-
+    /* Modal Styles */
     .modal-content {
       border-radius: 12px;
-      background: #FFF8E7;
+      background: #fff;
       box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
       border: none;
     }
 
     .modal-header {
-      background-color: #6F4E37;
-      color: #FFF8E7;
+      background-color: #F76D37;
+      color: #fff;
       border-bottom: none;
       border-radius: 12px 12px 0 0;
       padding: 15px 20px;
@@ -298,162 +308,162 @@
       background-color: #704214;
     }
 
-    .form-control {
-      border-radius: 8px;
-      border: 1px solid #E8D5B5;
-      padding: 8px;
-      background: #FDF6E3;
-      transition: border-color 0.3s ease;
-      font-size: 14px;
-    }
-
-    .form-control:focus {
-      border-color: #6F4E37;
-      box-shadow: 0 0 5px rgba(111, 78, 55, 0.3);
-    }
-
-    .option-box {
-      background-color: #FFF8E7;
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin: 5px;
-      font-size: 13px;
-      border: 1px solid #E8D5B5;
-      display: inline-block;
-      width: 120px;
+    .dataTables_paginate {
+      margin-top: 15px;
+      padding: 10px 0;
       text-align: center;
-      transition: all 0.3s ease;
     }
 
-    .option-box.selected {
-      background-color: #6F4E37;
-      color: #FFF8E7;
-      border-color: #6F4E37;
+    .dataTables_paginate .paginate_button {
+      padding: 6px 12px;
+      margin: 0 3px;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      color: #495057;
+      background-color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
     }
 
-    .option-box:hover {
-      background-color: #D4A017;
-      color: #FFF8E7;
-      border-color: #D4A017;
+    .dataTables_paginate .paginate_button:hover {
+      background-color: #f8f9fa;
+      color: #F76D37;
+      border-color: #F76D37;
     }
 
-    #addSizesContainer, #editSizesContainer,
-    #addToppingsContainer, #editToppingsContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: flex-start;
+    .dataTables_paginate .paginate_button.current {
+      background-color: #F76D37;
+      color: white;
+      border-color: #F76D37;
+    }
+
+    .dataTables_paginate .paginate_button.disabled {
+      color: #adb5bd;
+      cursor: not-allowed;
+      background-color: #f8f9fa;
+    }
+
+    .dataTables_paginate .paginate_button.previous,
+    .dataTables_paginate .paginate_button.next {
+      font-weight: bold;
+    }
+
+    /* Custom Previous/Next buttons */
+    .dataTables_paginate .paginate_button.previous:before {
+      content: '← ';
+    }
+
+    .dataTables_paginate .paginate_button.next:after {
+      content: ' →';
     }
   </style>
 </head>
 <body>
-<!-- Sidebar -->
+<!-- Sidebar từ customerlist.html -->
 <aside class="sidebar">
   <header>
-    <h1 class="logo-text">Coffee Admin</h1>
+    <h1 class="logo-text">G3P Coffee</h1>
   </header>
   <ul>
     <li>
-      <input type="radio" id="dashboard" name="sidebar" />
-      <label for="dashboard">
-        <i class="ai-dashboard"></i>
-        <p>Dashboard</p>
-      </label>
+      <button onclick="window.location.href='/admin/dashboard'">
+        <div class="text-icon-wrapper">
+          <i class="bx bx-tachometer"></i>
+          <p>Dashboard</p>
+        </div>
+      </button>
     </li>
     <li>
-      <input type="radio" id="settings" name="sidebar" />
+      <input type="radio" id="settings" name="sidebar"/>
       <label for="settings">
-        <i class="ai-gear"></i>
-        <p>Customers</p>
-        <i class="ai-chevron-down-small"></i>
+        <div class="text-icon-wrapper">
+          <i class="bx bx-user"></i>
+          <p>Customers</p>
+        </div>
+        <i class="bx bx-chevron-down"></i>
       </label>
       <div class="sub-menu">
-        <ul>
-          <li><button type="button">Customers List</button></li>
-          <li><button type="button">Members List</button></li>
-        </ul>
+        <a href="/users/customers/list">Customers List</a>
+        <a href="/membership">Members List</a>
       </div>
     </li>
     <li>
-      <input type="radio" id="create" name="sidebar" />
+      <input type="radio" id="create" name="sidebar"/>
       <label for="create">
-        <i class="ai-folder-add"></i>
-        <p>Create</p>
-        <i class="ai-chevron-down-small"></i>
+        <div class="text-icon-wrapper">
+          <i class="bx bx-cart"></i>
+          <p>Menu</p>
+        </div>
+        <i class="bx bx-chevron-down"></i>
       </label>
       <div class="sub-menu">
-        <ul>
-          <li><button type="button">Article</button></li>
-          <li><button type="button">Document</button></li>
-          <li><button type="button">Video</button></li>
-          <li><button type="button">Presentation</button></li>
-        </ul>
+        <a href="/categories">Categories List</a>
+        <a href="/products">Products List</a>
+        <a href="/orders">Orders List</a>
       </div>
     </li>
     <li>
-      <input type="radio" id="profile" name="sidebar" />
-      <label for="profile">
-        <i class="ai-person"></i>
-        <p>Profile</p>
-        <i class="ai-chevron-down-small"></i>
-      </label>
-      <div class="sub-menu">
-        <ul>
-          <li><button type="button">Avatar</button></li>
-          <li><button type="button">Theme</button></li>
-        </ul>
-      </div>
-    </li>
-    <li>
-      <input type="radio" id="notifications" name="sidebar" />
+      <input type="radio" id="notifications" name="sidebar"/>
       <label for="notifications">
-        <i class="ai-bell"></i>
-        <p>Notifications</p>
-      </label>
-    </li>
-    <li>
-      <input type="radio" id="products" name="sidebar" checked />
-      <label for="products">
-        <i class="ai-folder-add"></i>
-        <p>Products</p>
-        <i class="ai-chevron-down-small"></i>
+        <div class="text-icon-wrapper">
+          <i class="bx bx-bell"></i>
+          <p>Purchase history</p>
+        </div>
+        <i class="bx bx-chevron-down"></i>
       </label>
       <div class="sub-menu">
-        <ul>
-          <li><button type="button" onclick="window.location.href='/products'">Products List</button></li>
-        </ul>
+        <a href="/admin/orders">Customer purchase history</a>
       </div>
     </li>
     <li>
-      <input type="radio" id="account" name="sidebar" />
+      <input type="radio" id="account" name="sidebar" checked/>
       <label for="account">
-        <i class="ai-lock-on"></i>
-        <p>Account</p>
+        <div class="text-icon-wrapper">
+          <i class="bx bx-lock"></i>
+          <p>Promotions</p>
+        </div>
+        <i class="bx bx-chevron-down"></i>
       </label>
+      <div class="sub-menu">
+        <a href="/promotions/create">Create new promotions</a>
+        <a href="/promotions">Promotions List</a>
+      </div>
     </li>
   </ul>
+
+  <!-- Logout button added at bottom of sidebar -->
+  <div class="logout-container">
+    <button class="logout-btn" onclick="logout()">
+      <i class="bx bx-log-out"></i>
+      <span>Logout</span>
+    </button>
+  </div>
 </aside>
 
 <!-- Main Content -->
-<div class="container">
-  <h2>Orders List</h2>
-  <table id="orderTable" class="table table-bordered table-striped">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Customer</th>
-      <th>Phone</th>
-      <th>Payment</th>
-      <th>Type</th>
-      <th>Total</th>
-      <th>Address</th>
-      <th>Status</th>
-      <th>Order Date</th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<div class="orders-list">
+  <div class="content-title">Orders List</div>
+  <div class="content-body">
+    <div class="table-container">
+      <table id="orderTable" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Payment</th>
+          <th>Type</th>
+          <th>Total</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Order Date</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- View Order Modal -->
@@ -478,7 +488,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
 
 <script>
   $(document).ready(function() {
@@ -487,7 +497,7 @@
         url: '/orders/get-all-order',
         type: 'GET',
         dataSrc: function(json) {
-          userRole = json.role; // Lưu role của user từ API
+          userRole = json.role;
           return json.orders || [];
         },
         error: function(xhr, error, thrown) {
@@ -539,15 +549,12 @@
           data: null,
           render: function(data) {
             let actionButtons = `<button class="btn btn-sm btn-primary view-btn" data-id="${data.id}">View</button>`;
-
-            // Chỉ hiển thị nút "Update" và "Cancel" nếu user có role STAFF ROLE_staff
-            if (userRole.toString().includes("staff")) {
+            if (["STAFF", "MANAGER", "ADMIN"].some(role => userRole.toString().includes(role))) {
               if (data.status !== "completed" && data.status !== "canceled") {
                 actionButtons += `<button class="btn btn-sm btn-warning edit-btn" data-id="${data.id}">Update</button>`;
                 actionButtons += `<button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">Cancel</button>`;
               }
             }
-
             return actionButtons;
           }
         }
@@ -559,17 +566,11 @@
       responsive: true
     });
 
-    // Bắt sự kiện click vào nút "View"
     $('#orderTable tbody').on('click', '.view-btn', function() {
       let orderId = $(this).data('id');
-
-      // Hiển thị modal
       $('#orderItemsModal').modal('show');
-
-      // Xóa nội dung cũ và hiển thị trạng thái loading
       $('#orderItemsContainer').html('<p>Đang tải dữ liệu...</p>');
 
-      // Gọi API để lấy dữ liệu
       $.ajax({
         url: '/orders/get-order-items',
         type: 'GET',
@@ -590,7 +591,6 @@
                                 </div>
                             </div>
                         `).join('');
-
             $('#orderItemsContainer').html(html);
           } else {
             $('#orderItemsContainer').html('<p>No data.</p>');
@@ -602,19 +602,14 @@
       });
     });
 
-
     $('#orderTable tbody').on('click', '.edit-btn', function() {
       let orderId = $(this).data('id');
-
-      // Gọi API để lấy trạng thái tiếp theo
       $.ajax({
-        url: '/orders/get-next-status', // API mới để lấy trạng thái tiếp theo
+        url: '/orders/get-next-status',
         type: 'GET',
         data: { orderId: orderId },
         success: function(response) {
-          let nextStatus = response.nextStatus; // Trạng thái tiếp theo
-
-          // Hiển thị hộp thoại xác nhận với trạng thái tiếp theo
+          let nextStatus = response.nextStatus;
           Swal.fire({
             title: 'Update order status',
             html: `Update order status to: <b>${nextStatus}</b>`,
@@ -625,7 +620,6 @@
             confirmButtonText: 'Update'
           }).then((result) => {
             if (result.isConfirmed) {
-              // Tiến hành cập nhật trạng thái đơn hàng
               $.ajax({
                 url: '/orders/update-order',
                 type: 'POST',
@@ -636,7 +630,6 @@
                 },
                 error: function(xhr) {
                   Swal.fire('Error', 'Updated order status fail!!', 'error');
-                  console.error('Lỗi cập nhật:', xhr);
                 }
               });
             }
@@ -644,15 +637,12 @@
         },
         error: function(xhr) {
           Swal.fire('Error', 'Unable to get order status!', 'error');
-          console.error('Error getting status:', xhr);
         }
       });
     });
 
-
     $('#orderTable tbody').on('click', '.delete-btn', function() {
       let orderId = $(this).data('id');
-
       Swal.fire({
         title: 'Cancel order',
         text: 'Are you sure you want to cancel this order?',
@@ -660,8 +650,7 @@
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Cancel order',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Cancel order'
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
@@ -670,17 +659,61 @@
             data: { orderId: orderId },
             success: function(response) {
               Swal.fire('Success', 'Order has been canceled!', 'success');
-              $('#orderTable').DataTable().ajax.reload(); // Reload lại bảng dữ liệu
+              $('#orderTable').DataTable().ajax.reload();
             },
             error: function(xhr) {
               Swal.fire('Error', 'Cannot cancel order!', 'error');
-              console.error('Order cancellation error', xhr);
             }
           });
         }
       });
     });
+  });
 
+  function logout() {
+    fetch('/auth/logout', {
+      method: 'POST',
+      credentials: 'include'
+    })
+            .then(response => {
+              if (response.ok) {
+                Swal.fire({
+                  title: "Thành công",
+                  text: "Đăng xuất thành công!",
+                  icon: "success",
+                  timer: 3000,
+                  showConfirmButton: false
+                });
+                setTimeout(() => {
+                  window.location.href = "/auth/login";
+                }, 3000);
+              } else {
+                Swal.fire({
+                  title: "Lỗi",
+                  text: "Đăng xuất không thành công!",
+                  icon: "error",
+                  timer: 5000,
+                  showConfirmButton: false
+                });
+              }
+            })
+            .catch(error => {
+              Swal.fire({
+                title: "Lỗi",
+                text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                icon: "error",
+                timer: 5000,
+                showConfirmButton: false
+              });
+            });
+  }
+</script>
+<script>
+  // Add this inside your $(document).ready function after the DataTable initialization
+  $('#orderTable').on('draw.dt', function() {
+    // Update the text for Previous/Next buttons
+    $('.paginate_button.previous').html('Previous');
+    $('.paginate_button.next').html('Next');
   });
 </script>
 </body>

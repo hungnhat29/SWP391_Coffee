@@ -88,9 +88,9 @@
                 data: JSON.stringify(loginData),
                 success: function (response) {
                     let role = response.role;
-                    if (role.toString().includes("admin") || role.toString().includes("manager")) {
+                    if (role.toString().includes("ADMIN") || role.toString().includes("MANAGER")) {
                         window.location.href = "/admin/dashboard";
-                    } else if (role.toString().includes("staff")) {
+                    } else if (role.toString().includes("STAFF")) {
                         window.location.href = "/orders";
                     } else if (role.toString().includes("customer")) {
                         window.location.href = "/home";

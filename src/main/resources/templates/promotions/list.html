@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <!-- Add Boxicons for sidebar icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Add SweetAlert2 for better notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -61,6 +63,7 @@
             padding: 0;
             margin: 0;
             width: 100%;
+            flex-grow: 1; /* This makes the list take up available space */
         }
 
         .sidebar li {
@@ -126,7 +129,7 @@
         }
 
         .sidebar input#settings:checked ~ .sub-menu { height: 100px; }
-        .sidebar input#create:checked ~ .sub-menu { height: 100px; }
+        .sidebar input#create:checked ~ .sub-menu { height: 150px; }
         .sidebar input#notifications:checked ~ .sub-menu { height: 50px; }
         .sidebar input#account:checked ~ .sub-menu { height: 100px; }
 
@@ -158,9 +161,59 @@
         }
 
         .content {
-            margin-left: 280px;
+            margin-left: 276px; /* Reduced from 280px */
             padding: 20px;
-            width: calc(100% - 280px);
+            width: calc(100% - 276px);
+        }
+
+        /* Logout button at bottom of sidebar */
+        .logout-container {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgb(255 255 255 / 95%);
+            padding: 12px 16px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        .logout-btn i {
+            font-size: 18px;
+        }
+
+        /* Pagination styles */
+        .pagination {
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #F76D37;
+            border-color: #F76D37;
+        }
+
+        .pagination .page-link {
+            color: #333;
+        }
+
+        .pagination .page-link:hover {
+            color: #F76D37;
         }
 
         /* Existing styles remain unchanged */
@@ -247,6 +300,7 @@
             <div class="sub-menu">
                 <a href="/categories">Categories List</a>
                 <a href="/products">Products List</a>
+                <a href="/orders">Orders List</a>
             </div>
         </li>
         <li>
@@ -277,6 +331,14 @@
             </div>
         </li>
     </ul>
+
+    <!-- Logout button added at bottom of sidebar -->
+    <div class="logout-container">
+        <button class="logout-btn" onclick="logout()">
+            <i class="bx bx-log-out"></i>
+            <span>Logout</span>
+        </button>
+    </div>
 </aside>
 
 <!-- Main Content -->
@@ -460,6 +522,13 @@
             </div>
         </div>
 
+        <!-- Pagination Controls -->
+        <nav aria-label="Promotions pagination" id="pagination-container" class="mt-4">
+            <ul class="pagination">
+                <!-- Pagination will be populated dynamically with JS -->
+            </ul>
+        </nav>
+
         <!-- Delete Confirmation Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -482,11 +551,62 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+<script>
+    function logout() {
+        fetch('/auth/logout', {
+            method: 'POST', // Gọi API với phương thức POST
+            credentials: 'include' // Đảm bảo cookie được gửi kèm
+        })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: "Đăng xuất thành công!",
+                        icon: "success",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                    setTimeout(() => {
+                        window.location.href = "/auth/login";
+                    }, 3000);
+                } else {
+                    Swal.fire({
+                        title: "Lỗi",
+                        text: "Đăng xuất không thành công!",
+                        icon: "error",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                    icon: "error",
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            });
+    }
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const deleteButtons = document.querySelectorAll('.delete-btn');
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         let promotionIdToDelete = null;
+
+        // Get all promotion cards and store in a variable for filtering
+        const allPromotionCards = Array.from(document.querySelectorAll('.promotion-card'));
+        const itemsPerPage = 6; // Set items per page to 6
+        let currentPage = 1;
+        let currentFilteredPromotions = [...allPromotionCards]; // Keep track of current filtered set
+
+        // Initial setup
+        setupPagination(currentFilteredPromotions);
+        displayPromotionsForCurrentPage(currentFilteredPromotions);
 
         deleteButtons.forEach(button => {
             button.addEventListener('click', function () {
@@ -508,21 +628,29 @@
                         const alertContainer = document.createElement('div');
                         if (data.success) {
                             alertContainer.innerHTML = `
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-check-circle me-2"></i>
-                                    ${data.message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `;
-                            document.querySelector(`.promotion-card[data-promotion-id="${promotionIdToDelete}"]`)?.closest('.col-md-6')?.remove();
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                ${data.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                            // Remove card from our array of all cards
+                            const index = allPromotionCards.findIndex(card =>
+                                card.getAttribute('data-promotion-id') === promotionIdToDelete);
+                            if (index !== -1) {
+                                allPromotionCards.splice(index, 1);
+                                // Re-apply filters to get updated filtered list
+                                applyFilters();
+                                updateDashboardStats();
+                            }
                         } else {
                             alertContainer.innerHTML = `
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-exclamation-circle me-2"></i>
-                                    ${data.message}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            `;
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                ${data.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
                         }
                         document.querySelector('.content .container').prepend(alertContainer);
                     })
@@ -530,12 +658,12 @@
                         console.error('Error:', error);
                         const alertContainer = document.createElement('div');
                         alertContainer.innerHTML = `
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                Delete failed. Please try again.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        `;
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Delete failed. Please try again.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
                         document.querySelector('.content .container').prepend(alertContainer);
                     });
             }
@@ -543,11 +671,19 @@
 
         // Function to update dashboard stats after deletion
         function updateDashboardStats() {
-            const promotionCards = document.querySelectorAll('.promotion-card');
-            const totalPromotions = promotionCards.length;
-            const activePromotions = document.querySelectorAll('.promotion-card .badge.bg-success').length;
-            const expiredPromotions = document.querySelectorAll('.promotion-card .badge.bg-danger').length;
-            const comingSoonPromotions = document.querySelectorAll('.promotion-card .badge.bg-info').length;
+            const now = new Date();
+            const totalPromotions = allPromotionCards.length;
+            const activePromotions = allPromotionCards.filter(card =>
+                card.dataset.status === 'active' &&
+                new Date(card.dataset.startDate) <= now &&
+                new Date(card.dataset.endDate) > now
+            ).length;
+            const expiredPromotions = allPromotionCards.filter(card =>
+                new Date(card.dataset.endDate) < now
+            ).length;
+            const comingSoonPromotions = allPromotionCards.filter(card =>
+                new Date(card.dataset.startDate) > now
+            ).length;
 
             document.querySelector('.dashboard-stats .col-md-3:nth-child(1) h2').textContent = totalPromotions;
             document.querySelector('.dashboard-stats .col-md-3:nth-child(2) h2').textContent = activePromotions;
@@ -567,17 +703,18 @@
             const sort = sortBy.value;
             const now = new Date();
 
-            let promotionCards = Array.from(document.querySelectorAll('.promotion-card'));
+            // Always start with the complete set of promotion cards
+            let filteredPromotions = [...allPromotionCards];
 
             // Filter by type
             if (type) {
-                promotionCards = promotionCards.filter(card =>
+                filteredPromotions = filteredPromotions.filter(card =>
                     card.dataset.promotionType === type);
             }
 
             // Filter by status
             if (status) {
-                promotionCards = promotionCards.filter(card => {
+                filteredPromotions = filteredPromotions.filter(card => {
                     const startDate = new Date(card.dataset.startDate);
                     const endDate = new Date(card.dataset.endDate);
                     switch (status) {
@@ -597,7 +734,7 @@
             }
 
             // Sort
-            promotionCards.sort((a, b) => {
+            filteredPromotions.sort((a, b) => {
                 switch (sort) {
                     case 'priority':
                         return parseInt(b.querySelector('.badge:nth-child(3) span').textContent) -
@@ -616,29 +753,140 @@
                 }
             });
 
-            // Re-render
+            // Store the current filtered set
+            currentFilteredPromotions = filteredPromotions;
+
+            // Update pagination based on filtered results
+            setupPagination(filteredPromotions);
+
+            // Display filtered results for current page
+            displayPromotionsForCurrentPage(filteredPromotions);
+        }
+
+        // Function to set up pagination
+        function setupPagination(promotions) {
+            const paginationContainer = document.getElementById('pagination-container');
+            const totalPages = Math.ceil(promotions.length / itemsPerPage);
+
+            // Hide pagination if there's only one page or no items
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            // Show pagination if there are multiple pages
+            paginationContainer.style.display = 'block';
+
+            // Adjust current page if it's out of bounds after filtering
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+
+            // Create pagination elements
+            const paginationList = paginationContainer.querySelector('.pagination');
+            paginationList.innerHTML = '';
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = '<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>';
+            paginationList.appendChild(prevLi);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                paginationList.appendChild(pageLi);
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = '<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>';
+            paginationList.appendChild(nextLi);
+
+            // Add event listeners to pagination buttons
+            paginationList.querySelectorAll('li:not(.disabled) a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (this.getAttribute('aria-label') === 'Previous') {
+                        if (currentPage > 1) currentPage--;
+                    } else if (this.getAttribute('aria-label') === 'Next') {
+                        if (currentPage < totalPages) currentPage++;
+                    } else {
+                        currentPage = parseInt(this.textContent);
+                    }
+
+                    // Update pagination UI
+                    setupPagination(currentFilteredPromotions);
+                    // Display the new page
+                    displayPromotionsForCurrentPage(currentFilteredPromotions);
+                });
+            });
+        }
+
+        // Function to display promotions for the current page
+        function displayPromotionsForCurrentPage(promotions) {
+            const promotionsContainer = document.getElementById('promotions-container');
             promotionsContainer.innerHTML = '';
-            promotionCards.forEach(card => {
+
+            if (promotions.length === 0) {
+                promotionsContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-gift fa-4x text-secondary mb-3"></i>
+                    <h3>No promotions found</h3>
+                    <p class="text-muted">Try adjusting your filters</p>
+                </div>
+            `;
+                return;
+            }
+
+            // Calculate start and end indices for current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, promotions.length);
+
+            // Display only the promotions for the current page
+            for (let i = startIndex; i < endIndex; i++) {
+                const card = promotions[i];
                 const wrapper = document.createElement('div');
                 wrapper.className = 'col-md-6 col-lg-4 mb-4';
-                wrapper.appendChild(card);
-                promotionsContainer.appendChild(wrapper);
-            });
 
-            if (promotionCards.length === 0) {
-                promotionsContainer.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <i class="fas fa-gift fa-4x text-secondary mb-3"></i>
-                        <h3>No promotions found</h3>
-                        <p class="text-muted">Try adjusting your filters</p>
-                    </div>
-                `;
+                // Clone the card to avoid issues with the original DOM
+                const cardClone = card.cloneNode(true);
+
+                // Reattach event listeners to delete buttons
+                const deleteBtn = cardClone.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        promotionIdToDelete = this.getAttribute('data-id');
+                    });
+                }
+
+                wrapper.appendChild(cardClone);
+                promotionsContainer.appendChild(wrapper);
             }
         }
 
-        typeFilter.addEventListener('change', applyFilters);
-        statusFilter.addEventListener('change', applyFilters);
-        sortBy.addEventListener('change', applyFilters);
+        // Add event listeners to filter controls with page reset
+        typeFilter.addEventListener('change', function() {
+            currentPage = 1; // Reset to first page when filters change
+            applyFilters();
+        });
+
+        statusFilter.addEventListener('change', function() {
+            currentPage = 1; // Reset to first page when filters change
+            applyFilters();
+        });
+
+        sortBy.addEventListener('change', function() {
+            currentPage = 1; // Reset to first page when filters change
+            applyFilters();
+        });
+
+        // Initial filter application
+        applyFilters();
     });
 </script>
 </body>

@@ -960,33 +960,33 @@
             displayActivePromotions(promotions);
 
             // Also load any currently applied promotions
-            loadAppliedPromotions();
+            // loadAppliedPromotions();
         } catch (error) {
             console.error('Error loading active promotions:', error);
         }
     }
 
     // Function to load currently applied promotions
-    async function loadAppliedPromotions() {
-        try {
-            const response = await fetch('/promotions/api/cart', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to load cart with applied promotions');
-            }
-
-            const cartData = await response.json();
-            updateCartDisplay(cartData);
-        } catch (error) {
-            console.error('Error loading applied promotions:', error);
-        }
-    }
+    // async function loadAppliedPromotions() {
+    //     try {
+    //         const response = await fetch('/promotions/api/cart', {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             credentials: 'include'
+    //         });
+    //
+    //         if (!response.ok) {
+    //             throw new Error('Failed to load cart with applied promotions');
+    //         }
+    //
+    //         const cartData = await response.json();
+    //         updateCartDisplay(cartData);
+    //     } catch (error) {
+    //         console.error('Error loading applied promotions:', error);
+    //     }
+    // }
 
     // Display active promotions that can be applied
     function displayActivePromotions(promotions) {
