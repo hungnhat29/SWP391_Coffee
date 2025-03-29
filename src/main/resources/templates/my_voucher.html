@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"
+    />
+    <title>
+        My Voucher
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap"
+          rel="stylesheet"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/home.css}"/>
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
+    <!-- Tweaks for older IEs (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+    <!-- Fancybox CSS (Sử dụng href vì là URL tuyệt đối) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .profile-item {
+            position: relative;
+        }
+
+        .logout-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Hiển thị bên dưới icon */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .profile-item:hover .logout-menu {
+            display: block;
+        }
+
+        .logout-link {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body class="bg-white">
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="bg-[#f66d37] w-full py-3 shadow-lg layout_padding banner_section" style="background-image: none;">
+    <div class="mx-auto w-full">
+        <ul class="flex flex-wrap gap-2 sm:gap-4 lg:gap-10 w-fit mx-auto px-4">
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
+                    Profile
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/profile}" class="text-black font-medium hover:text-white">
+                    Point
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/voucher}" class="text-black font-medium hover:text-white">
+                    Voucher
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/my_voucher}" class="text-white font-medium">
+                    My Voucher
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<main class="p-4 md:p-8 container mx-auto flex flex-col">
+    <h1 class="text-4xl text-orange-500  font-bold mb-4">
+        My Voucher
+    </h1>
+    <div class="flex flex-col sm:flex-row gap-4">
+        <aside class="w-full sm:w-1/5 pr-8">
+            <ul class="space-y-3 md:space-y-7">
+                <li class="group cursor-pointer bg-[#f8d9d0] p-5 rounded-lg text-center hover:bg-orange-500 hover:text-white transition-all">
+                            <span class="block text-orange-500 font-bold group-hover:text-white">
+                                All
+                            </span>
+                    <span class="block text-xs mt-1 group-hover:text-white">
+                                (2109)
+                            </span>
+                </li>
+                <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+                <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Shop
+                            </span>
+                    <span class="block text-xs mt-1 group-hover:text-white">
+                                (995)
+                            </span>
+                </li>
+                <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+                <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Coffee
+                            </span>
+                    <span class="block text-xs mt-1 group-hover:text-white">
+                                (114)
+                            </span>
+                </li>
+                <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+                <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Cake
+                            </span>
+                    <span class="block text-xs mt-1 group-hover:text-white">
+                                (400)
+                            </span>
+                </li>
+                <span class="flex border-b border-gray-500 mx-auto w-full max-w-[50%]"></span>
+
+                <li class="group cursor-pointer text-center hover:bg-orange-500 hover:text-white p-5 rounded-lg transition-all">
+                            <span class="block text-gray-700 font-bold group-hover:text-white">
+                                Shipping
+                            </span>
+                    <span class="block text-xs mt-1 group-hover:text-white">
+                                (600)
+                            </span>
+                </li>
+            </ul>
+
+        </aside>
+        <section class="w-full sm:w-4/5">
+            <div class="flex flex-wrap">
+                <!-- Hiển thị danh sách voucher -->
+                <div th:each="voucher : ${listVoucher}" class="w-full lg:w-1/2 mb-6 md:px-8 mb:pb-8">
+                    <div class="flex flex-col md:flex-row  md:items-center justify-between md:space-x-4">
+                        <div class="flex flex-col md:flex-row  md:items-center gap-5 md:gap-8 w-full flex-wrap">
+                            <div class="relative rounded-lg min-w-[180px] max-w-[100%] sm:max-w-[50%]">
+                                <div class="flex bg-[#f66d37] p-4 justify-center items-center rounded-lg relative top-0 left-0 bottom-0 right-0">
+                                    <div class="bg-white rounded-full w-20 h-20 relative z-20">
+                                        <img alt="Shipping icon" class="rounded-full p-1"
+                                             src="https://storage.googleapis.com/a1aa/image/YVq_s47ZRHfa_9SIWLV02_sSV9ywRnGRNHxVTDaCDcQ.jpg"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="absolute z-10  top-1.5 left-1.5 bottom-0 right-0 w-full h-full bg-[#f66d3790] rounded-lg"></div>
+                                <div class="absolute z-0 top-3 left-3 bottom-0 right-0 w-full h-full bg-[#f66d3780] opacity-75 rounded-lg"></div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold" th:text="${voucher.voucherCode}">
+                                    Shipping Fee up to 10k vnd off
+                                </h3>
+                                <p class="text-gray-500">
+                                    Min. Spend <span th:text="${voucher.minSpending}"></span> vnd
+                                    <br/>
+                                    Valid From <span th:text="${voucher.expiryDate}"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-bold">
+                                x1
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phân trang -->
+            <div class="flex justify-center mt-6">
+                <nav class="inline-flex">
+                    <a th:if="${currentPage > 0}" th:href="@{/my-voucher(page=${currentPage - 1})}"
+                       class="px-4 py-2 bg-gray-200 rounded-l-md hover:bg-gray-300">« Trước</a>
+
+                    <span th:text="${currentPage + 1}" class="px-4 py-2 bg-blue-500 text-white"></span>
+
+                    <a th:if="${currentPage + 1 < totalPages}" th:href="@{/my-voucher(page=${currentPage + 1})}"
+                       class="px-4 py-2 bg-gray-200 rounded-r-md hover:bg-gray-300">Tiếp »</a>
+                </nav>
+            </div>
+        </section>
+
+    </div>
+</main>
+</body>
+
+</html>

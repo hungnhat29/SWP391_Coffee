@@ -1,0 +1,735 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Order</title>
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+  />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+          rel="stylesheet"
+  />
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/headertemplate.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/footertemplate.css}"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+    }
+
+    .delivered {
+      background-color: #e6f7ee;
+      color: #0e9f6e;
+    }
+
+    .processing {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+
+    .pending {
+      background-color: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .completed {
+      background-color: #e6f7ee;
+      color: #0e9f6e;
+    }
+
+    .cancelled {
+      background-color: #fee2e2;
+      color: #ef4444;
+    }
+
+    .customizations {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .profile-item {
+      position: relative;
+    }
+
+    .confirmation-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      background-color: #fff;
+    }
+
+    .success-icon {
+      font-size: 60px;
+      color: #4CAF50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-info {
+      margin-bottom: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .info-label {
+      font-weight: 600;
+      width: 150px;
+    }
+
+    .order-items {
+      margin-bottom: 20px;
+    }
+
+    .order-item {
+      display: flex;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .item-image {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .item-details {
+      text-align: left;
+    }
+
+    .item-customizations {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .item-price {
+      text-align: right;
+      min-width: 100px;
+      font-weight: bold;
+    }
+
+    .order-total {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .logout-menu {
+      display: none;
+      position: absolute;
+      top: 100%; /* Hiển thị bên dưới icon */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #fff;
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .profile-item:hover .logout-menu {
+      display: block;
+    }
+
+    .logout-link {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .time-filter-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .time-filter-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      min-width: 160px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 10;
+      margin-top: 4px;
+    }
+
+    .time-filter-content.show {
+      display: block;
+    }
+
+    .time-filter-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .time-filter-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    /* Hiển thị modal */
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Modal Content */
+    .confirmation-card {
+      background: #fff;
+      padding: 20px;
+      width: 450px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      position: relative;
+    }
+
+    /* Nút đóng */
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+<!-- Header Section -->
+<div th:replace="~{/header_template :: header_template}"></div>
+<div class="p-6 min-h-screen bg-gray-50">
+  <header
+          class="p-4 mb-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+  >
+    <div
+            class="flex justify-between items-center max-sm:flex-col max-sm:gap-4"
+    >
+      <h1 class="text-2xl text-gray-800 max-sm:text-xl">Track Order</h1>
+      <div class="flex gap-4 max-sm:w-full">
+        <form
+                id="searchForm"
+                th:action="@{/track-order}"
+                method="get"
+                class="flex items-center px-4 py-0 bg-white rounded-lg border border-solid w-[373px] max-sm:w-full"
+        >
+          <i class="ti ti-search text-gray-500"></i>
+          <input
+                  type="text"
+                  name="search"
+                  th:value="${param.search}"
+                  placeholder="Search orders..."
+                  class="p-2 w-full text-base text-gray-400 border-[none]"
+          />
+          <input type="hidden" name="timeFilter" th:value="${param.timeFilter}"/>
+          <input type="hidden" name="page" value="1"/>
+        </form>
+        <div class="time-filter-dropdown flex gap-2 items-center px-3 py-2 bg-white rounded-lg border border-solid cursor-pointer"
+             onclick="toggleTimeFilter()">
+                    <span class="text-base text-black" id="selectedTimeFilter"
+                          th:text="${param.timeFilter != null ? param.timeFilter : 'All Time'}">All Time</span>
+          <i class="ti ti-chevron-down" id="dropdownIcon"></i>
+          <div class="time-filter-content" id="timeFilterDropdown">
+            <a href="#" onclick="applyTimeFilter('All Time')">All Time</a>
+            <a href="#" onclick="applyTimeFilter('1 day ago')">1 day ago</a>
+            <a href="#" onclick="applyTimeFilter('1 week ago')">1 week ago</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- No Orders Message -->
+  <div th:if="${noOrders}" class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
+    <i class="ti ti-shopping-cart text-5xl text-gray-300"></i>
+    <p class="mt-4 text-lg text-gray-600">You don't have any order history yet.</p>
+    <a th:href="@{/shop}" class="inline-block mt-4 px-4 py-2 text-white bg-black rounded-lg">Start Shopping</a>
+  </div>
+
+  <!-- Orders List Section -->
+  <section th:unless="${noOrders}" class="flex flex-col gap-4">
+    <!-- Message for empty orders list -->
+    <div th:if="${#lists.isEmpty(orders)}"
+         class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-center">
+      <i class="ti ti-shopping-cart text-5xl text-gray-300"></i>
+      <p class="mt-4 text-lg text-gray-600">You don't have any order history yet.</p>
+      <a th:href="@{/shop}" class="inline-block mt-4 px-4 py-2 text-white bg-black rounded-lg">Start Shopping</a>
+    </div>
+
+    <!-- Order Items -->
+    <article
+            th:each="order : ${orders}"
+            class="p-6 bg-white rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] max-sm:p-4"
+    >
+      <div class="flex justify-between max-sm:flex-col">
+        <div class="flex gap-4 mb-4">
+          <!-- Show first product image if available, otherwise show placeholder -->
+          <div th:if="${order.firstProductImageUrl != null}" class="w-16 h-16">
+            <img th:src="${order.firstProductImageUrl}" alt="Product image"
+                 class="object-cover w-16 h-16 rounded-lg"/>
+          </div>
+          <div th:unless="${order.firstProductImageUrl != null}"
+               class="flex justify-center items-center object-cover w-16 h-16 rounded-lg bg-gray-200">
+            <i class="ti ti-coffee text-2xl text-gray-400"></i>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg text-black">Order #<span th:text="${order.id}"></span></h3>
+            <p class="text-base text-gray-500"
+               th:text="${#temporals.format(order.orderDate, 'MMMM d, yyyy')}">
+              Order Date</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1 items-end">
+          <p class="text-lg text-black"><span th:text="${order.orderTotal}"></span>đ</p>
+          <span th:class="${'px-3 py-1 text-sm rounded-full ' + order.status}"
+                th:text="${#strings.capitalize(order.status)}">Status</span>
+        </div>
+      </div>
+      <footer
+              class="flex justify-between items-center pt-4 text-sm text-gray-600 border-t border-solid max-sm:flex-col max-sm:gap-2"
+      >
+        <div class="flex gap-2 items-center">
+          <!-- Payment Method Icon -->
+          <i th:class="${'ti ' + (order.paymentMethod == 'card' ? 'ti-credit-card' : (order.paymentMethod == 'paypal' ? 'ti-brand-paypal' : 'ti-cash'))} + ' text-base'"></i>
+          <span th:text="${#strings.capitalize(order.paymentMethod ?: 'Unknown')}">Payment Method</span>
+
+          <!-- Address Icon and Info -->
+          <i class="ti ti-map-pin text-base ml-2"></i>
+          <span th:text="${order.shippingAddress ?: 'No address provided'}">Address</span>
+
+          <i th:class="${order.typeOrder?.name() == 'PICKUP' ? 'ti ti-shopping-cart' : 'ti ti-truck'} + ' text-base ml-2'"></i>
+          <span th:text="${order.typeOrder?.name() == 'PICKUP' ? 'Dùng tại quán' : 'Giao hàng'}"
+                th:class="${order.typeOrder?.name() == 'PICKUP' ? 'text-green-600' : 'text-orange-600'}">
+                        Order Type
+                    </span>
+        </div>
+        <a href="javascript:void(0);"
+           class="flex gap-2 items-center text-base text-black cursor-pointer"
+           th:data-order-id="${order.id}"
+           onclick="getOrderDetails(this.getAttribute('data-order-id'))">
+          <span>View Details</span>
+          <i class="ti ti-arrow-right"></i>
+        </a>
+      </footer>
+    </article>
+  </section>
+
+  <!-- Improved Pagination Section -->
+  <!-- Pagination Section -->
+  <nav th:if="${orders != null and !#lists.isEmpty(orders)}"
+       class="flex gap-2 justify-center mx-0 my-6 max-sm:flex-wrap"
+       id="paginationNav">
+    <!-- Previous Page Button -->
+    <a th:if="${currentPage > 1}"
+       th:href="@{/track-order(page=${currentPage - 1})}"
+       class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
+       id="prevPageBtn">
+      <i class="ti ti-chevron-left"></i>
+    </a>
+    <span th:unless="${currentPage > 1}"
+          class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
+        <i class="ti ti-chevron-left"></i>
+    </span>
+
+    <!-- First page -->
+    <a th:href="@{/track-order(page=1)}"
+       th:class="${1 == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+       th:text="1"></a>
+
+    <!-- Show ellipsis if needed -->
+    <span th:if="${currentPage > 4}" class="flex justify-center items-center px-2">...</span>
+
+    <!-- Show pages around current page -->
+    <th:block th:with="startPage=${currentPage > 2 ? currentPage - 1 : 2},
+                       endPage=${currentPage + 1 < totalPages ? currentPage + 1 : totalPages - 1}">
+      <th:block th:each="i : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${i > 1 && i < totalPages}"
+           th:href="@{/track-order(page=${i})}"
+           th:class="${i == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+           th:text="${i}"></a>
+      </th:block>
+    </th:block>
+
+    <!-- Show ellipsis if needed -->
+    <span th:if="${currentPage < totalPages - 3}" class="flex justify-center items-center px-2">...</span>
+
+    <!-- Always show last page if there's more than one page -->
+    <a th:if="${totalPages > 1}"
+       th:href="@{/track-order(page=${totalPages})}"
+       th:class="${totalPages == currentPage ? 'w-10 text-white bg-black rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center' : 'w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px] flex items-center justify-center'}"
+       th:text="${totalPages}"></a>
+
+    <!-- Next Page Button -->
+    <a th:if="${currentPage < totalPages}"
+       th:href="@{/track-order(page=${currentPage + 1})}"
+       class="flex justify-center items-center w-10 bg-white rounded-lg border border-solid cursor-pointer h-[42px]"
+       id="nextPageBtn">
+      <i class="ti ti-chevron-right"></i>
+    </a>
+    <span th:unless="${currentPage < totalPages}"
+          class="flex justify-center items-center w-10 bg-gray-100 rounded-lg border border-solid text-gray-400 h-[42px]">
+        <i class="ti ti-chevron-right"></i>
+    </span>
+  </nav>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="confirmation-card w-[800px]" id="orderDetailsModal">
+      <button class="close-modal" onclick="closeModal()">&times;</button>
+
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+
+      <div class="order-header">
+        <div>
+          <h3 class="font-bold">Order #<span id="orderId">12345</span></h3>
+          <div id="orderDate">01 Jan 2023, 12:00</div>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-base" id="orderStatus">Pending</span>
+          <button id="cancelOrderBtn" class="btn-danger mt-2 px-2 rounded-full hidden">Cancel</button>
+        </div>
+      </div>
+
+      <!--            <div class="order-info">-->
+      <!--                <h4 class="mb-3">Order Information</h4>-->
+      <!--                <div class="info-row">-->
+      <!--                    <div class="info-label">Payment Method:</div>-->
+      <!--                    <div id="paymentMethod">COD</div>-->
+      <!--                </div>-->
+      <!--                <div class="info-row">-->
+      <!--                    <div class="info-label">Shipping Address:</div>-->
+      <!--                    <div id="shippingAddress">123 Coffee Street</div>-->
+      <!--                </div>-->
+      <!--            </div>-->
+
+      <div class="order-items">
+        <h4 class="mb-3 text-left font-bold text-xl">Order Items</h4>
+        <div id="orderItemsContainer"></div>
+
+        <div class="order-total">
+          Total: <span id="orderTotal">0.00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{/footer-template :: footer-template}"></div>
+<script th:inline="javascript">
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get current page and total pages from Thymeleaf
+    const currentPage = [[${currentPage}]];
+    const totalPages = [[${totalPages}]];
+    const searchQuery = [[${param.search}]];
+    const timeFilter = [[${param.timeFilter}]];
+
+    // Function to navigate to a specific page
+    function navigateToPage(pageNum) {
+      if (pageNum >= 1 && pageNum <= totalPages) {
+        let url = '/purchase-history?page=' + pageNum;
+
+        if (searchQuery) {
+          url += '&search=' + encodeURIComponent(searchQuery);
+        }
+
+        if (timeFilter) {
+          url += '&timeFilter=' + encodeURIComponent(timeFilter);
+        }
+
+        window.location.href = url;
+      }
+    }
+
+    // Add keyboard event listener
+    document.addEventListener('keydown', function (event) {
+      // Navigate to previous page with left arrow key
+      if (event.key === 'ArrowLeft' && currentPage > 1) {
+        event.preventDefault();
+        navigateToPage(currentPage - 1);
+      }
+
+      // Navigate to next page with right arrow key
+      if (event.key === 'ArrowRight' && currentPage < totalPages) {
+        event.preventDefault();
+        navigateToPage(currentPage + 1);
+      }
+    });
+
+    // Optional: Add click event listeners to the navigation buttons
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+
+    if (prevPageBtn) {
+      prevPageBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        navigateToPage(currentPage - 1);
+      });
+    }
+
+    if (nextPageBtn) {
+      nextPageBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        navigateToPage(currentPage + 1);
+      });
+    }
+
+    // Search functionality - submit form on enter key press
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+      searchInput.addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('searchForm').submit();
+        }
+      });
+    }
+  });
+
+  // Time filter dropdown functionality
+  function toggleTimeFilter() {
+    const dropdown = document.getElementById("timeFilterDropdown");
+    const icon = document.getElementById("dropdownIcon");
+
+    dropdown.classList.toggle("show");
+
+    // Rotate arrow icon when dropdown is open
+    if (dropdown.classList.contains("show")) {
+      icon.classList.remove("ti-chevron-down");
+      icon.classList.add("ti-chevron-up");
+    } else {
+      icon.classList.remove("ti-chevron-up");
+      icon.classList.add("ti-chevron-down");
+    }
+  }
+
+  function applyTimeFilter(filter) {
+    // Update the hidden field in the search form
+    const timeFilterInput = document.querySelector('input[name="timeFilter"]');
+    timeFilterInput.value = filter;
+
+    // Update the displayed text
+    document.getElementById('selectedTimeFilter').textContent = filter;
+
+    // Submit the form
+    document.getElementById('searchForm').submit();
+
+    // Hide dropdown and restore icon
+    document.getElementById("timeFilterDropdown").classList.remove("show");
+    document.getElementById("dropdownIcon").classList.remove("ti-chevron-up");
+    document.getElementById("dropdownIcon").classList.add("ti-chevron-down");
+  }
+
+  // Close the dropdown if clicked outside
+  window.addEventListener('click', function (event) {
+    const dropdown = document.querySelector('.time-filter-dropdown');
+    const icon = document.getElementById("dropdownIcon");
+
+    if (!dropdown.contains(event.target)) {
+      const dropdownContent = document.getElementById("timeFilterDropdown");
+      if (dropdownContent.classList.contains('show')) {
+        dropdownContent.classList.remove('show');
+        icon.classList.remove("ti-chevron-up");
+        icon.classList.add("ti-chevron-down");
+      }
+    }
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function openModal() {
+    document.getElementById("modalOverlay").classList.add("active");
+  }
+
+  function closeModal() {
+    document.getElementById("modalOverlay").classList.remove("active");
+  }
+
+  // Đóng modal khi nhấn vào nền đen bên ngoài modal
+  document.getElementById("modalOverlay").addEventListener("click", function(event) {
+    if (event.target === this) {
+      closeModal();
+    }
+  });
+
+  function getOrderDetails(orderId) {
+    $.ajax({
+      url: "/get-order-details",
+      type: "GET",
+      data: { orderId: orderId },
+      success: function (response) {
+        $("#cancelOrderBtn").attr("data-order-id", response.order.id);
+
+        if (response.order.status === "pending") {
+          $("#cancelOrderBtn").removeClass("hidden");
+        } else {
+          $("#cancelOrderBtn").addClass("hidden");
+        }
+        const orderDate = new Date(response.order.orderDate);
+        const formattedDate = new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: false
+        }).format(orderDate).replace(',', '');
+        $("#orderId").text(response.order.id);
+        $("#orderDate").text(formattedDate);
+        $("#orderStatus").text(response.order.status)
+                .removeClass()
+                .addClass(" px-2 rounded-full " + (response.order.status === "pending" ? "bg-warning" :
+                        response.order.status === "paid" ? "bg-success" : "bg-secondary"));
+        $("#paymentMethod").text(response.order.paymentMethod);
+        $("#shippingAddress").text(response.order.shippingAddress);
+        $("#orderTotal").text(response.order.orderTotal.toLocaleString() + " đ");
+
+        $("#orderItemsContainer").empty();
+        response.orderItems.forEach(item => {
+          let itemHtml = `
+                        <div class="order-item justify-between p-2">
+                            <div class="flex gap-2">
+                                <img src="${item.product.imageUrl}" alt="Product" class="item-image">
+                                <div class="item-details">
+                                    <h5 class="font-bold text-xl">${item.product.name}</h5>
+                                    <div class="text-[14px]">Quantity: <span>${item.quantity}</span></div>
+                                    <div class="item-customizations">
+                                        ${item.sizeInfo ? `<div>Size: <span>${item.sizeInfo}</span></div>` : ''}
+                                        ${item.toppingsInfo ? `<div>Toppings: <span>${item.toppingsInfo}</span></div>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                <span>${item.subTotal.toLocaleString()} đ</span>
+                            </div>
+                        </div>`;
+          $("#orderItemsContainer").append(itemHtml);
+        });
+
+        openModal();
+      },
+      error: function () {
+        alert("Lỗi khi lấy thông tin đơn hàng!");
+      }
+    });
+  }
+
+  $(document).on("click", "#cancelOrderBtn", function () {
+    var orderId = $(this).data("order-id");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to cancel this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "No, keep it"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: "/canceled-order",
+          data: { orderId: orderId },
+          success: function (response) {
+            Swal.fire("Canceled!", "Your order has been canceled.", "success");
+            $("#orderStatus").text("Canceled").removeClass().addClass("badge bg-secondary");
+            $("#cancelOrderBtn").hide();
+            location.reload();
+          },
+          error: function () {
+            Swal.fire("Error!", "Failed to cancel the order.", "error");
+          }
+        });
+      }
+    });
+  });
+</script>
+<script>
+  function logout() {
+    fetch('/auth/logout', {
+      method: 'POST', // Gọi API với phương thức POST
+      credentials: 'include' // Đảm bảo cookie được gửi kèm
+    })
+            .then(response => {
+              if (response.ok) {
+                Swal.fire({
+                  title: "Success",
+                  text: "Log out successfully!",
+                  icon: "success",
+                  timer: 3000,
+                  showConfirmButton: false
+                });
+                // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                setTimeout(() => {
+                  window.location.href = "/login";
+                }, 3000);
+              } else {
+                Swal.fire({
+                  title: "Error",
+                  text: "Logout failed!",
+                  icon: "error",
+                  timer: 5000,
+                  showConfirmButton: false
+                });
+              }
+            })
+            .catch(error => {
+              Swal.fire({
+                title: "Error",
+                text: "An error occurred, please try again later.",
+                icon: "error",
+                timer: 5000,
+                showConfirmButton: false
+              });
+            });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #d4fc79, #96e6a1, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen bg-white">
+<h1 class="text-orange-500 text-2xl font-bold mb-4">Point</h1>
+<div class="w-96 p-6 rounded-3xl gradient-bg text-white relative">
+    <div class="flex justify-between items-center mb-4">
+        <span class="text-lg">Point</span>
+        <i class="fas fa-credit-card text-2xl"></i>
+    </div>
+    <div class="text-4xl font-bold mb-4">9,219</div>
+    <div class="mx-8">
+        <div class="flex justify-around items-center mb-4 text-xl">
+            <span class="font-bold">••••</span>
+            <span class="font-bold">••••</span>
+            <span class="font-bold">••••</span>
+            <span class="font-bold">2109</span>
+        </div>
+    </div>
+    <div>
+        <div class="">
+            <div class="w-2/3 flex justify-between item-center text-sm mb-4">
+                <div>
+                    <div>VALID THRU</div>
+                    <div class="font-bold">01/27</div>
+                </div>
+                <div>
+                    <div>CARD HOLDER</div>
+                    <div class="font-bold">User</div>
+                </div>
+            </div>
+        </div>
+        <div class="w-1/3">
+            <div class="absolute bottom-4 right-4 text-sm">MEMBER CARD</div>
+        </div>
+    </div>
+</div>
+<div class="w-96 mt-4 p-4 rounded-3xl bg-gray-100 flex justify-center items-center">
+    <img src="https://placehold.co/300x80/gray/black?text=Barcode" alt="Barcode image"
+         class="w-full h-20 object-cover rounded-3xl">
+</div>
+<div class="mt-4 text-center">
+    <div class="flex items-center justify-center mb-2">
+        <i class="fas fa-cogs text-lg mr-2"></i>
+        <a href="#" class="text-orange-500">Point Management</a>
+    </div>
+    <div class="flex items-center justify-center mb-2">
+        <i class="fas fa-gift text-lg mr-2"></i>
+        <a href="#" class="text-orange-500">Membership Privileges</a>
+    </div>
+    <div class="flex items-center justify-center">
+        <i class="fas fa-book text-lg mr-2"></i>
+        <a href="#" class="text-orange-500">Rules</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2797348b-6e42-48bc-a3ad-0afaf45afdae" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportTestResults" outputFolder="$PROJECT_DIR$" userTempatePath="" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JUnit5 Test Class" />
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="swt/test" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2tbr2Se2wTdkN4UcRN4d4wSETFH" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JUnit.CalculatorTest.add.executor": "Run",
+    "JUnit.CalculatorTest.executor": "Coverage",
+    "JUnit.CalculatorTest.multiply.executor": "Run",
+    "JUnit.CartServiceTest.executor": "Coverage",
+    "JUnit.CartServiceTest.testAddToCart_InvalidInput_BothUserIdAndSessionId.executor": "Coverage",
+    "JUnit.CartServiceTest.testAddToCart_WithSessionId_NewItem.executor": "Coverage",
+    "JUnit.CartServiceTest.testAddToCart_WithUserId_NewItem.executor": "Run",
+    "JUnit.CartTest,testEmptyCart and 1 more.executor": "Run",
+    "JUnit.CartTest.executor": "Run",
+    "JUnit.CartTest.testApplyValidPromotion.executor": "Run",
+    "JUnit.CartTest.testEmptyCart.executor": "Run",
+    "JUnit.LoginTest.executor": "Run",
+    "JUnit.ProductDetailTest.executor": "Run",
+    "JUnit.ShopTest.executor": "Run",
+    "JUnit.ShopTest.testNavigateToProductDetail.executor": "Run",
+    "JUnit.UserServiceTest.getCustomerById_CustomerExists_ReturnsCustomer.executor": "Run",
+    "JUnit.UserServiceTest.registerUser3_EmailAlreadyExists_ThrowsException.executor": "Coverage",
+    "JUnit.test.executor": "Run",
+    "JavaScript Debug.home.html.executor": "Run",
+    "JavaScript Debug.payment-error.html.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.G3PCoffeeApplication.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Web/SWP391_Coffee",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="com.SWP391.G3PCoffee.service" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.G3PCoffeeApplication">
+    <configuration name="CartTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="G3PCoffee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.SWP391.G3PCoffee.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.SWP391.G3PCoffee" />
+      <option name="MAIN_CLASS_NAME" value="com.SWP391.G3PCoffee.CartTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CartTest.testEmptyCart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="G3PCoffee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.SWP391.G3PCoffee.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.SWP391.G3PCoffee" />
+      <option name="MAIN_CLASS_NAME" value="com.SWP391.G3PCoffee.CartTest" />
+      <option name="METHOD_NAME" value="testEmptyCart" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductDetailTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="G3PCoffee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.SWP391.G3PCoffee.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.SWP391.G3PCoffee" />
+      <option name="MAIN_CLASS_NAME" value="com.SWP391.G3PCoffee.ProductDetailTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShopTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="G3PCoffee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.SWP391.G3PCoffee.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.SWP391.G3PCoffee" />
+      <option name="MAIN_CLASS_NAME" value="com.SWP391.G3PCoffee.ShopTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ShopTest.testNavigateToProductDetail" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="G3PCoffee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.SWP391.G3PCoffee.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.SWP391.G3PCoffee" />
+      <option name="MAIN_CLASS_NAME" value="com.SWP391.G3PCoffee.ShopTest" />
+      <option name="METHOD_NAME" value="testNavigateToProductDetail" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="G3PCoffeeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="G3PCoffee" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.SWP391.G3PCoffee.G3PCoffeeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ShopTest.testNavigateToProductDetail" />
+        <item itemvalue="JUnit.CartTest" />
+        <item itemvalue="JUnit.ProductDetailTest" />
+        <item itemvalue="JUnit.ShopTest" />
+        <item itemvalue="JUnit.CartTest.testEmptyCart" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2797348b-6e42-48bc-a3ad-0afaf45afdae" name="Changes" comment="" />
+      <created>1740631409627</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740631409627</updated>
+      <workItem from="1740631412121" duration="314000" />
+      <workItem from="1740631810822" duration="10000" />
+      <workItem from="1740663632000" duration="7744000" />
+      <workItem from="1740703165723" duration="1693000" />
+      <workItem from="1740710852372" duration="3370000" />
+      <workItem from="1740753768510" duration="4399000" />
+      <workItem from="1740860137719" duration="4484000" />
+      <workItem from="1740900289550" duration="16862000" />
+      <workItem from="1740971013276" duration="5319000" />
+      <workItem from="1741008019117" duration="12615000" />
+      <workItem from="1741049006788" duration="6427000" />
+      <workItem from="1741064116752" duration="810000" />
+      <workItem from="1741094296545" duration="6033000" />
+      <workItem from="1741224092831" duration="5235000" />
+      <workItem from="1741269515431" duration="3041000" />
+      <workItem from="1741285083155" duration="72000" />
+      <workItem from="1741307965277" duration="5316000" />
+      <workItem from="1741371008665" duration="14770000" />
+      <workItem from="1741494084110" duration="5000" />
+      <workItem from="1741575407538" duration="5971000" />
+      <workItem from="1741610751812" duration="4059000" />
+      <workItem from="1741653655104" duration="8250000" />
+      <workItem from="1741785972373" duration="4685000" />
+      <workItem from="1741873604853" duration="5489000" />
+      <workItem from="1741961294872" duration="10058000" />
+      <workItem from="1742075953317" duration="27162000" />
+      <workItem from="1742219028910" duration="13102000" />
+      <workItem from="1742262813830" duration="4738000" />
+      <workItem from="1742401534362" duration="802000" />
+      <workItem from="1742530996352" duration="1546000" />
+      <workItem from="1742735011725" duration="127000" />
+      <workItem from="1742735499200" duration="2123000" />
+      <workItem from="1742744790847" duration="3580000" />
+      <workItem from="1742789765861" duration="2258000" />
+      <workItem from="1742825195038" duration="27456000" />
+      <workItem from="1742997076119" duration="22147000" />
+      <workItem from="1743079212682" duration="37621000" />
+      <workItem from="1743167876589" duration="991000" />
+      <workItem from="1743171796478" duration="7613000" />
+      <workItem from="1743233161855" duration="17271000" />
+      <workItem from="1743259616778" duration="1598000" />
+      <workItem from="1743262848531" duration="2271000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$UserServiceTest_registerUser3_EmailAlreadyExists_ThrowsException.ic" NAME="UserServiceTest.registerUser3_EmailAlreadyExists_ThrowsException Coverage Results" MODIFIED="1741667207950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$CartServiceTest_testAddToCart_WithUserId_NewItem.ic" NAME="CartServiceTest.testAddToCart_WithUserId_NewItem Coverage Results" MODIFIED="1741226344949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$UserServiceTest_getCustomerById_CustomerExists_ReturnsCustomer.ic" NAME="UserServiceTest.getCustomerById_CustomerExists_ReturnsCustomer Coverage Results" MODIFIED="1741666538454" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$CartServiceTest_testAddToCart_WithSessionId_NewItem.ic" NAME="CartServiceTest.testAddToCart_WithSessionId_NewItem Coverage Results" MODIFIED="1741224787872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$CartServiceTest.ic" NAME="CartServiceTest Coverage Results" MODIFIED="1741664793730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$CalculatorTest.ic" NAME="CalculatorTest Coverage Results" MODIFIED="1741103001936" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/SWP391_Coffee$CartServiceTest_testAddToCart_InvalidInput_BothUserIdAndSessionId.ic" NAME="CartServiceTest.testAddToCart_InvalidInput_BothUserIdAndSessionId Coverage Results" MODIFIED="1741226299254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.SWP391.G3PCoffee.*</FILTER>
+    </SUITE>
+  </component>
+</project>

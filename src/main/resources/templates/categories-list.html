@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Categories List</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,0" />
+
+    <!-- Bootstrap và DataTables CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <!-- Add SweetAlert2 for better notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f0f2f5;
+            font-family: "Poppins", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: white;
+            font-family: "Poppins", Arial, sans-serif;
+            height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            bottom: 44px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 260px;
+            border-radius: 16px;
+            padding: 0 16px;
+            background: rgba(0, 0, 0, 1);
+            backdrop-filter: blur(30px);
+            transition: width 0.4s;
+        }
+
+        .sidebar header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 72px;
+            padding-top: 10px;
+            border-bottom: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #F76D37;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            flex-grow: 1; /* This makes the list take up available space */
+        }
+
+        .sidebar li {
+            position: relative;
+        }
+
+        .sidebar input {
+            display: none;
+        }
+
+        .sidebar label, .sidebar button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 50px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 16px;
+            color: rgb(255 255 255 / 95%);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            text-align: left;
+        }
+
+        .sidebar .text-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sidebar label:hover, .sidebar button:hover {
+            background: rgba(50, 50, 50, 0.8);
+            color: #F76D37;
+        }
+
+        .sidebar input:checked + label {
+            background: #1960f3;
+            color: rgb(255 255 255 / 95%);
+        }
+
+        .sidebar input:checked + label:hover {
+            color: #F76D37;
+        }
+
+        .sidebar label i:last-child {
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+
+        .sidebar input:checked + label i:last-child {
+            transform: rotate(-180deg);
+        }
+
+        .sub-menu {
+            overflow: hidden;
+            height: 0;
+            transition: height 0.5s ease;
+        }
+
+        .sidebar input#settings:checked ~ .sub-menu {
+            height: 100px;
+        }
+
+        .sidebar input#create:checked ~ .sub-menu {
+            height: 150px;
+        }
+
+        .sidebar input#notifications:checked ~ .sub-menu {
+            height: 50px;
+        }
+
+        .sidebar input#account:checked ~ .sub-menu {
+            height: 100px;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px 16px 10px 52px;
+            color: rgb(255 255 255 / 95%);
+            text-decoration: none;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .sub-menu a:hover {
+            color: #F76D37;
+            background: rgba(50, 50, 50, 0.8);
+        }
+
+        .sub-menu a::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: rgb(255 255 255 / 35%);
+            transform: translateY(-50%);
+        }
+
+        .content {
+            margin-left: 276px; /* Reduced from 280px */
+            padding: 20px;
+            width: calc(100% - 276px);
+        }
+
+        /* Logout button at bottom of sidebar */
+        .logout-container {
+            margin-top: auto;
+            padding: 10px 0;
+            border-top: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgb(255 255 255 / 95%);
+            padding: 12px 16px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+
+        .logout-btn i {
+            font-size: 18px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: #F76D37;
+            color: white;
+            padding: 16px 24px;
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-body {
+            padding: 20px;
+        }
+
+        .search-add-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .add-button {
+            background: #F76D37;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .add-button:hover {
+            background: #e55a29;
+            box-shadow: 0 4px 10px rgba(247, 109, 55, 0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table.dataTable thead th {
+            background: #f8fafc;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        table.dataTable tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        table.dataTable tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        table.dataTable tbody td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #4b5563;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .action-button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .edit-btn { background: #007bff; }
+        .delete-btn { background: #dc3545; }
+
+        .action-button:hover {
+            opacity: 0.9;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        .modal-header {
+            background: #f8fafc;
+            color: #1f2937;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: none;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #F76D37;
+            box-shadow: 0 0 6px rgba(247, 109, 55, 0.2);
+            outline: none;
+        }
+
+        /* Pagination */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 5px;
+            margin: 0 5px;
+            padding: 8px 15px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <header>
+        <h1 class="logo-text">G3P Coffee</h1>
+    </header>
+    <ul>
+        <li>
+            <button onclick="window.location.href='/admin/dashboard'">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-tachometer"></i>
+                    <p>Dashboard</p>
+                </div>
+            </button>
+        </li>
+        <li>
+            <input type="radio" id="settings" name="sidebar"/>
+            <label for="settings">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-user"></i>
+                    <p>Customers</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/users/customers/list">Customers List</a>
+                <a href="/membership">Members List</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="create" name="sidebar"/>
+            <label for="create">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-cart"></i>
+                    <p>Menu</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/categories">Categories List</a>
+                <a href="/products">Products List</a>
+                <a href="/orders">Orders List</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="notifications" name="sidebar"/>
+            <label for="notifications">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-bell"></i>
+                    <p>Purchase history</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/admin/orders">Customer purchase history</a>
+            </div>
+        </li>
+        <li>
+            <input type="radio" id="account" name="sidebar" checked/>
+            <label for="account">
+                <div class="text-icon-wrapper">
+                    <i class="bx bx-lock"></i>
+                    <p>Promotions</p>
+                </div>
+                <i class="bx bx-chevron-down"></i>
+            </label>
+            <div class="sub-menu">
+                <a href="/promotions/create">Create new promotions</a>
+                <a href="/promotions">Promotions List</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Logout button added at bottom of sidebar -->
+    <div class="logout-container">
+        <button class="logout-btn" onclick="logout()">
+            <i class="bx bx-log-out"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+</aside>
+
+<div class="main-content">
+    <div class="content-card">
+        <div class="content-header">
+            Categories List
+        </div>
+        <div class="content-body">
+            <div class="search-add-container">
+                <button class="add-button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <i class="bx bx-plus"></i> Add Category
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="categoryTable" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Category 1</td>
+                        <td>Description 1</td>
+                        <td>
+                            <button class="action-button edit-btn" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
+                            <button class="action-button delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Category 2</td>
+                        <td>Description 2</td>
+                        <td>
+                            <button class="action-button edit-btn" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
+                            <button class="action-button delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="addCategoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="addCategoryName" placeholder="Enter category name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addCategoryDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="addCategoryDescription" placeholder="Enter category description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addCategoryImage" class="form-label">Image</label>
+                        <input type="text" class="form-control" id="addCategoryImage" placeholder="Enter link image..">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="addCategoryBtn" class="btn add-button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editCategoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editCategoryName" placeholder="Enter category name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCategoryDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editCategoryDescription" placeholder="Enter category description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCategoryImage" class="form-label">Image</label>
+                        <input type="text" class="form-control" id="editCategoryImage" placeholder="Enter link image..">
+                        <img id="editCategoryImagePreview" src="" alt="Category Image" style="max-width: 100px; display: none;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="updateCategoryBtn" type="button" class="btn add-button">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/alert.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+<script>
+    function logout() {
+        fetch('/auth/logout', {
+            method: 'POST', // Gọi API với phương thức POST
+            credentials: 'include' // Đảm bảo cookie được gửi kèm
+        })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: "Đăng xuất thành công!",
+                        icon: "success",
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    // Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
+                    setTimeout(() => {
+                        window.location.href = "/auth/login";
+                    }, 3000);
+                } else {
+                    Swal.fire({
+                        title: "Lỗi",
+                        text: "Đăng xuất không thành công!",
+                        icon: "error",
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Lỗi",
+                    text: "Có lỗi xảy ra, vui lòng thử lại sau.",
+                    icon: "error",
+                    timer: 5000,
+                    showConfirmButton: false
+                });
+            });
+    }
+</script>
+<script>
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    $(document).ready(function() {
+        $('#categoryTable').DataTable({
+            "ajax": {
+                "url": "/category/get-list-category",
+                "dataSrc": function(json) {
+                    json.forEach(item => {
+                        item.name_no_accents = removeAccents(item.name);
+                        item.description_no_accents = removeAccents(item.description);
+                    });
+                    return json;
+                }
+            },
+            "columns": [
+                { "data": "id" },
+                {
+                    "data": "imageUrl",
+                    "render": function(data, type, row) {
+                        if (data) {
+                            return `<img src="${data}?t=${new Date().getTime()}" alt="Category Image" class="img-thumbnail" width="100">`;
+                        } else {
+                            return `<span class="text-muted">No Image</span>`;
+                        }
+                    }
+                },
+                { "data": "name" },
+                { "data": "description" },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        return `
+                            <button class="action-button edit-btn" data-id="${row.id}" data-bs-toggle="modal" data-bs-target="#editCategoryModal">Edit</button>
+                            <button class="action-button delete-btn removeBtn" data-id="${row.id}">Delete</button>
+                        `;
+                    }
+                },
+                { "data": "name_no_accents", "visible": false },
+                { "data": "description_no_accents", "visible": false }
+            ],
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "lengthChange": false,
+            "pageLength": 5
+        });
+
+        $('#categoryTable_filter input').on('keyup', function() {
+            let searchValue = removeAccents(this.value);
+            table.columns([5, 6]).search(searchValue).draw();
+        });
+
+        $(document).on('click', '.edit-btn', function() {
+            var categoryId = $(this).data('id');
+            $.ajax({
+                url: `/category/${categoryId}`,
+                type: 'GET',
+                success: function(data) {
+                    $('#editCategoryName').val(data.name);
+                    $('#editCategoryDescription').val(data.description);
+                    $('#editCategoryImage').val(data.imageUrl);
+                    if (data.imageUrl) {
+                        $('#editCategoryImagePreview').attr('src', `${data.imageUrl}`).show();
+                    } else {
+                        $('#editCategoryImagePreview').hide();
+                    }
+                    $('#editCategoryModal').data('id', categoryId);
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra khi tải dữ liệu.');
+                }
+            });
+        });
+
+        $('#updateCategoryBtn').on('click', function() {
+            var categoryId = $('#editCategoryModal').data('id');
+            var categoryName = $('#editCategoryName').val();
+            var categoryDescription = $('#editCategoryDescription').val();
+            var categoryImage = $('#editCategoryImage').val();
+
+            if (!categoryName || !categoryDescription) {
+                showMessage('Fields cannot be left blank', "error");
+                return;
+            }
+
+            if (categoryDescription.length > 500) {
+                showMessage('Description must not exceed 500 characters', "error");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("id", categoryId);
+            formData.append("name", categoryName);
+            formData.append("description", categoryDescription);
+            if (categoryImage) {
+                formData.append("image", categoryImage);
+            }
+
+            $.ajax({
+                url: '/category/update-category',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    showMessage(response.message, response.messageType);
+                    if (response.messageType === "success") {
+                        $('#editCategoryModal').modal('hide');
+                        $('#categoryTable').DataTable().ajax.reload();
+                    }
+                },
+                error: function(xhr) {
+                    let errorResponse = JSON.parse(xhr.responseText);
+                    showMessage(errorResponse.message, errorResponse.messageType);
+                }
+            });
+        });
+
+        $(document).on('click', '.removeBtn', function () {
+            var categoryId = $(this).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this category?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/category/delete-category?categoryId=' + categoryId,
+                        type: 'DELETE',
+                        success: function (response) {
+                            showMessage(response.message, response.messageType);
+                            $('#categoryTable').DataTable().ajax.reload();
+                        },
+                        error: function (xhr) {
+                            showMessage('Delete failure ', "error");
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#addCategoryModal').on('show.bs.modal', function () {
+            $('#addCategoryImage').val("https://");
+        });
+
+        $('#editCategoryModal').on('show.bs.modal', function () {
+            if (!$('#editCategoryImage').val()) {
+                $('#editCategoryImage').val("https://");
+            }
+        });
+
+        $('#addCategoryImage, #editCategoryImage').on('blur', function () {
+            if ($.trim($(this).val()) === "") {
+                $(this).val("https://");
+            }
+        });
+
+        $('#addCategoryBtn').on('click', function() {
+            var categoryName = $('#addCategoryName').val();
+            var categoryDescription = $('#addCategoryDescription').val();
+            var categoryImage = $('#addCategoryImage').val();
+
+            if (!categoryName || !categoryDescription) {
+                showMessage('Fields cannot be empty', "error");
+                return;
+            }
+
+            if (categoryDescription.length > 500) {
+                showMessage('Description must not exceed 500 characters', "error");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("name", categoryName);
+            formData.append("description", categoryDescription);
+            if (categoryImage) {
+                formData.append("image", categoryImage);
+            }
+
+            $.ajax({
+                url: '/category/update-category',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    showMessage(response.message, response.messageType);
+                    $('#addCategoryModal').modal('hide');
+                    $('#addCategoryModal').on('hidden.bs.modal', function () {
+                        $('#addCategoryName').val('');
+                        $('#addCategoryDescription').val('');
+                        $('#addCategoryImage').val('');
+                    });
+                    $('#categoryTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    showMessage('Update failed: ' + xhr.responseText, "error");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
