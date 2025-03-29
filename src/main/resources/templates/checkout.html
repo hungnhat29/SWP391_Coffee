@@ -253,9 +253,11 @@
                     </div>
 
                     <div class="mt-4 pt-3 border-top">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span class="text-primary total-amount">$0.00</span>
+                        <div class="d-flex justify-content-between font-weight-bold mt-3">
+                            <span>Total (no promo):</span>
+                            <span class="text-primary"
+                                  th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')}">$0.00</span>
+                            đ
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Shipping:</span>
